@@ -33,7 +33,8 @@ public class DrinkFactoryMachine extends JFrame {
 	/**
 	 * @wbp.nonvisual location=311,475
 	 */
-	private final ImageIcon imageIcon = new ImageIcon();
+	
+	//private final ImageIcon imageIcon = new ImageIcon();
 
 	/**
 	 * Launch the application.
