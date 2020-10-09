@@ -27,6 +27,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStateMachineListener;
+import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStatemachine;
+import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceListener;
+
 public class DrinkFactoryMachine extends JFrame {
 
 	/**
@@ -46,6 +50,8 @@ public class DrinkFactoryMachine extends JFrame {
 	JButton cancelButton;
 	JButton addCupButton;
 	JSlider sugarSlider, sizeSlider, temperatureSlider;
+	private MachineController machineController;
+	private FSMStatemachine fsm;
 
 	/**
 	 * Launch the application.
@@ -67,6 +73,13 @@ public class DrinkFactoryMachine extends JFrame {
 	 * Create the frame.
 	 */
 	public DrinkFactoryMachine() {
+		
+		machineController = new MachineController(this);
+		fsm = new FSMStatemachine();
+		fsm.init();
+		fsm.enter();
+		fsm.getSCInterface().getListeners().add(new FSMStateMachineListener(machineController));
+		
 		setForeground(Color.WHITE);
 		setFont(new Font("Cantarell", Font.BOLD, 22));
 		setBackground(Color.DARK_GRAY);
