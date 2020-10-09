@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_vmh68AoDEeujPNRyqvrIRg" specification="@EventDriven&#xA;// Use the event driven execution model.&#xA;// Runs a run-to-completion step&#xA;// each time an event is raised.&#xA;// Switch to cycle based behavior&#xA;// by specifying '@CycleBased(200)'&#xA;// instead.&#xA;&#xA;@ChildFirstExecution&#xA;// In composite states, execute&#xA;// child states first.&#xA;// @ParentFirstExecution does the opposite.&#xA;&#xA;interface:&#xA;// Define events&#xA;// and variables here. &#xA;// Use CTRL + Space for content assist.&#xA;&#xA;in event B_Coffe&#xA;in event B_Expresso&#xA;in event B_Tea&#xA;in event S_Sugar&#xA;in event S_Size&#xA;in event S_Temp&#xA;in event C_050&#xA;in event C_025&#xA;in event C_010&#xA;in event C_NFC&#xA;in event B_Cancel&#xA;&#xA;out event onPayNFC&#xA;out event onCancel&#xA;&#xA;operation enoughMoney() : boolean&#xA;&#xA;var enough : boolean&#xA;&#xA;&#xA;internal:&#xA;&#xA;event startTimer&#xA;event restartTimer" name="FSM">
+  <sgraph:Statechart xmi:id="_vmh68AoDEeujPNRyqvrIRg" specification="@EventDriven&#xA;// Use the event driven execution model.&#xA;// Runs a run-to-completion step&#xA;// each time an event is raised.&#xA;// Switch to cycle based behavior&#xA;// by specifying '@CycleBased(200)'&#xA;// instead.&#xA;&#xA;@ChildFirstExecution&#xA;// In composite states, execute&#xA;// child states first.&#xA;// @ParentFirstExecution does the opposite.&#xA;&#xA;interface:&#xA;// Define events&#xA;// and variables here. &#xA;// Use CTRL + Space for content assist.&#xA;&#xA;in event B_Coffe&#xA;in event B_Expresso&#xA;in event B_Tea&#xA;in event S_Sugar&#xA;in event S_Size&#xA;in event S_Temp&#xA;in event C_050&#xA;in event C_025&#xA;in event C_010&#xA;in event C_NFC&#xA;in event B_Cancel&#xA;&#xA;out event onCancel&#xA;&#xA;operation enoughMoney() : boolean&#xA;&#xA;var enough : boolean&#xA;&#xA;&#xA;internal:&#xA;&#xA;event startTimer&#xA;event restartTimer" name="FSM">
     <regions xmi:id="_vmllUAoDEeujPNRyqvrIRg" name="Machine">
       <vertices xsi:type="sgraph:Entry" xmi:id="_vmrr8woDEeujPNRyqvrIRg">
         <outgoingTransitions xmi:id="_xdrNUAoEEeujPNRyqvrIRg" specification="" target="_nwlc8AoEEeujPNRyqvrIRg"/>
@@ -362,7 +362,7 @@
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_vmrr8QoDEeujPNRyqvrIRg"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_vmnagQoDEeujPNRyqvrIRg" fontName="Verdana" fillColor="16448250" lineColor="12632256"/>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_vmrr8goDEeujPNRyqvrIRg" x="110" y="30" width="1147" height="708"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_vmrr8goDEeujPNRyqvrIRg" x="96" y="102" width="1147" height="708"/>
     </children>
     <children xsi:type="notation:Shape" xmi:id="_vmv9ZAoDEeujPNRyqvrIRg" type="StatechartText" fontName="Verdana" lineColor="4210752">
       <children xsi:type="notation:DecorationNode" xmi:id="_vmwkcAoDEeujPNRyqvrIRg" type="StatechartName">

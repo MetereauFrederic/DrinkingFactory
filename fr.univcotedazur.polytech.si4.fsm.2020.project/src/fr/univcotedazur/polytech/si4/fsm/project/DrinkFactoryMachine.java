@@ -3,6 +3,8 @@ package fr.univcotedazur.polytech.si4.fsm.project;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -22,6 +24,8 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class DrinkFactoryMachine extends JFrame {
 
@@ -35,6 +39,13 @@ public class DrinkFactoryMachine extends JFrame {
 	 */
 	
 	//private final ImageIcon imageIcon = new ImageIcon();
+	
+	JLabel messagesToUser;
+	JButton coffeeButton, expressoButton, teaButton, soupButton, icedTeaButton;
+	JButton money50centsButton, money25centsButton, money10centsButton, nfcBiiiipButton;
+	JButton cancelButton;
+	JButton addCupButton;
+	JSlider sugarSlider, sizeSlider, temperatureSlider;
 
 	/**
 	 * Launch the application.
@@ -68,7 +79,7 @@ public class DrinkFactoryMachine extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel messagesToUser = new JLabel("<html>This is<br>place to communicate <br> with the user");
+		messagesToUser = new JLabel("<html>This is<br>place to communicate <br> with the user");
 		messagesToUser.setForeground(Color.WHITE);
 		messagesToUser.setHorizontalAlignment(SwingConstants.LEFT);
 		messagesToUser.setVerticalAlignment(SwingConstants.TOP);
@@ -83,25 +94,25 @@ public class DrinkFactoryMachine extends JFrame {
 		lblCoins.setBounds(538, 12, 44, 15);
 		contentPane.add(lblCoins);
 
-		JButton coffeeButton = new JButton("Coffee");
+		coffeeButton = new JButton("Coffee");
 		coffeeButton.setForeground(Color.WHITE);
 		coffeeButton.setBackground(Color.DARK_GRAY);
 		coffeeButton.setBounds(12, 34, 96, 25);
 		contentPane.add(coffeeButton);
 
-		JButton expressoButton = new JButton("Expresso");
+		expressoButton = new JButton("Expresso");
 		expressoButton.setForeground(Color.WHITE);
 		expressoButton.setBackground(Color.DARK_GRAY);
 		expressoButton.setBounds(12, 71, 96, 25);
 		contentPane.add(expressoButton);
 
-		JButton teaButton = new JButton("Tea");
+		teaButton = new JButton("Tea");
 		teaButton.setForeground(Color.WHITE);
 		teaButton.setBackground(Color.DARK_GRAY);
 		teaButton.setBounds(12, 108, 96, 25);
 		contentPane.add(teaButton);
 
-		JButton soupButton = new JButton("Soup");
+		soupButton = new JButton("Soup");
 		soupButton.setForeground(Color.WHITE);
 		soupButton.setBackground(Color.DARK_GRAY);
 		soupButton.setBounds(12, 145, 96, 25);
@@ -115,7 +126,7 @@ public class DrinkFactoryMachine extends JFrame {
 		progressBar.setBounds(12, 254, 622, 26);
 		contentPane.add(progressBar);
 
-		JSlider sugarSlider = new JSlider();
+		sugarSlider = new JSlider();
 		sugarSlider.setValue(1);
 		sugarSlider.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		sugarSlider.setBackground(Color.DARK_GRAY);
@@ -127,7 +138,7 @@ public class DrinkFactoryMachine extends JFrame {
 		sugarSlider.setBounds(301, 51, 200, 36);
 		contentPane.add(sugarSlider);
 
-		JSlider sizeSlider = new JSlider();
+		sizeSlider = new JSlider();
 		sizeSlider.setPaintTicks(true);
 		sizeSlider.setValue(1);
 		sizeSlider.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -139,7 +150,7 @@ public class DrinkFactoryMachine extends JFrame {
 		sizeSlider.setBounds(301, 125, 200, 36);
 		contentPane.add(sizeSlider);
 
-		JSlider temperatureSlider = new JSlider();
+		temperatureSlider = new JSlider();
 		temperatureSlider.setPaintLabels(true);
 		temperatureSlider.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		temperatureSlider.setValue(2);
@@ -162,7 +173,7 @@ public class DrinkFactoryMachine extends JFrame {
 
 		contentPane.add(temperatureSlider);
 
-		JButton icedTeaButton = new JButton("Iced Tea");
+		icedTeaButton = new JButton("Iced Tea");
 		icedTeaButton.setForeground(Color.WHITE);
 		icedTeaButton.setBackground(Color.DARK_GRAY);
 		icedTeaButton.setBounds(12, 182, 96, 25);
@@ -195,17 +206,17 @@ public class DrinkFactoryMachine extends JFrame {
 		panel.setBounds(538, 25, 96, 97);
 		contentPane.add(panel);
 
-		JButton money50centsButton = new JButton("0.50 €");
+		money50centsButton = new JButton("0.50 €");
 		money50centsButton.setForeground(Color.WHITE);
 		money50centsButton.setBackground(Color.DARK_GRAY);
 		panel.add(money50centsButton);
 
-		JButton money25centsButton = new JButton("0.25 €");
+		money25centsButton = new JButton("0.25 €");
 		money25centsButton.setForeground(Color.WHITE);
 		money25centsButton.setBackground(Color.DARK_GRAY);
 		panel.add(money25centsButton);
 
-		JButton money10centsButton = new JButton("0.10 €");
+		money10centsButton = new JButton("0.10 €");
 		money10centsButton.setForeground(Color.WHITE);
 		money10centsButton.setBackground(Color.DARK_GRAY);
 		panel.add(money10centsButton);
@@ -215,7 +226,7 @@ public class DrinkFactoryMachine extends JFrame {
 		panel_1.setBounds(538, 154, 96, 40);
 		contentPane.add(panel_1);
 
-		JButton nfcBiiiipButton = new JButton("biiip");
+		nfcBiiiipButton = new JButton("biiip");
 		nfcBiiiipButton.setForeground(Color.WHITE);
 		nfcBiiiipButton.setBackground(Color.DARK_GRAY);
 		panel_1.add(nfcBiiiipButton);
@@ -230,7 +241,7 @@ public class DrinkFactoryMachine extends JFrame {
 		separator.setBounds(12, 292, 622, 15);
 		contentPane.add(separator);
 
-		JButton addCupButton = new JButton("Add cup");
+		addCupButton = new JButton("Add cup");
 		addCupButton.setForeground(Color.WHITE);
 		addCupButton.setBackground(Color.DARK_GRAY);
 		addCupButton.setBounds(45, 336, 96, 25);
@@ -251,7 +262,7 @@ public class DrinkFactoryMachine extends JFrame {
 		panel_2.setBounds(538, 217, 96, 33);
 		contentPane.add(panel_2);
 
-		JButton cancelButton = new JButton("Cancel");
+		cancelButton = new JButton("Cancel");
 		cancelButton.setForeground(Color.WHITE);
 		cancelButton.setBackground(Color.DARK_GRAY);
 		panel_2.add(cancelButton);
@@ -269,6 +280,109 @@ public class DrinkFactoryMachine extends JFrame {
 				labelForPictures.setIcon(new ImageIcon(myPicture));
 			}
 		});
-
+		
+		coffeeButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		expressoButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		teaButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		soupButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		icedTeaButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		money50centsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		money25centsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		money10centsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		nfcBiiiipButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		cancelButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		sugarSlider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+			}
+		});
+		
+		sizeSlider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+			}
+		});
+		
+		temperatureSlider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+			}
+		});
 	}
 }
