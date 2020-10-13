@@ -19,7 +19,6 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 
 	@Override
 	public boolean enoughMoney() {
-		return machineController.enouhMoney();
+		return machineController.enoughMoney();
 	}
-
 }

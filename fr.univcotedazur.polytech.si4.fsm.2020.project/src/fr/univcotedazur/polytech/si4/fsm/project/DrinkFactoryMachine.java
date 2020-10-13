@@ -29,7 +29,6 @@ import javax.swing.event.ChangeListener;
 
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStateMachineListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStatemachine;
-import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceListener;
 
 public class DrinkFactoryMachine extends JFrame {
 
@@ -75,10 +74,13 @@ public class DrinkFactoryMachine extends JFrame {
 	public DrinkFactoryMachine() {
 		
 		machineController = new MachineController(this);
+		FSMStateMachineListener fsmListener = new FSMStateMachineListener(machineController);
 		fsm = new FSMStatemachine();
+		fsm.setTimer(new TimerService());
+		fsm.getSCInterface().setSCInterfaceOperationCallback(fsmListener);
 		fsm.init();
 		fsm.enter();
-		fsm.getSCInterface().getListeners().add(new FSMStateMachineListener(machineController));
+		fsm.getSCInterface().getListeners().add(fsmListener);
 		
 		setForeground(Color.WHITE);
 		setFont(new Font("Cantarell", Font.BOLD, 22));
@@ -298,7 +300,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseB_Coffe();
+				messagesToUser.setText("Café sélectioné");
+				machineController.addSelection();
 			}
 		});
 		
@@ -306,7 +310,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseB_Expresso();
+				messagesToUser.setText("Expresso sélectioné");
+				machineController.addSelection();
 			}
 		});
 		
@@ -314,7 +320,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseB_Tea();
+				messagesToUser.setText("teaButton sélectioné");
+				machineController.addSelection();
 			}
 		});
 		
@@ -338,7 +346,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseC_050();
+				messagesToUser.setText("Pièce de 50cents insérée");
+				machineController.pay();
 			}
 		});
 		
@@ -346,7 +356,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseC_025();
+				messagesToUser.setText("Pièce de 25cents insérée");
+				machineController.pay();
 			}
 		});
 		
@@ -354,7 +366,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseC_010();
+				messagesToUser.setText("Pièce de 10cents insérée");
+				machineController.pay();
 			}
 		});
 		
@@ -362,7 +376,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				fsm.getSCInterface().raiseC_NFC();
+				messagesToUser.setText("Paiement en carte bancaire");
+				machineController.pay();
 			}
 		});
 		
@@ -378,7 +394,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+				fsm.getSCInterface().raiseS_Sugar();
+				messagesToUser.setText("Sucre dosé à " + sugarSlider.getValue());
 			}
 		});
 		
@@ -386,7 +403,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+				fsm.getSCInterface().raiseS_Size();
+				messagesToUser.setText("Taille " + sizeSlider.getValue());
 			}
 		});
 		
@@ -394,7 +412,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+				fsm.getSCInterface().raiseS_Temp();
+				messagesToUser.setText("Température à " + temperatureSlider.getValue());
 			}
 		});
 	}
