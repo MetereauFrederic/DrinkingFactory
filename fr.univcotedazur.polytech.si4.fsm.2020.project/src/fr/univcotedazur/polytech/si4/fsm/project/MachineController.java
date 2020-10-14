@@ -1,17 +1,27 @@
 package fr.univcotedazur.polytech.si4.fsm.project;
 
+
 public class MachineController {
 	
+	public enum Drink {
+		COFFEE(3.0);
+		
+		private double price;
+		
+		Drink(double price) {
+			this.price = price;
+		}
+	}
+	
 	private DrinkFactoryMachine drinkFactoryMachine;
-	private boolean enoughMoney;
-	private boolean selectionned;
-	private boolean payment;
+	private boolean nfc;
+	private double money;
+	private Drink drink;
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
-		this.enoughMoney = false;
-		this.selectionned = false;
-		this.payment = false;
+		this.nfc = false;
+		this.money = 0;
 	}
 
 	public void cancel() {
@@ -19,21 +29,22 @@ public class MachineController {
 	}
 
 	public boolean enoughMoney() {
-		return enoughMoney;
+		if(this.drink != null) {
+			return this.money >= this.drink.price || this.nfc;
+		}
+		return false;
 	}
 	
-	public void addSelection() {
-		this.selectionned = true;
-		if (payment) {
-
-		}
+	public void addSelection(Drink drink) {
+		this.drink = drink;
 	}
 	
-	public void pay() {
-		this.payment = true;
-		if (selectionned) {
-
-		}
+	public void addCoin(double payed) {
+		this.money += payed;
+	}
+	
+	public void nfcPayed() {
+		this.nfc = true;
 	}
 	
 	public void preparing() {

@@ -304,6 +304,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	private boolean isRunningCycle = false;
 	private boolean startTimer;
 	private boolean restartTimer;
+	private boolean accept;
 	public FSMStatemachine() {
 		sCInterface = new SCInterfaceImpl();
 	}
@@ -369,24 +370,24 @@ public class FSMStatemachine implements IFSMStatemachine {
 	protected synchronized void singleCycle() {
 		for (nextStateIndex = 0; nextStateIndex < stateVector.length; nextStateIndex++) {
 			switch (stateVector[nextStateIndex]) {
-				case machine_Order_Select_Drink_select_Selecting_Chosen:
-					machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
-					break;
-				case machine_Order_Select_Drink_select_Selecting_Waiting:
-					machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
-					break;
-				case machine_Order_Payment_Waiting:
-					machine_Order_Payment_Waiting_react(true);
-					break;
-				case machine_Order_Time_Waiting:
-					machine_Order_Time_Waiting_react(true);
-					break;
-				case machine_Order_Time_Running:
-					machine_Order_Time_Running_react(true);
-					break;
-				case machine_Service_Serving_temp:
-					machine_Service_Serving_temp_react(true);
-					break;
+			case machine_Order_Select_Drink_select_Selecting_Chosen:
+				machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
+				break;
+			case machine_Order_Select_Drink_select_Selecting_Waiting:
+				machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
+				break;
+			case machine_Order_Payment_Waiting:
+				machine_Order_Payment_Waiting_react(true);
+				break;
+			case machine_Order_Time_Waiting:
+				machine_Order_Time_Waiting_react(true);
+				break;
+			case machine_Order_Time_Running:
+				machine_Order_Time_Running_react(true);
+				break;
+			case machine_Service_Serving_temp:
+				machine_Service_Serving_temp_react(true);
+				break;
 			default:
 				// $NullState$
 			}
@@ -438,6 +439,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.clearEvents();
 		startTimer = false;
 		restartTimer = false;
+		accept = false;
 		for (int i=0; i<timeEvents.length; i++) {
 			timeEvents[i] = false;
 		}
@@ -537,6 +539,16 @@ public class FSMStatemachine implements IFSMStatemachine {
 		});
 	}
 	
+	private void raiseAccept() {
+	
+		internalEventQueue.add( new Runnable() {
+			@Override public void run() {
+				accept = true;					
+				singleCycle();
+			}
+		});
+	}
+	
 	public synchronized void raiseB_Coffe() {
 		sCInterface.raiseB_Coffe();
 	}
@@ -593,6 +605,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.setEnough(value);
 	}
 	
+	/* Entry action for state 'Chosen'. */
+	private void entryAction_Machine_Order_Select_Drink_select_Selecting_Chosen() {
+		raiseAccept();
+	}
+	
 	/* Entry action for state 'Running'. */
 	private void entryAction_Machine_Order_Time_Running() {
 		timer.setTimer(this, 0, (20 * 1000), false);
@@ -617,6 +634,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* 'default' enter sequence for state Chosen */
 	private void enterSequence_Machine_Order_Select_Drink_select_Selecting_Chosen_default() {
+		entryAction_Machine_Order_Select_Drink_select_Selecting_Chosen();
 		nextStateIndex = 0;
 		stateVector[0] = State.machine_Order_Select_Drink_select_Selecting_Chosen;
 		
@@ -928,12 +946,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		if (try_transition) {
 			if ((sCInterface.b_Coffe || (sCInterface.b_Expresso || sCInterface.b_Tea))) {
 				exitSequence_Machine_Order_Select_Drink_select_Selecting_Chosen();
-				sCInterface.setEnough(sCInterface.operationCallback.enoughMoney());
-				
 				enterSequence_Machine_Order_Select_Drink_select_Selecting_Chosen_default();
 				machine_Order_Select_Drink_select_react(false);
 			} else {
-				if (sCInterface.getEnough()==true) {
+				if (((accept) && (sCInterface.operationCallback.enoughMoney()==true))) {
 					exitSequence_Machine_Order();
 					enterSequence_Machine_Service_default();
 					react();
@@ -954,8 +970,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 		if (try_transition) {
 			if ((sCInterface.b_Coffe || (sCInterface.b_Expresso || sCInterface.b_Tea))) {
 				exitSequence_Machine_Order_Select_Drink_select_Selecting_Waiting();
-				sCInterface.setEnough(sCInterface.operationCallback.enoughMoney());
-				
 				enterSequence_Machine_Order_Select_Drink_select_Selecting_Chosen_default();
 				machine_Order_Select_Drink_select_react(false);
 			} else {
@@ -974,7 +988,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		if (try_transition) {
 			if ((sCInterface.c_050 || (sCInterface.c_025 || (sCInterface.c_010 || sCInterface.c_NFC)))) {
 				exitSequence_Machine_Order_Payment_Waiting();
-				sCInterface.setEnough(sCInterface.operationCallback.enoughMoney());
+				raiseAccept();
 				
 				enterSequence_Machine_Order_Payment_Waiting_default();
 			} else {

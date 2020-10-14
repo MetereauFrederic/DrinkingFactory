@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Drink;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStateMachineListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStatemachine;
 
@@ -302,7 +303,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseB_Coffe();
 				messagesToUser.setText("Café sélectioné");
-				machineController.addSelection();
+				machineController.addSelection(Drink.COFFEE);
 			}
 		});
 		
@@ -312,7 +313,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseB_Expresso();
 				messagesToUser.setText("Expresso sélectioné");
-				machineController.addSelection();
+				machineController.addSelection(Drink.COFFEE);
 			}
 		});
 		
@@ -322,7 +323,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseB_Tea();
 				messagesToUser.setText("teaButton sélectioné");
-				machineController.addSelection();
+				machineController.addSelection(Drink.COFFEE);
 			}
 		});
 		
@@ -348,7 +349,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseC_050();
 				messagesToUser.setText("Pièce de 50cents insérée");
-				machineController.pay();
+				machineController.addCoin(0.5);
 			}
 		});
 		
@@ -358,7 +359,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseC_025();
 				messagesToUser.setText("Pièce de 25cents insérée");
-				machineController.pay();
+				machineController.addCoin(0.25);
 			}
 		});
 		
@@ -368,7 +369,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseC_010();
 				messagesToUser.setText("Pièce de 10cents insérée");
-				machineController.pay();
+				machineController.addCoin(0.10);
 			}
 		});
 		
@@ -378,7 +379,7 @@ public class DrinkFactoryMachine extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				fsm.getSCInterface().raiseC_NFC();
 				messagesToUser.setText("Paiement en carte bancaire");
-				machineController.pay();
+				machineController.nfcPayed();
 			}
 		});
 		
