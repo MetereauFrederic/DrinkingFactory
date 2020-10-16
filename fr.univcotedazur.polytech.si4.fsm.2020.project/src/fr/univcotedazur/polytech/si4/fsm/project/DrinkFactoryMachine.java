@@ -44,7 +44,7 @@ public class DrinkFactoryMachine extends JFrame {
 	
 	//private final ImageIcon imageIcon = new ImageIcon();
 	
-	JLabel messagesToUser;
+	JLabel messagesToUser, labelForPictures;
 	JButton coffeeButton, expressoButton, teaButton, soupButton, icedTeaButton;
 	JButton money50centsButton, money25centsButton, money10centsButton, nfcBiiiipButton;
 	JButton cancelButton;
@@ -254,15 +254,19 @@ public class DrinkFactoryMachine extends JFrame {
 		addCupButton.setBounds(45, 336, 96, 25);
 		contentPane.add(addCupButton);
 
-		BufferedImage myPicture = null;
-		try {
-			myPicture = ImageIO.read(new File("./picts/vide2.jpg"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		JLabel labelForPictures = new JLabel(new ImageIcon(myPicture));
+		labelForPictures = new JLabel();
 		labelForPictures.setBounds(175, 319, 286, 260);
 		contentPane.add(labelForPictures);
+		changePicture("./picts/vide2.jpg");
+		labelForPictures.addMouseListener(new MouseAdapter() {
+			
+			 public void mouseClicked(MouseEvent e)  
+			    {  
+			      	fsm.getSCInterface().raiseCup_Taken();
+			      	changePicture("./picts/vide2.jpg");
+			    }  
+			
+		});
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.DARK_GRAY);
@@ -278,13 +282,7 @@ public class DrinkFactoryMachine extends JFrame {
 		addCupButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				BufferedImage myPicture = null;
-				try {
-					myPicture = ImageIO.read(new File("./picts/ownCup.jpg"));
-				} catch (IOException ee) {
-					ee.printStackTrace();
-				}
-				labelForPictures.setIcon(new ImageIcon(myPicture));
+				changePicture("./picts/ownCup.jpg");
 			}
 		});
 		
@@ -301,7 +299,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addSelection(Drink.COFFEE);
+				machineController.addSelection(Drink.EXPRESSO);
 				fsm.getSCInterface().raiseB_Expresso();
 			}
 		});
@@ -310,7 +308,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addSelection(Drink.COFFEE);
+				machineController.addSelection(Drink.TEA);
 				fsm.getSCInterface().raiseB_Tea();
 			}
 		});
@@ -335,7 +333,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addCoin(0.5);
+				machineController.addCoin(50);
 				fsm.getSCInterface().raiseC_050();
 			}
 		});
@@ -344,7 +342,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addCoin(0.25);
+				machineController.addCoin(25);
 				fsm.getSCInterface().raiseC_025();
 			}
 		});
@@ -353,7 +351,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addCoin(0.1);
+				machineController.addCoin(10);
 				fsm.getSCInterface().raiseC_010();
 			}
 		});
@@ -372,7 +370,6 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.cancel();
 				fsm.getSCInterface().raiseB_Cancel();
 			}
 		});
@@ -414,5 +411,15 @@ public class DrinkFactoryMachine extends JFrame {
 		fsm.enter();
 		fsm.getSCInterface().getListeners().add(fsmListener);
 
+	}
+	
+	public void changePicture(String picturePath) {
+		BufferedImage myPicture = null;
+		try {
+			myPicture = ImageIO.read(new File(picturePath));
+		} catch (IOException ee) {
+			ee.printStackTrace();
+		}
+		labelForPictures.setIcon(new ImageIcon(myPicture));
 	}
 }

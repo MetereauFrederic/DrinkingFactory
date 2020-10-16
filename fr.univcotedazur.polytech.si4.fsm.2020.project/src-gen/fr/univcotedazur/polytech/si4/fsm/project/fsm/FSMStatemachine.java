@@ -220,6 +220,24 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean cup_Taken;
+		
+		
+		public void raiseCup_Taken() {
+			synchronized(FSMStatemachine.this) {
+				inEventQueue.add(
+					new Runnable() {
+						@Override
+						public void run() {
+							cup_Taken = true;
+							singleCycle();
+						}
+					}
+				);
+				runCycle();
+			}
+		}
+		
 		private boolean onCancel;
 		
 		
@@ -256,43 +274,29 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
-		private boolean enough;
+		private long price;
 		
-		public synchronized boolean getEnough() {
-			synchronized(FSMStatemachine.this) {
-				return enough;
-			}
-		}
-		
-		public void setEnough(boolean value) {
-			synchronized(FSMStatemachine.this) {
-				this.enough = value;
-			}
-		}
-		
-		private double price;
-		
-		public synchronized double getPrice() {
+		public synchronized long getPrice() {
 			synchronized(FSMStatemachine.this) {
 				return price;
 			}
 		}
 		
-		public void setPrice(double value) {
+		public void setPrice(long value) {
 			synchronized(FSMStatemachine.this) {
 				this.price = value;
 			}
 		}
 		
-		private double money;
+		private long money;
 		
-		public synchronized double getMoney() {
+		public synchronized long getMoney() {
 			synchronized(FSMStatemachine.this) {
 				return money;
 			}
 		}
 		
-		public void setMoney(double value) {
+		public void setMoney(long value) {
 			synchronized(FSMStatemachine.this) {
 				this.money = value;
 			}
@@ -310,6 +314,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			c_010 = false;
 			c_NFC = false;
 			b_Cancel = false;
+			cup_Taken = false;
 		}
 		protected void clearOutEvents() {
 		
@@ -333,8 +338,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		machine_Order_Payment_Waiting,
 		machine_Order_Time_Waiting,
 		machine_Order_Time_Running,
-		machine_Service,
-		machine_Service_Serving_temp,
+		machine_Waiting,
 		$NullState$
 	};
 	
@@ -369,11 +373,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 		clearEvents();
 		clearOutEvents();
-		sCInterface.setEnough(false);
+		sCInterface.setPrice(0);
 		
-		sCInterface.setPrice(0.0);
-		
-		sCInterface.setMoney(0.0);
+		sCInterface.setMoney(0);
 	}
 	
 	public synchronized void enter() {
@@ -417,27 +419,27 @@ public class FSMStatemachine implements IFSMStatemachine {
 	protected synchronized void singleCycle() {
 		for (nextStateIndex = 0; nextStateIndex < stateVector.length; nextStateIndex++) {
 			switch (stateVector[nextStateIndex]) {
-			case machine_Order_Select_Drink_select_Selecting_Chosen:
-				machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
-				break;
-			case machine_Order_Select_Drink_select_Selecting_Waiting:
-				machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
-				break;
-			case machine_Order_Option_Waiting:
-				machine_Order_Option_Waiting_react(true);
-				break;
-			case machine_Order_Payment_Waiting:
-				machine_Order_Payment_Waiting_react(true);
-				break;
-			case machine_Order_Time_Waiting:
-				machine_Order_Time_Waiting_react(true);
-				break;
-			case machine_Order_Time_Running:
-				machine_Order_Time_Running_react(true);
-				break;
-			case machine_Service_Serving_temp:
-				machine_Service_Serving_temp_react(true);
-				break;
+				case machine_Order_Select_Drink_select_Selecting_Chosen:
+					machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
+					break;
+				case machine_Order_Select_Drink_select_Selecting_Waiting:
+					machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
+					break;
+				case machine_Order_Option_Waiting:
+					machine_Order_Option_Waiting_react(true);
+					break;
+				case machine_Order_Payment_Waiting:
+					machine_Order_Payment_Waiting_react(true);
+					break;
+				case machine_Order_Time_Waiting:
+					machine_Order_Time_Waiting_react(true);
+					break;
+				case machine_Order_Time_Running:
+					machine_Order_Time_Running_react(true);
+					break;
+				case machine_Waiting:
+					machine_Waiting_react(true);
+					break;
 			default:
 				// $NullState$
 			}
@@ -525,11 +527,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[3] == State.machine_Order_Time_Waiting;
 		case machine_Order_Time_Running:
 			return stateVector[3] == State.machine_Order_Time_Running;
-		case machine_Service:
-			return stateVector[0].ordinal() >= State.
-					machine_Service.ordinal()&& stateVector[0].ordinal() <= State.machine_Service_Serving_temp.ordinal();
-		case machine_Service_Serving_temp:
-			return stateVector[0] == State.machine_Service_Serving_temp;
+		case machine_Waiting:
+			return stateVector[0] == State.machine_Waiting;
 		default:
 			return false;
 		}
@@ -634,6 +633,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.raiseB_Cancel();
 	}
 	
+	public synchronized void raiseCup_Taken() {
+		sCInterface.raiseCup_Taken();
+	}
+	
 	public synchronized boolean isRaisedOnCancel() {
 		return sCInterface.isRaisedOnCancel();
 	}
@@ -642,27 +645,19 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.isRaisedPreparing();
 	}
 	
-	public synchronized boolean getEnough() {
-		return sCInterface.getEnough();
-	}
-	
-	public synchronized void setEnough(boolean value) {
-		sCInterface.setEnough(value);
-	}
-	
-	public synchronized double getPrice() {
+	public synchronized long getPrice() {
 		return sCInterface.getPrice();
 	}
 	
-	public synchronized void setPrice(double value) {
+	public synchronized void setPrice(long value) {
 		sCInterface.setPrice(value);
 	}
 	
-	public synchronized double getMoney() {
+	public synchronized long getMoney() {
 		return sCInterface.getMoney();
 	}
 	
-	public synchronized void setMoney(double value) {
+	public synchronized void setMoney(long value) {
 		sCInterface.setMoney(value);
 	}
 	
@@ -673,6 +668,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		raiseAccept();
 		
 		raiseStartTimer();
+	}
+	
+	/* Entry action for state 'Waiting'. */
+	private void entryAction_Machine_Order_Select_Drink_select_Selecting_Waiting() {
+		sCInterface.setMoney(0);
 	}
 	
 	/* Entry action for state 'Waiting'. */
@@ -712,6 +712,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* 'default' enter sequence for state Waiting */
 	private void enterSequence_Machine_Order_Select_Drink_select_Selecting_Waiting_default() {
+		entryAction_Machine_Order_Select_Drink_select_Selecting_Waiting();
 		nextStateIndex = 0;
 		stateVector[0] = State.machine_Order_Select_Drink_select_Selecting_Waiting;
 	}
@@ -742,15 +743,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		stateVector[3] = State.machine_Order_Time_Running;
 	}
 	
-	/* 'default' enter sequence for state Service */
-	private void enterSequence_Machine_Service_default() {
-		enterSequence_Machine_Service_Serving_default();
-	}
-	
-	/* 'default' enter sequence for state temp */
-	private void enterSequence_Machine_Service_Serving_temp_default() {
+	/* 'default' enter sequence for state Waiting */
+	private void enterSequence_Machine_Waiting_default() {
 		nextStateIndex = 0;
-		stateVector[0] = State.machine_Service_Serving_temp;
+		stateVector[0] = State.machine_Waiting;
 	}
 	
 	/* 'default' enter sequence for region Machine */
@@ -781,11 +777,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* 'default' enter sequence for region Time */
 	private void enterSequence_Machine_Order_Time_default() {
 		react_Machine_Order_Time__entry_Default();
-	}
-	
-	/* 'default' enter sequence for region Serving */
-	private void enterSequence_Machine_Service_Serving_default() {
-		react_Machine_Service_Serving__entry_Default();
 	}
 	
 	/* Default exit sequence for state Order */
@@ -834,13 +825,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 		exitAction_Machine_Order_Time_Running();
 	}
 	
-	/* Default exit sequence for state Service */
-	private void exitSequence_Machine_Service() {
-		exitSequence_Machine_Service_Serving();
-	}
-	
-	/* Default exit sequence for state temp */
-	private void exitSequence_Machine_Service_Serving_temp() {
+	/* Default exit sequence for state Waiting */
+	private void exitSequence_Machine_Waiting() {
 		nextStateIndex = 0;
 		stateVector[0] = State.$NullState$;
 	}
@@ -854,8 +840,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 		case machine_Order_Select_Drink_select_Selecting_Waiting:
 			exitSequence_Machine_Order_Select_Drink_select_Selecting_Waiting();
 			break;
-		case machine_Service_Serving_temp:
-			exitSequence_Machine_Service_Serving_temp();
+		case machine_Waiting:
+			exitSequence_Machine_Waiting();
 			break;
 		default:
 			break;
@@ -939,17 +925,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 	}
 	
-	/* Default exit sequence for region Serving */
-	private void exitSequence_Machine_Service_Serving() {
-		switch (stateVector[0]) {
-		case machine_Service_Serving_temp:
-			exitSequence_Machine_Service_Serving_temp();
-			break;
-		default:
-			break;
-		}
-	}
-	
 	/* Default react sequence for initial entry  */
 	private void react_Machine__entry_Default() {
 		enterSequence_Machine_Order_default();
@@ -978,11 +953,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* Default react sequence for initial entry  */
 	private void react_Machine_Order_Time__entry_Default() {
 		enterSequence_Machine_Order_Time_Waiting_default();
-	}
-	
-	/* Default react sequence for initial entry  */
-	private void react_Machine_Service_Serving__entry_Default() {
-		enterSequence_Machine_Service_Serving_temp_default();
 	}
 	
 	private boolean react() {
@@ -1031,7 +1001,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 					exitSequence_Machine_Order();
 					sCInterface.raisePreparing();
 					
-					enterSequence_Machine_Service_default();
+					enterSequence_Machine_Waiting_default();
 					react();
 				} else {
 					did_transition = false;
@@ -1140,12 +1110,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return did_transition;
 	}
 	
-	private boolean machine_Service_react(boolean try_transition) {
+	private boolean machine_Waiting_react(boolean try_transition) {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (sCInterface.b_Cancel) {
-				exitSequence_Machine_Service();
+			if (sCInterface.cup_Taken) {
+				exitSequence_Machine_Waiting();
+				sCInterface.raiseOnCancel();
+				
 				enterSequence_Machine_Order_default();
 				react();
 			} else {
@@ -1154,18 +1126,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 		if (did_transition==false) {
 			did_transition = react();
-		}
-		return did_transition;
-	}
-	
-	private boolean machine_Service_Serving_temp_react(boolean try_transition) {
-		boolean did_transition = try_transition;
-		
-		if (try_transition) {
-			did_transition = false;
-		}
-		if (did_transition==false) {
-			did_transition = machine_Service_react(try_transition);
 		}
 		return did_transition;
 	}

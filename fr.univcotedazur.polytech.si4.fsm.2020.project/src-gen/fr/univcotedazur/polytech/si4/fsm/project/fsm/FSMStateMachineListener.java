@@ -23,12 +23,12 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	}
 
 	@Override
-	public double newPrice() {
+	public long newPrice() {
 		return machineController.newPrice();
 	}
 
 	@Override
-	public double currentMoney() {
+	public long currentMoney() {
 		return machineController.currentMoney();
 	}
 }

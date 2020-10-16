@@ -4,12 +4,14 @@ package fr.univcotedazur.polytech.si4.fsm.project;
 public class MachineController {
 	
 	public enum Drink {
-		COFFEE(3.0,"coffee");
+		COFFEE(300,"café"),
+		TEA(250, "thé"),
+		EXPRESSO(499, "expresso");
 		
-		private double price;
+		private int price;
 		private String name;
 		
-		Drink(double price, String name) {
+		Drink(int price, String name) {
 			this.price = price;
 			this.name = name;
 		}
@@ -17,7 +19,7 @@ public class MachineController {
 	
 	private DrinkFactoryMachine drinkFactoryMachine;
 	private boolean nfc;
-	private double money;
+	private int money;
 	private Drink drink;
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
@@ -27,7 +29,8 @@ public class MachineController {
 	}
 
 	public void cancel() {
-		refound();
+		if(this.nfc) refound("paiement annulé");
+		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
 				"Commande annulée<html>");		
 		this.drink = null;
@@ -38,7 +41,7 @@ public class MachineController {
 		this.drink = drink;
 	}
 	
-	public void addCoin(double payed) {
+	public void addCoin(int payed) {
 		this.money += payed;
 	}
 	
@@ -47,23 +50,25 @@ public class MachineController {
 	}
 	
 	public void preparing() {
+		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
 		if(!this.nfc) this.money -= this.drink.price;
-		refound();
+		if(this.nfc) refound("paiement accepté");
+		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
 				"Boisson en<br/>préparation<html>");
 	}
 
-	public double newPrice() {
+	public int newPrice() {
 		System.out.println("newPrice()");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "<br/><br/>" + this.drink.name + " sélectioné</html>");
 		if(this.drink!=null) return this.drink.price;
-		return Double.MAX_VALUE;
+		return Integer.MAX_VALUE;
 	}
 
-	public double currentMoney() {
+	public int currentMoney() {
 		System.out.println("currentMoney()");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
-		if(this.nfc) return Double.MAX_VALUE;
+		if(this.nfc) return Integer.MAX_VALUE;
 		return this.money;
 	}
 	
@@ -75,9 +80,7 @@ public class MachineController {
 		return s;
 	}
 	
-	private void refound() {
-		String s = "";
-		if(this.nfc) s += "paiement annulé" ;
+	private void refound(String s) {
 		if(this.money>0) {
 			if(this.nfc) s += "<br/>";
 			s += money + "€ rendus";
