@@ -238,6 +238,24 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean preparing;
+		
+		
+		public boolean isRaisedPreparing() {
+			synchronized(FSMStatemachine.this) {
+				return preparing;
+			}
+		}
+		
+		protected void raisePreparing() {
+			synchronized(FSMStatemachine.this) {
+				preparing = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onPreparingRaised();
+				}
+			}
+		}
+		
 		private boolean enough;
 		
 		public synchronized boolean getEnough() {
@@ -249,6 +267,34 @@ public class FSMStatemachine implements IFSMStatemachine {
 		public void setEnough(boolean value) {
 			synchronized(FSMStatemachine.this) {
 				this.enough = value;
+			}
+		}
+		
+		private double price;
+		
+		public synchronized double getPrice() {
+			synchronized(FSMStatemachine.this) {
+				return price;
+			}
+		}
+		
+		public void setPrice(double value) {
+			synchronized(FSMStatemachine.this) {
+				this.price = value;
+			}
+		}
+		
+		private double money;
+		
+		public synchronized double getMoney() {
+			synchronized(FSMStatemachine.this) {
+				return money;
+			}
+		}
+		
+		public void setMoney(double value) {
+			synchronized(FSMStatemachine.this) {
+				this.money = value;
 			}
 		}
 		
@@ -268,6 +314,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		protected void clearOutEvents() {
 		
 		onCancel = false;
+		preparing = false;
 		}
 		
 	}
@@ -327,6 +374,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		clearEvents();
 		clearOutEvents();
 		sCInterface.setEnough(false);
+		
+		sCInterface.setPrice(0.0);
+		
+		sCInterface.setMoney(0.0);
 	}
 	
 	public synchronized void enter() {
@@ -597,6 +648,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.isRaisedOnCancel();
 	}
 	
+	public synchronized boolean isRaisedPreparing() {
+		return sCInterface.isRaisedPreparing();
+	}
+	
 	public synchronized boolean getEnough() {
 		return sCInterface.getEnough();
 	}
@@ -605,8 +660,33 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.setEnough(value);
 	}
 	
+	public synchronized double getPrice() {
+		return sCInterface.getPrice();
+	}
+	
+	public synchronized void setPrice(double value) {
+		sCInterface.setPrice(value);
+	}
+	
+	public synchronized double getMoney() {
+		return sCInterface.getMoney();
+	}
+	
+	public synchronized void setMoney(double value) {
+		sCInterface.setMoney(value);
+	}
+	
 	/* Entry action for state 'Chosen'. */
 	private void entryAction_Machine_Order_Select_Drink_select_Selecting_Chosen() {
+		sCInterface.setPrice(sCInterface.operationCallback.newPrice());
+		
+		raiseAccept();
+	}
+	
+	/* Entry action for state 'Waiting'. */
+	private void entryAction_Machine_Order_Payment_Waiting() {
+		sCInterface.setMoney(sCInterface.operationCallback.currentMoney());
+		
 		raiseAccept();
 	}
 	
@@ -651,6 +731,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* 'default' enter sequence for state Waiting */
 	private void enterSequence_Machine_Order_Payment_Waiting_default() {
+		entryAction_Machine_Order_Payment_Waiting();
 		nextStateIndex = 1;
 		stateVector[1] = State.machine_Order_Payment_Waiting;
 	}
@@ -767,6 +848,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		exitAction_Machine_Order_Time_Running();
 	}
 	
+	/* Default exit sequence for state Service */
+	private void exitSequence_Machine_Service() {
+		exitSequence_Machine_Service_Serving();
+	}
+	
 	/* Default exit sequence for state temp */
 	private void exitSequence_Machine_Service_Serving_temp() {
 		nextStateIndex = 0;
@@ -862,6 +948,17 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 	}
 	
+	/* Default exit sequence for region Serving */
+	private void exitSequence_Machine_Service_Serving() {
+		switch (stateVector[0]) {
+		case machine_Service_Serving_temp:
+			exitSequence_Machine_Service_Serving_temp();
+			break;
+		default:
+			break;
+		}
+	}
+	
 	/* Default react sequence for initial entry  */
 	private void react_Machine__entry_Default() {
 		enterSequence_Machine_Order_default();
@@ -949,8 +1046,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 				enterSequence_Machine_Order_Select_Drink_select_Selecting_Chosen_default();
 				machine_Order_Select_Drink_select_react(false);
 			} else {
-				if (((accept) && (sCInterface.operationCallback.enoughMoney()==true))) {
+				if (((accept) && (sCInterface.getMoney()>=sCInterface.getPrice()))) {
 					exitSequence_Machine_Order();
+					sCInterface.raisePreparing();
+					
 					enterSequence_Machine_Service_default();
 					react();
 				} else {
@@ -988,8 +1087,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 		if (try_transition) {
 			if ((sCInterface.c_050 || (sCInterface.c_025 || (sCInterface.c_010 || sCInterface.c_NFC)))) {
 				exitSequence_Machine_Order_Payment_Waiting();
-				raiseAccept();
-				
 				enterSequence_Machine_Order_Payment_Waiting_default();
 			} else {
 				did_transition = false;
@@ -1046,7 +1143,13 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			did_transition = false;
+			if (sCInterface.b_Cancel) {
+				exitSequence_Machine_Service();
+				enterSequence_Machine_Order_default();
+				react();
+			} else {
+				did_transition = false;
+			}
 		}
 		if (did_transition==false) {
 			did_transition = react();

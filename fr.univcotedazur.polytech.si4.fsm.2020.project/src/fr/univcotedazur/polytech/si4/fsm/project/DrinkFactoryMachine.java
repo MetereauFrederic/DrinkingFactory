@@ -74,15 +74,6 @@ public class DrinkFactoryMachine extends JFrame {
 	 */
 	public DrinkFactoryMachine() {
 		
-		machineController = new MachineController(this);
-		FSMStateMachineListener fsmListener = new FSMStateMachineListener(machineController);
-		fsm = new FSMStatemachine();
-		fsm.setTimer(new TimerService());
-		fsm.getSCInterface().setSCInterfaceOperationCallback(fsmListener);
-		fsm.init();
-		fsm.enter();
-		fsm.getSCInterface().getListeners().add(fsmListener);
-		
 		setForeground(Color.WHITE);
 		setFont(new Font("Cantarell", Font.BOLD, 22));
 		setBackground(Color.DARK_GRAY);
@@ -301,9 +292,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fsm.getSCInterface().raiseB_Coffe();
-				messagesToUser.setText("Café sélectioné");
 				machineController.addSelection(Drink.COFFEE);
+				fsm.getSCInterface().raiseB_Coffe();
 			}
 		});
 		
@@ -311,9 +301,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fsm.getSCInterface().raiseB_Expresso();
-				messagesToUser.setText("Expresso sélectioné");
 				machineController.addSelection(Drink.COFFEE);
+				fsm.getSCInterface().raiseB_Expresso();
 			}
 		});
 		
@@ -321,9 +310,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fsm.getSCInterface().raiseB_Tea();
-				messagesToUser.setText("teaButton sélectioné");
 				machineController.addSelection(Drink.COFFEE);
+				fsm.getSCInterface().raiseB_Tea();
 			}
 		});
 		
@@ -347,9 +335,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fsm.getSCInterface().raiseC_050();
-				messagesToUser.setText("Pièce de 50cents insérée");
 				machineController.addCoin(0.5);
+				fsm.getSCInterface().raiseC_050();
 			}
 		});
 		
@@ -357,9 +344,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fsm.getSCInterface().raiseC_025();
-				messagesToUser.setText("Pièce de 25cents insérée");
 				machineController.addCoin(0.25);
+				fsm.getSCInterface().raiseC_025();
 			}
 		});
 		
@@ -367,9 +353,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				machineController.addCoin(0.1);
 				fsm.getSCInterface().raiseC_010();
-				messagesToUser.setText("Pièce de 10cents insérée");
-				machineController.addCoin(0.10);
 			}
 		});
 		
@@ -377,9 +362,9 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fsm.getSCInterface().raiseC_NFC();
-				messagesToUser.setText("Paiement en carte bancaire");
 				machineController.nfcPayed();
+				messagesToUser.setText("<html>" + machineController + "<br/><br/>Paiement en carte bancaire</html>");
+				fsm.getSCInterface().raiseC_NFC();
 			}
 		});
 		
@@ -387,7 +372,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				machineController.cancel();
+				fsm.getSCInterface().raiseB_Cancel();
 			}
 		});
 		
@@ -395,8 +381,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				messagesToUser.setText("<html>" + machineController + "<br/><br/>Sucre dosé à " + sugarSlider.getValue() + "</html>");
 				fsm.getSCInterface().raiseS_Sugar();
-				messagesToUser.setText("Sucre dosé à " + sugarSlider.getValue());
 			}
 		});
 		
@@ -404,8 +390,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				messagesToUser.setText("<html>" + machineController + "<br/><br/>Taille " + sizeSlider.getValue() + "</html>");
 				fsm.getSCInterface().raiseS_Size();
-				messagesToUser.setText("Taille " + sizeSlider.getValue());
 			}
 		});
 		
@@ -413,9 +399,20 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				messagesToUser.setText("<html>" + machineController + "<br/><br/>Température à " + temperatureSlider.getValue() + "</html>");
 				fsm.getSCInterface().raiseS_Temp();
-				messagesToUser.setText("Température à " + temperatureSlider.getValue());
 			}
 		});
+		
+		
+		machineController = new MachineController(this);
+		FSMStateMachineListener fsmListener = new FSMStateMachineListener(machineController);
+		fsm = new FSMStatemachine();
+		fsm.setTimer(new TimerService());
+		fsm.getSCInterface().setSCInterfaceOperationCallback(fsmListener);
+		fsm.init();
+		fsm.enter();
+		fsm.getSCInterface().getListeners().add(fsmListener);
+
 	}
 }

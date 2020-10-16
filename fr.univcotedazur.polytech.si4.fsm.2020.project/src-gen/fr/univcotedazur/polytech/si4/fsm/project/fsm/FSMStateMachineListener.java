@@ -18,7 +18,17 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	}
 
 	@Override
-	public boolean enoughMoney() {
-		return machineController.enoughMoney();
+	public void onPreparingRaised() {
+		machineController.preparing();
+	}
+
+	@Override
+	public double newPrice() {
+		return machineController.newPrice();
+	}
+
+	@Override
+	public double currentMoney() {
+		return machineController.currentMoney();
 	}
 }

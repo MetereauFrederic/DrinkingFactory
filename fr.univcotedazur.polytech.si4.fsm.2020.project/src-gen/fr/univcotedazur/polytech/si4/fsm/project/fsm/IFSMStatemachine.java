@@ -36,9 +36,19 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedOnCancel();
 		
+		public boolean isRaisedPreparing();
+		
 		public boolean getEnough();
 		
 		public void setEnough(boolean value);
+		
+		public double getPrice();
+		
+		public void setPrice(double value);
+		
+		public double getMoney();
+		
+		public void setMoney(double value);
 		
 	public List<SCInterfaceListener> getListeners();
 		public void setSCInterfaceOperationCallback(SCInterfaceOperationCallback operationCallback);
@@ -48,11 +58,14 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 	public interface SCInterfaceListener {
 	
 		public void onOnCancelRaised();
+		public void onPreparingRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {
 	
-		public boolean enoughMoney();
+		public double newPrice();
+		
+		public double currentMoney();
 		
 	}
 	
