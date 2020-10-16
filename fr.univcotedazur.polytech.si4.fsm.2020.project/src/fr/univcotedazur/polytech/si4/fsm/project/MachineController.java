@@ -28,7 +28,10 @@ public class MachineController {
 
 	public void cancel() {
 		refound();
+		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
+				"Commande annulée<html>");		
 		this.drink = null;
+		System.out.println("cancel()");
 	}
 	
 	public void addSelection(Drink drink) {
@@ -47,7 +50,7 @@ public class MachineController {
 		if(!this.nfc) this.money -= this.drink.price;
 		refound();
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
-				"<br/><br/>Boisson en<br/>préparation<html>");
+				"Boisson en<br/>préparation<html>");
 	}
 
 	public double newPrice() {
@@ -67,13 +70,20 @@ public class MachineController {
 	@Override
 	public String toString() {
 		String s = "";
-		if(this.nfc) s += "carte acceptee" ;
+		if(this.nfc) s += "carte acceptée" ;
 		else s += "\t" + this.money + "€ / " + ((this.drink==null)?"___":this.drink.price) + "€";
 		return s;
 	}
 	
 	private void refound() {
-		drinkFactoryMachine.messagesToUser.setText(money + "€ rendus");
+		String s = "";
+		if(this.nfc) s += "paiement annulé" ;
+		if(this.money>0) {
+			if(this.nfc) s += "<br/>";
+			s += money + "€ rendus";
+		}
+		if(!s.equals("")) s += "<br/><br/>" ;
+		drinkFactoryMachine.messagesToUser.setText(s);
 		this.nfc = false;
 		this.money = 0;
 	}

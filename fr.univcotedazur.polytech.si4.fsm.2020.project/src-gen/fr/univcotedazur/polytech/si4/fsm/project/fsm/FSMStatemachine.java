@@ -329,6 +329,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		machine_Order_Select_Drink_select,
 		machine_Order_Select_Drink_select_Selecting_Chosen,
 		machine_Order_Select_Drink_select_Selecting_Waiting,
+		machine_Order_Option_Waiting,
 		machine_Order_Payment_Waiting,
 		machine_Order_Time_Waiting,
 		machine_Order_Time_Running,
@@ -337,8 +338,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		$NullState$
 	};
 	
-	private State[] historyVector = new State[1];
-	private final State[] stateVector = new State[3];
+	private final State[] stateVector = new State[4];
 	
 	private int nextStateIndex;
 	
@@ -350,7 +350,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 	private BlockingQueue<Runnable> inEventQueue = new LinkedBlockingQueue<Runnable>();
 	private boolean isRunningCycle = false;
 	private boolean startTimer;
-	private boolean restartTimer;
 	private boolean accept;
 	public FSMStatemachine() {
 		sCInterface = new SCInterfaceImpl();
@@ -365,11 +364,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 			throw new IllegalStateException("Operation callback for interface sCInterface must be set.");
 		}
 		
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 4; i++) {
 			stateVector[i] = State.$NullState$;
-		}
-		for (int i = 0; i < 1; i++) {
-			historyVector[i] = State.$NullState$;
 		}
 		clearEvents();
 		clearOutEvents();
@@ -427,6 +423,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 			case machine_Order_Select_Drink_select_Selecting_Waiting:
 				machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
 				break;
+			case machine_Order_Option_Waiting:
+				machine_Order_Option_Waiting_react(true);
+				break;
 			case machine_Order_Payment_Waiting:
 				machine_Order_Payment_Waiting_react(true);
 				break;
@@ -472,7 +471,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	 * @see IStatemachine#isActive()
 	 */
 	public synchronized boolean isActive() {
-		return stateVector[0] != State.$NullState$||stateVector[1] != State.$NullState$||stateVector[2] != State.$NullState$;
+		return stateVector[0] != State.$NullState$||stateVector[1] != State.$NullState$||stateVector[2] != State.$NullState$||stateVector[3] != State.$NullState$;
 	}
 	
 	/** 
@@ -489,7 +488,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 	protected void clearEvents() {
 		sCInterface.clearEvents();
 		startTimer = false;
-		restartTimer = false;
 		accept = false;
 		for (int i=0; i<timeEvents.length; i++) {
 			timeEvents[i] = false;
@@ -519,12 +517,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[0] == State.machine_Order_Select_Drink_select_Selecting_Chosen;
 		case machine_Order_Select_Drink_select_Selecting_Waiting:
 			return stateVector[0] == State.machine_Order_Select_Drink_select_Selecting_Waiting;
+		case machine_Order_Option_Waiting:
+			return stateVector[1] == State.machine_Order_Option_Waiting;
 		case machine_Order_Payment_Waiting:
-			return stateVector[1] == State.machine_Order_Payment_Waiting;
+			return stateVector[2] == State.machine_Order_Payment_Waiting;
 		case machine_Order_Time_Waiting:
-			return stateVector[2] == State.machine_Order_Time_Waiting;
+			return stateVector[3] == State.machine_Order_Time_Waiting;
 		case machine_Order_Time_Running:
-			return stateVector[2] == State.machine_Order_Time_Running;
+			return stateVector[3] == State.machine_Order_Time_Running;
 		case machine_Service:
 			return stateVector[0].ordinal() >= State.
 					machine_Service.ordinal()&& stateVector[0].ordinal() <= State.machine_Service_Serving_temp.ordinal();
@@ -575,16 +575,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 		internalEventQueue.add( new Runnable() {
 			@Override public void run() {
 				startTimer = true;					
-				singleCycle();
-			}
-		});
-	}
-	
-	private void raiseRestartTimer() {
-	
-		internalEventQueue.add( new Runnable() {
-			@Override public void run() {
-				restartTimer = true;					
 				singleCycle();
 			}
 		});
@@ -681,18 +671,18 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.setPrice(sCInterface.operationCallback.newPrice());
 		
 		raiseAccept();
+		
+		raiseStartTimer();
 	}
 	
 	/* Entry action for state 'Waiting'. */
 	private void entryAction_Machine_Order_Payment_Waiting() {
-		sCInterface.setMoney(sCInterface.operationCallback.currentMoney());
-		
 		raiseAccept();
 	}
 	
 	/* Entry action for state 'Running'. */
 	private void entryAction_Machine_Order_Time_Running() {
-		timer.setTimer(this, 0, (20 * 1000), false);
+		timer.setTimer(this, 0, (10 * 1000), false);
 	}
 	
 	/* Exit action for state 'Running'. */
@@ -703,6 +693,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* 'default' enter sequence for state Order */
 	private void enterSequence_Machine_Order_default() {
 		enterSequence_Machine_Order_Select_default();
+		enterSequence_Machine_Order_Option_default();
 		enterSequence_Machine_Order_Payment_default();
 		enterSequence_Machine_Order_Time_default();
 	}
@@ -717,36 +708,38 @@ public class FSMStatemachine implements IFSMStatemachine {
 		entryAction_Machine_Order_Select_Drink_select_Selecting_Chosen();
 		nextStateIndex = 0;
 		stateVector[0] = State.machine_Order_Select_Drink_select_Selecting_Chosen;
-		
-		historyVector[0] = stateVector[0];
 	}
 	
 	/* 'default' enter sequence for state Waiting */
 	private void enterSequence_Machine_Order_Select_Drink_select_Selecting_Waiting_default() {
 		nextStateIndex = 0;
 		stateVector[0] = State.machine_Order_Select_Drink_select_Selecting_Waiting;
-		
-		historyVector[0] = stateVector[0];
+	}
+	
+	/* 'default' enter sequence for state Waiting */
+	private void enterSequence_Machine_Order_Option_Waiting_default() {
+		nextStateIndex = 1;
+		stateVector[1] = State.machine_Order_Option_Waiting;
 	}
 	
 	/* 'default' enter sequence for state Waiting */
 	private void enterSequence_Machine_Order_Payment_Waiting_default() {
 		entryAction_Machine_Order_Payment_Waiting();
-		nextStateIndex = 1;
-		stateVector[1] = State.machine_Order_Payment_Waiting;
+		nextStateIndex = 2;
+		stateVector[2] = State.machine_Order_Payment_Waiting;
 	}
 	
 	/* 'default' enter sequence for state Waiting */
 	private void enterSequence_Machine_Order_Time_Waiting_default() {
-		nextStateIndex = 2;
-		stateVector[2] = State.machine_Order_Time_Waiting;
+		nextStateIndex = 3;
+		stateVector[3] = State.machine_Order_Time_Waiting;
 	}
 	
 	/* 'default' enter sequence for state Running */
 	private void enterSequence_Machine_Order_Time_Running_default() {
 		entryAction_Machine_Order_Time_Running();
-		nextStateIndex = 2;
-		stateVector[2] = State.machine_Order_Time_Running;
+		nextStateIndex = 3;
+		stateVector[3] = State.machine_Order_Time_Running;
 	}
 	
 	/* 'default' enter sequence for state Service */
@@ -775,18 +768,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 		react_Machine_Order_Select_Drink_select_Selecting_default();
 	}
 	
-	/* deep enterSequence with history in child Selecting */
-	private void deepEnterSequence_Machine_Order_Select_Drink_select_Selecting() {
-		switch (historyVector[0]) {
-		case machine_Order_Select_Drink_select_Selecting_Chosen:
-			enterSequence_Machine_Order_Select_Drink_select_Selecting_Chosen_default();
-			break;
-		case machine_Order_Select_Drink_select_Selecting_Waiting:
-			enterSequence_Machine_Order_Select_Drink_select_Selecting_Waiting_default();
-			break;
-		default:
-			break;
-		}
+	/* 'default' enter sequence for region Option */
+	private void enterSequence_Machine_Order_Option_default() {
+		react_Machine_Order_Option__entry_Default();
 	}
 	
 	/* 'default' enter sequence for region Payment */
@@ -807,13 +791,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* Default exit sequence for state Order */
 	private void exitSequence_Machine_Order() {
 		exitSequence_Machine_Order_Select();
+		exitSequence_Machine_Order_Option();
 		exitSequence_Machine_Order_Payment();
 		exitSequence_Machine_Order_Time();
-	}
-	
-	/* Default exit sequence for state Drink_select */
-	private void exitSequence_Machine_Order_Select_Drink_select() {
-		exitSequence_Machine_Order_Select_Drink_select_Selecting();
 	}
 	
 	/* Default exit sequence for state Chosen */
@@ -829,21 +809,27 @@ public class FSMStatemachine implements IFSMStatemachine {
 	}
 	
 	/* Default exit sequence for state Waiting */
-	private void exitSequence_Machine_Order_Payment_Waiting() {
+	private void exitSequence_Machine_Order_Option_Waiting() {
 		nextStateIndex = 1;
 		stateVector[1] = State.$NullState$;
 	}
 	
 	/* Default exit sequence for state Waiting */
-	private void exitSequence_Machine_Order_Time_Waiting() {
+	private void exitSequence_Machine_Order_Payment_Waiting() {
 		nextStateIndex = 2;
 		stateVector[2] = State.$NullState$;
 	}
 	
+	/* Default exit sequence for state Waiting */
+	private void exitSequence_Machine_Order_Time_Waiting() {
+		nextStateIndex = 3;
+		stateVector[3] = State.$NullState$;
+	}
+	
 	/* Default exit sequence for state Running */
 	private void exitSequence_Machine_Order_Time_Running() {
-		nextStateIndex = 2;
-		stateVector[2] = State.$NullState$;
+		nextStateIndex = 3;
+		stateVector[3] = State.$NullState$;
 		
 		exitAction_Machine_Order_Time_Running();
 	}
@@ -876,6 +862,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 		
 		switch (stateVector[1]) {
+		case machine_Order_Option_Waiting:
+			exitSequence_Machine_Order_Option_Waiting();
+			break;
+		default:
+			break;
+		}
+		
+		switch (stateVector[2]) {
 		case machine_Order_Payment_Waiting:
 			exitSequence_Machine_Order_Payment_Waiting();
 			break;
@@ -883,7 +877,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		}
 		
-		switch (stateVector[2]) {
+		switch (stateVector[3]) {
 		case machine_Order_Time_Waiting:
 			exitSequence_Machine_Order_Time_Waiting();
 			break;
@@ -909,14 +903,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 	}
 	
-	/* Default exit sequence for region Selecting */
-	private void exitSequence_Machine_Order_Select_Drink_select_Selecting() {
-		switch (stateVector[0]) {
-		case machine_Order_Select_Drink_select_Selecting_Chosen:
-			exitSequence_Machine_Order_Select_Drink_select_Selecting_Chosen();
-			break;
-		case machine_Order_Select_Drink_select_Selecting_Waiting:
-			exitSequence_Machine_Order_Select_Drink_select_Selecting_Waiting();
+	/* Default exit sequence for region Option */
+	private void exitSequence_Machine_Order_Option() {
+		switch (stateVector[1]) {
+		case machine_Order_Option_Waiting:
+			exitSequence_Machine_Order_Option_Waiting();
 			break;
 		default:
 			break;
@@ -925,7 +916,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* Default exit sequence for region Payment */
 	private void exitSequence_Machine_Order_Payment() {
-		switch (stateVector[1]) {
+		switch (stateVector[2]) {
 		case machine_Order_Payment_Waiting:
 			exitSequence_Machine_Order_Payment_Waiting();
 			break;
@@ -936,7 +927,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* Default exit sequence for region Time */
 	private void exitSequence_Machine_Order_Time() {
-		switch (stateVector[2]) {
+		switch (stateVector[3]) {
 		case machine_Order_Time_Waiting:
 			exitSequence_Machine_Order_Time_Waiting();
 			break;
@@ -964,16 +955,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 		enterSequence_Machine_Order_default();
 	}
 	
-	/* Default react sequence for deep history entry hist */
-	private void react_Machine_Order_Select_Drink_select_Selecting_hist() {
-		/* Enter the region with deep history */
-		if (historyVector[0] != State.$NullState$) {
-			deepEnterSequence_Machine_Order_Select_Drink_select_Selecting();
-		} else {
-			enterSequence_Machine_Order_Select_Drink_select_Selecting_Waiting_default();
-		}
-	}
-	
 	/* Default react sequence for initial entry default */
 	private void react_Machine_Order_Select_Drink_select_Selecting_default() {
 		enterSequence_Machine_Order_Select_Drink_select_Selecting_Waiting_default();
@@ -982,6 +963,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* Default react sequence for initial entry  */
 	private void react_Machine_Order_Select__entry_Default() {
 		enterSequence_Machine_Order_Select_Drink_select_default();
+	}
+	
+	/* Default react sequence for initial entry  */
+	private void react_Machine_Order_Option__entry_Default() {
+		enterSequence_Machine_Order_Option_Waiting_default();
 	}
 	
 	/* Default react sequence for initial entry  */
@@ -1027,12 +1013,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if ((sCInterface.s_Sugar || (sCInterface.s_Size || sCInterface.s_Temp))) {
-				exitSequence_Machine_Order_Select_Drink_select();
-				react_Machine_Order_Select_Drink_select_Selecting_hist();
-			} else {
-				did_transition = false;
-			}
+			did_transition = false;
 		}
 		return did_transition;
 	}
@@ -1081,12 +1062,32 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return did_transition;
 	}
 	
+	private boolean machine_Order_Option_Waiting_react(boolean try_transition) {
+		boolean did_transition = try_transition;
+		
+		if (try_transition) {
+			if ((sCInterface.s_Sugar || (sCInterface.s_Size || sCInterface.s_Temp))) {
+				exitSequence_Machine_Order_Option_Waiting();
+				raiseStartTimer();
+				
+				enterSequence_Machine_Order_Option_Waiting_default();
+			} else {
+				did_transition = false;
+			}
+		}
+		return did_transition;
+	}
+	
 	private boolean machine_Order_Payment_Waiting_react(boolean try_transition) {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
 			if ((sCInterface.c_050 || (sCInterface.c_025 || (sCInterface.c_010 || sCInterface.c_NFC)))) {
 				exitSequence_Machine_Order_Payment_Waiting();
+				raiseStartTimer();
+				
+				sCInterface.setMoney(sCInterface.operationCallback.currentMoney());
+				
 				enterSequence_Machine_Order_Payment_Waiting_default();
 			} else {
 				did_transition = false;
@@ -1117,7 +1118,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (restartTimer) {
+			if (startTimer) {
 				exitSequence_Machine_Order_Time_Running();
 				enterSequence_Machine_Order_Time_Running_default();
 				machine_Order_react(false);
