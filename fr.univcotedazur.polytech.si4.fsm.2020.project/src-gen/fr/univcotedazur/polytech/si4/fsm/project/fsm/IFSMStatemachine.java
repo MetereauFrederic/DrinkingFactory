@@ -38,7 +38,27 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedOnCancel();
 		
+		public boolean isRaisedOnReset();
+		
 		public boolean isRaisedPreparing();
+		
+		public boolean isRaisedOnCrushing();
+		
+		public boolean isRaisedOnTamping();
+		
+		public boolean isRaisedOnHeating();
+		
+		public boolean isRaisedOnPlacingCup();
+		
+		public boolean isRaisedOnPouringWater();
+		
+		public boolean isRaisedOnPouringShugar();
+		
+		public boolean isRaisedOnInfusing();
+		
+		public boolean isRaisedOnRemovingBag();
+		
+		public boolean isRaisedOnPuttingTea();
 		
 		public long getPrice();
 		
@@ -48,6 +68,26 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public void setMoney(long value);
 		
+		public long getHeatingTime();
+		
+		public void setHeatingTime(long value);
+		
+		public long getPouringWater();
+		
+		public void setPouringWater(long value);
+		
+		public long getPouringShugar();
+		
+		public void setPouringShugar(long value);
+		
+		public long getCrushingTime();
+		
+		public void setCrushingTime(long value);
+		
+		public long getInfusingTime();
+		
+		public void setInfusingTime(long value);
+		
 	public List<SCInterfaceListener> getListeners();
 		public void setSCInterfaceOperationCallback(SCInterfaceOperationCallback operationCallback);
 	
@@ -56,7 +96,17 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 	public interface SCInterfaceListener {
 	
 		public void onOnCancelRaised();
+		public void onOnResetRaised();
 		public void onPreparingRaised();
+		public void onOnCrushingRaised();
+		public void onOnTampingRaised();
+		public void onOnHeatingRaised();
+		public void onOnPlacingCupRaised();
+		public void onOnPouringWaterRaised();
+		public void onOnPouringShugarRaised();
+		public void onOnInfusingRaised();
+		public void onOnRemovingBagRaised();
+		public void onOnPuttingTeaRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {
@@ -64,6 +114,20 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public long newPrice();
 		
 		public long currentMoney();
+		
+		public long getHeatingTime();
+		
+		public long getCrushingTime();
+		
+		public long getPouringWater();
+		
+		public long getPouringShugar();
+		
+		public long getInfusingTime();
+		
+		public boolean isExpresso();
+		
+		public boolean isTea();
 		
 	}
 	

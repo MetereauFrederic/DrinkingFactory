@@ -50,12 +50,12 @@ public class MachineController {
 	}
 	
 	public void preparing() {
-		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
+//		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
 		if(!this.nfc) this.money -= this.drink.price;
 		if(this.nfc) refound("paiement accepté");
 		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
-				"Boisson en<br/>préparation<html>");
+				"Boisson en<br/>préparation</html>");
 	}
 
 	public int newPrice() {
@@ -76,14 +76,15 @@ public class MachineController {
 	public String toString() {
 		String s = "";
 		if(this.nfc) s += "carte acceptée" ;
-		else s += "\t" + this.money + "€ / " + ((this.drink==null)?"___":this.drink.price) + "€";
+		else s += "\t" + (((double)this.money)/100.0) + "€ / "
+				+ ((this.drink==null)?"___":(((double)this.drink.price)/100.0)) + "€";
 		return s;
 	}
 	
 	private void refound(String s) {
 		if(this.money>0) {
 			if(this.nfc) s += "<br/>";
-			s += money + "€ rendus";
+			s += (((double)money)/100.0) + "€ rendus";
 		}
 		if(!s.equals("")) s += "<br/><br/>" ;
 		drinkFactoryMachine.messagesToUser.setText(s);
