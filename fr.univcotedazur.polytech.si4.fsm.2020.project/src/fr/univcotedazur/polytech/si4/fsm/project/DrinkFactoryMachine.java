@@ -1,6 +1,7 @@
 package fr.univcotedazur.polytech.si4.fsm.project;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;

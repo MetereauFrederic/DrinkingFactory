@@ -92,4 +92,72 @@ public class MachineController {
 		this.money = 0;
 	}
 
+	public long getHeatingTime() {
+		return (drinkFactoryMachine.temperatureSlider.getValue() * 5) + 10;
+	}
+
+	public long getCrushingTime() {
+		return drinkFactoryMachine.sizeSlider.getValue() + 3;
+	}
+	
+	public long getPouringWater() {
+		return (drinkFactoryMachine.temperatureSlider.getValue() * 4) + 5;
+	}
+
+	public long getPouringShugar() {
+		return drinkFactoryMachine.sugarSlider.getValue() + 3;
+	}
+
+	public long getInfusingTime() {
+		return (drinkFactoryMachine.temperatureSlider.getValue() * 3) + 5;
+	}
+
+	public boolean isExpresso() {
+		return this.drink.equals(Drink.EXPRESSO);
+	}
+
+	public boolean isTea() {
+		return this.drink.equals(Drink.TEA);
+	}
+
+	public void reset() {
+		System.out.println("reset()");
+	}
+
+	public void crushing() {
+		System.out.println("crushing()");
+	}
+
+	public void tamping() {
+		System.out.println("tamping()");
+	}
+
+	public void heating() {
+		System.out.println("heating()");
+	}
+
+	public void placingCup() {
+		System.out.println("placingCup()");
+	}
+
+	public void pourringWater() {
+		System.out.println("pourringWater()");
+	}
+
+	public void pourringSugar() {
+		System.out.println("purringSugar()");
+	}
+
+	public void infusing() {
+		System.out.println("infusing()");
+	}
+
+	public void removingBag() {
+		System.out.println("removingBag()");
+	}
+
+	public void puttingTea() {
+		System.out.println("puttingTea()");
+	}
+
 }

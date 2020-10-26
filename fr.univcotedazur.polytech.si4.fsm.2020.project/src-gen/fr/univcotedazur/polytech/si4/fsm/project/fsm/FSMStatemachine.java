@@ -454,6 +454,24 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean doNothing;
+		
+		
+		public boolean isRaisedDoNothing() {
+			synchronized(FSMStatemachine.this) {
+				return doNothing;
+			}
+		}
+		
+		protected void raiseDoNothing() {
+			synchronized(FSMStatemachine.this) {
+				doNothing = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onDoNothingRaised();
+				}
+			}
+		}
+		
 		private long price;
 		
 		public synchronized long getPrice() {
@@ -580,6 +598,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		onInfusing = false;
 		onRemovingBag = false;
 		onPuttingTea = false;
+		doNothing = false;
 		}
 		
 	}
@@ -622,7 +641,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	private ITimer timer;
 	
-	private final boolean[] timeEvents = new boolean[10];
+	private final boolean[] timeEvents = new boolean[11];
 	
 	private Queue<Runnable> internalEventQueue = new LinkedList<Runnable>();
 	private BlockingQueue<Runnable> inEventQueue = new LinkedBlockingQueue<Runnable>();
@@ -703,60 +722,60 @@ public class FSMStatemachine implements IFSMStatemachine {
 	protected synchronized void singleCycle() {
 		for (nextStateIndex = 0; nextStateIndex < stateVector.length; nextStateIndex++) {
 			switch (stateVector[nextStateIndex]) {
-			case machine_Order_Select_Drink_select_Selecting_Chosen:
-				machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
-				break;
-			case machine_Order_Select_Drink_select_Selecting_Waiting:
-				machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
-				break;
-			case machine_Order_Option_Waiting:
-				machine_Order_Option_Waiting_react(true);
-				break;
-			case machine_Order_Payment_Waiting:
-				machine_Order_Payment_Waiting_react(true);
-				break;
-			case machine_Order_Time_Waiting:
-				machine_Order_Time_Waiting_react(true);
-				break;
-			case machine_Order_Time_Running:
-				machine_Order_Time_Running_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp:
-				machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing:
-				machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping:
-				machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit:
-				machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup:
-				machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag:
-				machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Cup_Exit:
-				machine_Serving_Serving_Heating_and_Cup_Cup_Exit_react(true);
-				break;
-			case machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water:
-				machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water_react(true);
-				break;
-			case machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar:
-				machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar_react(true);
-				break;
-			case machine_Serving_Serving_Waiting:
-				machine_Serving_Serving_Waiting_react(true);
-				break;
-			case machine_Serving_Serving_Infusing:
-				machine_Serving_Serving_Infusing_react(true);
-				break;
-			case machine_Serving_Serving_Remove_bag:
-				machine_Serving_Serving_Remove_bag_react(true);
-				break;
+				case machine_Order_Select_Drink_select_Selecting_Chosen:
+					machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
+					break;
+				case machine_Order_Select_Drink_select_Selecting_Waiting:
+					machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
+					break;
+				case machine_Order_Option_Waiting:
+					machine_Order_Option_Waiting_react(true);
+					break;
+				case machine_Order_Payment_Waiting:
+					machine_Order_Payment_Waiting_react(true);
+					break;
+				case machine_Order_Time_Waiting:
+					machine_Order_Time_Waiting_react(true);
+					break;
+				case machine_Order_Time_Running:
+					machine_Order_Time_Running_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp:
+					machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing:
+					machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping:
+					machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit:
+					machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup:
+					machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag:
+					machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Cup_Exit:
+					machine_Serving_Serving_Heating_and_Cup_Cup_Exit_react(true);
+					break;
+				case machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water:
+					machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water_react(true);
+					break;
+				case machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar:
+					machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar_react(true);
+					break;
+				case machine_Serving_Serving_Waiting:
+					machine_Serving_Serving_Waiting_react(true);
+					break;
+				case machine_Serving_Serving_Infusing:
+					machine_Serving_Serving_Infusing_react(true);
+					break;
+				case machine_Serving_Serving_Remove_bag:
+					machine_Serving_Serving_Remove_bag_react(true);
+					break;
 			default:
 				// $NullState$
 			}
@@ -1033,6 +1052,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.isRaisedOnPuttingTea();
 	}
 	
+	public synchronized boolean isRaisedDoNothing() {
+		return sCInterface.isRaisedDoNothing();
+	}
+	
 	public synchronized long getPrice() {
 		return sCInterface.getPrice();
 	}
@@ -1155,9 +1178,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		timer.setTimer(this, 0, (10 * 1000), false);
 	}
 	
+	/* Entry action for state 'Serving'. */
+	private void entryAction_Machine_Serving() {
+		timer.setTimer(this, 1, 200, true);
+	}
+	
 	/* Entry action for state 'Waiting Temp'. */
 	private void entryAction_Machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp() {
-		timer.setTimer(this, 1, (sCInterface.getHeatingTime() * 1000), false);
+		timer.setTimer(this, 2, (sCInterface.getHeatingTime() * 1000), false);
 		
 		sCInterface.setHeatingTime(sCInterface.operationCallback.getHeatingTime());
 		
@@ -1166,31 +1194,31 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* Entry action for state 'Grain crushing'. */
 	private void entryAction_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing() {
-		timer.setTimer(this, 2, (sCInterface.getCrushingTime() * 1000), false);
+		timer.setTimer(this, 3, (sCInterface.getCrushingTime() * 1000), false);
 		
 		sCInterface.setCrushingTime(sCInterface.operationCallback.getCrushingTime());
 	}
 	
 	/* Entry action for state 'Grain tamping'. */
 	private void entryAction_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping() {
-		timer.setTimer(this, 3, ((sCInterface.getCrushingTime() / 4) * 1000), false);
+		timer.setTimer(this, 4, ((sCInterface.getCrushingTime() / 4) * 1000), false);
 	}
 	
 	/* Entry action for state 'Placing cup'. */
 	private void entryAction_Machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup() {
-		timer.setTimer(this, 4, (3 * 1000), false);
+		timer.setTimer(this, 5, (3 * 1000), false);
 		
 		sCInterface.raiseOnPlacingCup();
 	}
 	
 	/* Entry action for state 'Putting Bag'. */
 	private void entryAction_Machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag() {
-		timer.setTimer(this, 5, (3 * 1000), false);
+		timer.setTimer(this, 6, (3 * 1000), false);
 	}
 	
 	/* Entry action for state 'Water'. */
 	private void entryAction_Machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water() {
-		timer.setTimer(this, 6, (sCInterface.getPouringWater() * 1000), false);
+		timer.setTimer(this, 7, (sCInterface.getPouringWater() * 1000), false);
 		
 		sCInterface.setPouringWater(sCInterface.operationCallback.getPouringWater());
 		
@@ -1199,7 +1227,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* Entry action for state 'Shugar'. */
 	private void entryAction_Machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar() {
-		timer.setTimer(this, 7, (sCInterface.getPouringShugar() * 1000), false);
+		timer.setTimer(this, 8, (sCInterface.getPouringShugar() * 1000), false);
 		
 		sCInterface.setPouringShugar(sCInterface.operationCallback.getPouringShugar());
 		
@@ -1208,14 +1236,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* Entry action for state 'Infusing'. */
 	private void entryAction_Machine_Serving_Serving_Infusing() {
-		timer.setTimer(this, 8, (sCInterface.getInfusingTime() * 1000), false);
+		timer.setTimer(this, 9, (sCInterface.getInfusingTime() * 1000), false);
 		
 		sCInterface.setInfusingTime(sCInterface.operationCallback.getInfusingTime());
 	}
 	
 	/* Entry action for state 'Remove bag'. */
 	private void entryAction_Machine_Serving_Serving_Remove_bag() {
-		timer.setTimer(this, 9, (3 * 1000), false);
+		timer.setTimer(this, 10, (3 * 1000), false);
 		
 		sCInterface.raiseOnRemovingBag();
 	}
@@ -1225,49 +1253,54 @@ public class FSMStatemachine implements IFSMStatemachine {
 		timer.unsetTimer(this, 0);
 	}
 	
+	/* Exit action for state 'Serving'. */
+	private void exitAction_Machine_Serving() {
+		timer.unsetTimer(this, 1);
+	}
+	
 	/* Exit action for state 'Waiting Temp'. */
 	private void exitAction_Machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp() {
-		timer.unsetTimer(this, 1);
+		timer.unsetTimer(this, 2);
 	}
 	
 	/* Exit action for state 'Grain crushing'. */
 	private void exitAction_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing() {
-		timer.unsetTimer(this, 2);
+		timer.unsetTimer(this, 3);
 	}
 	
 	/* Exit action for state 'Grain tamping'. */
 	private void exitAction_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping() {
-		timer.unsetTimer(this, 3);
+		timer.unsetTimer(this, 4);
 	}
 	
 	/* Exit action for state 'Placing cup'. */
 	private void exitAction_Machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup() {
-		timer.unsetTimer(this, 4);
+		timer.unsetTimer(this, 5);
 	}
 	
 	/* Exit action for state 'Putting Bag'. */
 	private void exitAction_Machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag() {
-		timer.unsetTimer(this, 5);
+		timer.unsetTimer(this, 6);
 	}
 	
 	/* Exit action for state 'Water'. */
 	private void exitAction_Machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water() {
-		timer.unsetTimer(this, 6);
+		timer.unsetTimer(this, 7);
 	}
 	
 	/* Exit action for state 'Shugar'. */
 	private void exitAction_Machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar() {
-		timer.unsetTimer(this, 7);
+		timer.unsetTimer(this, 8);
 	}
 	
 	/* Exit action for state 'Infusing'. */
 	private void exitAction_Machine_Serving_Serving_Infusing() {
-		timer.unsetTimer(this, 8);
+		timer.unsetTimer(this, 9);
 	}
 	
 	/* Exit action for state 'Remove bag'. */
 	private void exitAction_Machine_Serving_Serving_Remove_bag() {
-		timer.unsetTimer(this, 9);
+		timer.unsetTimer(this, 10);
 	}
 	
 	/* 'default' enter sequence for state Order */
@@ -1325,6 +1358,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* 'default' enter sequence for state Serving */
 	private void enterSequence_Machine_Serving_default() {
+		entryAction_Machine_Serving();
 		enterSequence_Machine_Serving_Serving_default();
 	}
 	
@@ -1531,6 +1565,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* Default exit sequence for state Serving */
 	private void exitSequence_Machine_Serving() {
 		exitSequence_Machine_Serving_Serving();
+		exitAction_Machine_Serving();
 	}
 	
 	/* Default exit sequence for state Heating and Cup */
@@ -1653,12 +1688,15 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_Waiting:
 			exitSequence_Machine_Serving_Serving_Waiting();
+			exitAction_Machine_Serving();
 			break;
 		case machine_Serving_Serving_Infusing:
 			exitSequence_Machine_Serving_Serving_Infusing();
+			exitAction_Machine_Serving();
 			break;
 		case machine_Serving_Serving_Remove_bag:
 			exitSequence_Machine_Serving_Serving_Remove_bag();
+			exitAction_Machine_Serving();
 			break;
 		default:
 			break;
@@ -1679,6 +1717,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar:
 			exitSequence_Machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar();
+			exitAction_Machine_Serving();
 			break;
 		default:
 			break;
@@ -1690,12 +1729,15 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup:
 			exitSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup();
+			exitAction_Machine_Serving();
 			break;
 		case machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag:
 			exitSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag();
+			exitAction_Machine_Serving();
 			break;
 		case machine_Serving_Serving_Heating_and_Cup_Cup_Exit:
 			exitSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Exit();
+			exitAction_Machine_Serving();
 			break;
 		default:
 			break;
@@ -2119,7 +2161,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 				enterSequence_Machine_Order_Time_Running_default();
 				machine_Order_react(false);
 			} else {
-				if (timeEvents[0]) {
+				if (((timeEvents[0]) && ((sCInterface.getPrice()!=0 || sCInterface.getMoney()!=0)))) {
 					exitSequence_Machine_Order();
 					sCInterface.raiseOnCancel();
 					
@@ -2151,6 +2193,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		if (did_transition==false) {
+			if (timeEvents[1]) {
+				sCInterface.raiseDoNothing();
+			}
 			did_transition = react();
 		}
 		return did_transition;
@@ -2172,7 +2217,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (((((timeEvents[1] && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit)) && true) && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Cup_Exit)) && true)) {
+			if (((((timeEvents[2] && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit)) && true) && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Cup_Exit)) && true)) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup();
 				react_Machine_Serving_Serving__sync0();
 			} else {
@@ -2186,7 +2231,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[2]) {
+			if (timeEvents[3]) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing();
 				sCInterface.raiseOnTamping();
 				
@@ -2202,7 +2247,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[3]) {
+			if (timeEvents[4]) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping();
 				enterSequence_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit_default();
 			} else {
@@ -2216,7 +2261,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (((((true && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp)) && timeEvents[1]) && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Cup_Exit)) && true)) {
+			if (((((true && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp)) && timeEvents[2]) && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Cup_Exit)) && true)) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup();
 				react_Machine_Serving_Serving__sync0();
 			} else {
@@ -2230,7 +2275,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[4]) {
+			if (timeEvents[5]) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup();
 				react_Machine_Serving_Serving_Heating_and_Cup_Cup__choice_0();
 			} else {
@@ -2247,7 +2292,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[5]) {
+			if (timeEvents[6]) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag();
 				enterSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Exit_default();
 				machine_Serving_Serving_Heating_and_Cup_react(false);
@@ -2265,7 +2310,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (((((true && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp)) && timeEvents[1]) && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit)) && true)) {
+			if (((((true && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp)) && timeEvents[2]) && isStateActive(State.machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit)) && true)) {
 				exitSequence_Machine_Serving_Serving_Heating_and_Cup();
 				react_Machine_Serving_Serving__sync0();
 			} else {
@@ -2294,7 +2339,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (((timeEvents[6] && isStateActive(State.machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar)) && timeEvents[7])) {
+			if (((timeEvents[7] && isStateActive(State.machine_Serving_Serving_Water_and_Shugar_Pouring_shugar_Shugar)) && timeEvents[8])) {
 				exitSequence_Machine_Serving_Serving_Water_and_Shugar();
 				react_Machine_Serving_Serving__sync1();
 			} else {
@@ -2308,7 +2353,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (((timeEvents[7] && isStateActive(State.machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water)) && timeEvents[6])) {
+			if (((timeEvents[8] && isStateActive(State.machine_Serving_Serving_Water_and_Shugar_Pouring_water_Water)) && timeEvents[7])) {
 				exitSequence_Machine_Serving_Serving_Water_and_Shugar();
 				react_Machine_Serving_Serving__sync1();
 			} else {
@@ -2337,7 +2382,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[8]) {
+			if (timeEvents[9]) {
 				exitSequence_Machine_Serving_Serving_Infusing();
 				enterSequence_Machine_Serving_Serving_Remove_bag_default();
 				machine_Serving_react(false);
@@ -2355,7 +2400,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[9]) {
+			if (timeEvents[10]) {
 				exitSequence_Machine_Serving_Serving_Remove_bag();
 				enterSequence_Machine_Serving_Serving_Waiting_default();
 				machine_Serving_react(false);

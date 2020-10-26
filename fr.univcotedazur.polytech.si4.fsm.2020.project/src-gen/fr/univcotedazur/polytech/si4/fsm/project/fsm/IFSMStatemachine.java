@@ -60,6 +60,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedOnPuttingTea();
 		
+		public boolean isRaisedDoNothing();
+		
 		public long getPrice();
 		
 		public void setPrice(long value);
@@ -107,6 +109,7 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onOnInfusingRaised();
 		public void onOnRemovingBagRaised();
 		public void onOnPuttingTeaRaised();
+		public void onDoNothingRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {
