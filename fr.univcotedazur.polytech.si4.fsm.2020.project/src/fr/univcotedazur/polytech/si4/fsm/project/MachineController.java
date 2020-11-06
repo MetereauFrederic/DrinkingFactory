@@ -31,6 +31,7 @@ public class MachineController {
 	public String removingBag = "Retrait du sachet de thé";
 	public String sugar = "Versement du sucre";
 	public String water = "Versement de l'eau";
+	public String cleanning = "Nettoyage de la machine";
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
@@ -45,8 +46,10 @@ public class MachineController {
 				"Commande annulée<html>");		
 		this.drink = null;
 		System.out.println("cancel()");
+		drinkFactoryMachine.progressBar.setValue(0);
+		blockUi(false);
 	}
-	
+
 	public void addSelection(Drink drink) {
 		this.drink = drink;
 	}
@@ -66,6 +69,15 @@ public class MachineController {
 		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
 				"Boisson en<br/>préparation</html>");
+		resetUi();
+		blockUi(true);
+	}
+
+	private void blockUi(boolean state) {
+		drinkFactoryMachine.sugarSlider.setEnabled(!state);
+		drinkFactoryMachine.sizeSlider.setEnabled(!state);
+		drinkFactoryMachine.temperatureSlider.setEnabled(!state);
+		drinkFactoryMachine.nfcBiiiipButton.setEnabled(!state);
 	}
 
 	public int newPrice() {
@@ -141,9 +153,21 @@ public class MachineController {
 	}
 
 	public void reset() {
+		refound("");
+		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
+				"Veuillez sélectionner votre boisson !<html>");		
+		this.drink = null;
 		System.out.println("reset()");
+		drinkFactoryMachine.progressBar.setValue(0);
+		blockUi(false);
 	}
 	
+	private void resetUi() {
+		drinkFactoryMachine.sugarSlider.setValue(1);
+		drinkFactoryMachine.sizeSlider.setValue(1);
+		drinkFactoryMachine.temperatureSlider.setValue(2);
+	}
+
 	public void removeLine(String line) {
 		drinkFactoryMachine.messagesToUser.setText(drinkFactoryMachine.messagesToUser.getText().replaceAll("<br/><br/>"+line, ""));
 	}

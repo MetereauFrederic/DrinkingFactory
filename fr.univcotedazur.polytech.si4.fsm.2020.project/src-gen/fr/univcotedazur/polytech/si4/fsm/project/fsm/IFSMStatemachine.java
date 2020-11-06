@@ -78,9 +78,11 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedEndPuttingTea();
 		
-		public boolean isRaisedDoNothing();
-		
 		public boolean isRaisedDrinkReady();
+		
+		public boolean isRaisedCleanning();
+		
+		public boolean isRaisedEndCleanning();
 		
 		public boolean isRaisedProgressBar();
 		
@@ -103,6 +105,14 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public long getAPercent();
 		
 		public void setAPercent(long value);
+		
+		public boolean getCupIsTaken();
+		
+		public void setCupIsTaken(boolean value);
+		
+		public boolean getCleanIsDone();
+		
+		public void setCleanIsDone(boolean value);
 		
 	public List<SCInterfaceListener> getListeners();
 		public void setSCInterfaceOperationCallback(SCInterfaceOperationCallback operationCallback);
@@ -132,8 +142,9 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onEndRemovingBagRaised();
 		public void onPuttingTeaRaised();
 		public void onEndPuttingTeaRaised();
-		public void onDoNothingRaised();
 		public void onDrinkReadyRaised();
+		public void onCleanningRaised();
+		public void onEndCleanningRaised();
 		public void onProgressBarRaised();
 		}
 	

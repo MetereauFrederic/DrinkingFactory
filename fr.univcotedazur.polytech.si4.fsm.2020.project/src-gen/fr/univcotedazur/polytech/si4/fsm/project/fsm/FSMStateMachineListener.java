@@ -128,11 +128,6 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	}
 
 	@Override
-	public void onDoNothingRaised() {
-		//System.out.println("nothing");
-	}
-
-	@Override
 	public void onEndCrushingRaised() {
 		System.out.println("endCrushing()");
 		machineController.removeLine(machineController.crushing);
@@ -204,5 +199,17 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	@Override
 	public void onProgressBarRaised() {
 		machineController.progressBar();
+	}
+
+	@Override
+	public void onCleanningRaised() {
+		System.out.println("cleanning()");
+		machineController.addLine(machineController.cleanning);
+	}
+
+	@Override
+	public void onEndCleanningRaised() {
+		System.out.println("endCleanning()");
+		machineController.removeLine(machineController.cleanning);
 	}
 }
