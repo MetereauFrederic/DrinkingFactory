@@ -29,6 +29,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Drink;
+import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Option;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStateMachineListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStatemachine;
 
@@ -52,6 +53,7 @@ public class DrinkFactoryMachine extends JFrame {
 	JButton cancelButton;
 	JButton addCupButton;
 	JSlider sugarSlider, sizeSlider, temperatureSlider;
+	JButton milkCloud, croutons, mapleSyrup, vanilla;
 	private MachineController machineController;
 	private FSMStatemachine fsm;
 
@@ -81,19 +83,23 @@ public class DrinkFactoryMachine extends JFrame {
 		setBackground(Color.DARK_GRAY);
 		setTitle("Drinking Factory Machine");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 650, 650);
+		setBounds(100, 100, 665, 760);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+//		JPanel panel_message = new JPanel();
+//		panel_message.setBackground(Color.GRAY);
+//		panel_message.setBounds(126, 34, 165, 175);
+//		contentPane.add(panel_message);
 
-		messagesToUser = new JLabel("<html>This is<br>place to communicate <br> with the user");
+		messagesToUser = new JLabel("<html>Veuillez sélectionner votre boisson !</html>");
 		messagesToUser.setForeground(Color.WHITE);
 		messagesToUser.setHorizontalAlignment(SwingConstants.LEFT);
 		messagesToUser.setVerticalAlignment(SwingConstants.TOP);
 		messagesToUser.setToolTipText("message to the user");
-		messagesToUser.setBackground(Color.WHITE);
 		messagesToUser.setBounds(126, 34, 165, 175);
 		contentPane.add(messagesToUser);
 
@@ -127,15 +133,8 @@ public class DrinkFactoryMachine extends JFrame {
 		soupButton.setBounds(12, 145, 96, 25);
 		contentPane.add(soupButton);
 
-		progressBar = new JProgressBar();
-		progressBar.setStringPainted(true);
-		progressBar.setValue(0);
-		progressBar.setForeground(Color.LIGHT_GRAY);
-		progressBar.setBackground(Color.DARK_GRAY);
-		progressBar.setBounds(12, 254, 622, 26);
-		contentPane.add(progressBar);
-
 		sugarSlider = new JSlider();
+		sugarSlider.setPaintLabels(true);
 		sugarSlider.setValue(1);
 		sugarSlider.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		sugarSlider.setBackground(Color.DARK_GRAY);
@@ -144,10 +143,20 @@ public class DrinkFactoryMachine extends JFrame {
 		sugarSlider.setMinorTickSpacing(1);
 		sugarSlider.setMajorTickSpacing(1);
 		sugarSlider.setMaximum(4);
-		sugarSlider.setBounds(301, 51, 200, 36);
+		sugarSlider.setBounds(301, 51, 200, 54);
+		
+		Hashtable<Integer, JLabel> sugarTable = new Hashtable<Integer, JLabel>();
+		sugarTable.put(0, new JLabel("0"));
+		sugarTable.put(4, new JLabel("Max"));
+		for (JLabel l : sugarTable.values()) {
+			l.setForeground(Color.WHITE);
+		}
+		sugarSlider.setLabelTable(sugarTable);
+		
 		contentPane.add(sugarSlider);
 
 		sizeSlider = new JSlider();
+		sizeSlider.setPaintLabels(true);
 		sizeSlider.setPaintTicks(true);
 		sizeSlider.setValue(1);
 		sizeSlider.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -156,7 +165,17 @@ public class DrinkFactoryMachine extends JFrame {
 		sizeSlider.setMinorTickSpacing(1);
 		sizeSlider.setMaximum(2);
 		sizeSlider.setMajorTickSpacing(1);
-		sizeSlider.setBounds(301, 125, 200, 36);
+		sizeSlider.setBounds(301, sugarSlider.getY() + 110, 200, 54);
+		
+		Hashtable<Integer, JLabel> sizeTable = new Hashtable<Integer, JLabel>();
+		sizeTable.put(0, new JLabel("S"));
+		sizeTable.put(1, new JLabel("M"));
+		sizeTable.put(2, new JLabel("L"));
+		for (JLabel l : sizeTable.values()) {
+			l.setForeground(Color.WHITE);
+		}
+		sizeSlider.setLabelTable(sizeTable);
+		
 		contentPane.add(sizeSlider);
 
 		temperatureSlider = new JSlider();
@@ -168,7 +187,7 @@ public class DrinkFactoryMachine extends JFrame {
 		temperatureSlider.setPaintTicks(true);
 		temperatureSlider.setMajorTickSpacing(1);
 		temperatureSlider.setMaximum(3);
-		temperatureSlider.setBounds(301, 188, 200, 54);
+		temperatureSlider.setBounds(301, sizeSlider.getY() + 110, 200, 54);
 
 		Hashtable<Integer, JLabel> temperatureTable = new Hashtable<Integer, JLabel>();
 		temperatureTable.put(0, new JLabel("20°C"));
@@ -187,26 +206,64 @@ public class DrinkFactoryMachine extends JFrame {
 		icedTeaButton.setBackground(Color.DARK_GRAY);
 		icedTeaButton.setBounds(12, 182, 96, 25);
 		contentPane.add(icedTeaButton);
+		
+		JLabel lblOptions = new JLabel("Options");
+		lblOptions.setForeground(Color.WHITE);
+		lblOptions.setHorizontalAlignment(SwingConstants.CENTER);
+		lblOptions.setBounds(12, icedTeaButton.getY() + 40, 44, 15);
+		contentPane.add(lblOptions);
+		
+		milkCloud = new JButton("Milk Cloud");
+		milkCloud.setForeground(Color.WHITE);
+		milkCloud.setBackground(Color.DARK_GRAY);
+		milkCloud.setBounds(12, lblOptions.getY() + 20, 110, 20);
+		contentPane.add(milkCloud);
+		
+		croutons = new JButton("Croutons");
+		croutons.setForeground(Color.WHITE);
+		croutons.setBackground(Color.DARK_GRAY);
+		croutons.setBounds(12, milkCloud.getY() + 30, 110, 20);
+		contentPane.add(croutons);
+		
+		mapleSyrup = new JButton("Maple Syrup");
+		mapleSyrup.setForeground(Color.WHITE);
+		mapleSyrup.setBackground(Color.DARK_GRAY);
+		mapleSyrup.setBounds(12, croutons.getY() + 30, 110, 20);
+		contentPane.add(mapleSyrup);
+		
+		vanilla = new JButton("Vanilla");
+		vanilla.setForeground(Color.WHITE);
+		vanilla.setBackground(Color.DARK_GRAY);
+		vanilla.setBounds(12, mapleSyrup.getY() + 30, 110, 20);
+		contentPane.add(vanilla);
+		
+		progressBar = new JProgressBar();
+		progressBar.setStringPainted(true);
+		progressBar.setValue(0);
+		progressBar.setForeground(Color.LIGHT_GRAY);
+		progressBar.setBackground(Color.DARK_GRAY);
+		progressBar.setBounds(12, vanilla.getY() + 40, 622, 26);
+		contentPane.add(progressBar);
 
 		JLabel lblSugar = new JLabel("Sugar");
 		lblSugar.setForeground(Color.WHITE);
 		lblSugar.setBackground(Color.DARK_GRAY);
 		lblSugar.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSugar.setBounds(380, 34, 44, 15);
+		lblSugar.setBounds(380, sugarSlider.getY() - 25, 44, 15);
 		contentPane.add(lblSugar);
 
 		JLabel lblSize = new JLabel("Size");
 		lblSize.setForeground(Color.WHITE);
 		lblSize.setBackground(Color.DARK_GRAY);
 		lblSize.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSize.setBounds(380, 113, 44, 15);
+		lblSize.setBounds(380, sizeSlider.getY() - 25, 44, 15);
 		contentPane.add(lblSize);
 
 		JLabel lblTemperature = new JLabel("Temperature");
 		lblTemperature.setForeground(Color.WHITE);
 		lblTemperature.setBackground(Color.DARK_GRAY);
 		lblTemperature.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTemperature.setBounds(363, 173, 96, 15);
+		lblTemperature.setBounds(363, temperatureSlider.getY() - 25, 96, 15);
 		contentPane.add(lblTemperature);
 
 		JPanel panel = new JPanel();
@@ -247,17 +304,17 @@ public class DrinkFactoryMachine extends JFrame {
 		contentPane.add(lblNfc);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(12, 292, 622, 15);
+		separator.setBounds(12, progressBar.getY() + 36, 622, 15);
 		contentPane.add(separator);
 
 		addCupButton = new JButton("Add cup");
 		addCupButton.setForeground(Color.WHITE);
 		addCupButton.setBackground(Color.DARK_GRAY);
-		addCupButton.setBounds(45, 336, 96, 25);
+		addCupButton.setBounds(45, separator.getY() + 44, 96, 25);
 		contentPane.add(addCupButton);
 
 		labelForPictures = new JLabel();
-		labelForPictures.setBounds(175, 319, 286, 260);
+		labelForPictures.setBounds(175, separator.getY() + 27, 286, 260);
 		contentPane.add(labelForPictures);
 		changePicture("./picts/vide2.jpg");
 		labelForPictures.addMouseListener(new MouseAdapter() {
@@ -272,7 +329,7 @@ public class DrinkFactoryMachine extends JFrame {
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.DARK_GRAY);
-		panel_2.setBounds(538, 217, 96, 33);
+		panel_2.setBounds(538, progressBar.getY() - 50, 96, 33);
 		contentPane.add(panel_2);
 
 		cancelButton = new JButton("Cancel");
@@ -292,7 +349,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addSelection(Drink.COFFEE);
+				machineController.addSelection(Drink.COFFEE, coffeeButton);
 				fsm.getSCInterface().raiseB_Coffe();
 			}
 		});
@@ -301,7 +358,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addSelection(Drink.EXPRESSO);
+				machineController.addSelection(Drink.EXPRESSO, expressoButton);
 				fsm.getSCInterface().raiseB_Expresso();
 			}
 		});
@@ -310,7 +367,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.addSelection(Drink.TEA);
+				machineController.addSelection(Drink.TEA, teaButton);
 				fsm.getSCInterface().raiseB_Tea();
 			}
 		});
@@ -328,6 +385,38 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+			}
+		});
+		
+		milkCloud.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				machineController.addOption(Option.MILKCLOUD, milkCloud);
+			}
+		});
+		
+		croutons.addActionListener(new ActionListener() {
+					
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				machineController.addOption(Option.CROUTONS, croutons);
+			}
+		});
+		
+		mapleSyrup.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				machineController.addOption(Option.MAPLESYRUP, mapleSyrup);
+			}
+		});
+		
+		vanilla.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				machineController.addOption(Option.VANILLA, vanilla);
 			}
 		});
 		

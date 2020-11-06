@@ -24,6 +24,14 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public void raiseS_Temp();
 		
+		public void raiseMilkCloud();
+		
+		public void raiseCroutons();
+		
+		public void raiseMapleSyrup();
+		
+		public void raiseVanilla();
+		
 		public void raiseC_050();
 		
 		public void raiseC_025();
@@ -86,6 +94,20 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedProgressBar();
 		
+		public boolean isRaisedPouringMapleSyrup();
+		
+		public boolean isRaisedEndPouringMapleSyrup();
+		
+		public boolean isRaisedPouringVanilla();
+		
+		public boolean isRaisedMixVanilla();
+		
+		public boolean isRaisedEndVanilla();
+		
+		public boolean isRaisedPouringMilkCloud();
+		
+		public boolean isRaisedEndMilkCloud();
+		
 		public long getPrice();
 		
 		public void setPrice(long value);
@@ -146,6 +168,13 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onCleanningRaised();
 		public void onEndCleanningRaised();
 		public void onProgressBarRaised();
+		public void onPouringMapleSyrupRaised();
+		public void onEndPouringMapleSyrupRaised();
+		public void onPouringVanillaRaised();
+		public void onMixVanillaRaised();
+		public void onEndVanillaRaised();
+		public void onPouringMilkCloudRaised();
+		public void onEndMilkCloudRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {
@@ -167,6 +196,12 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public boolean isExpresso();
 		
 		public boolean isTea();
+		
+		public boolean isMapleSyrup();
+		
+		public boolean isVanilla();
+		
+		public boolean isMilkCloud();
 		
 		public long getPercent();
 		

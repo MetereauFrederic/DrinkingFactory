@@ -1,5 +1,10 @@
 package fr.univcotedazur.polytech.si4.fsm.project;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
 
 public class MachineController {
 	
@@ -17,10 +22,24 @@ public class MachineController {
 		}
 	}
 	
+	public enum Option {
+		
+		MILKCLOUD(10, "nuage de lait"), CROUTONS(30, "croutons"), MAPLESYRUP(10, "sirop d'érable"), VANILLA(40, "glace vanille mixée");
+		
+		private int price;
+		private String name;
+		
+		Option(int price, String name) {
+			this.price = price;
+			this.name = name;
+		}
+	}
+	
 	private DrinkFactoryMachine drinkFactoryMachine;
 	private boolean nfc;
 	private int money;
 	private Drink drink;
+	private List<Option> options;
 
 	public String heating = "Chauffage de l'eau";
 	public String placingCup = "Placement du gobelet";
@@ -32,11 +51,16 @@ public class MachineController {
 	public String sugar = "Versement du sucre";
 	public String water = "Versement de l'eau";
 	public String cleanning = "Nettoyage de la machine";
+	public String pouringMapleSyrup ="Versement du sirop d'érable";
+	public String pouringVanilla ="Versement de la glace vanille";
+	public String mixVanilla ="Mixage de la préparation";
+	public String pouringMilkCloud ="Versement du nuage de lait";
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
 		this.nfc = false;
 		this.money = 0;
+		this.options = new ArrayList<>();
 	}
 
 	public void cancel() {
@@ -47,11 +71,18 @@ public class MachineController {
 		this.drink = null;
 		System.out.println("cancel()");
 		drinkFactoryMachine.progressBar.setValue(0);
+		this.options.clear();
 		blockUi(false);
 	}
 
-	public void addSelection(Drink drink) {
+	public void addSelection(Drink drink, JButton button) {
 		this.drink = drink;
+		drinkFactoryMachine.coffeeButton.setBackground(Color.DARK_GRAY);
+		drinkFactoryMachine.expressoButton.setBackground(Color.DARK_GRAY);
+		drinkFactoryMachine.teaButton.setBackground(Color.DARK_GRAY);
+		drinkFactoryMachine.soupButton.setBackground(Color.DARK_GRAY);
+		drinkFactoryMachine.icedTeaButton.setBackground(Color.DARK_GRAY);
+		button.setBackground(Color.GRAY);
 	}
 	
 	public void addCoin(int payed) {
@@ -78,11 +109,22 @@ public class MachineController {
 		drinkFactoryMachine.sizeSlider.setEnabled(!state);
 		drinkFactoryMachine.temperatureSlider.setEnabled(!state);
 		drinkFactoryMachine.nfcBiiiipButton.setEnabled(!state);
+		drinkFactoryMachine.coffeeButton.setEnabled(!state);
+		drinkFactoryMachine.expressoButton.setEnabled(!state);
+		drinkFactoryMachine.teaButton.setEnabled(!state);
+		drinkFactoryMachine.soupButton.setEnabled(!state);
+		drinkFactoryMachine.icedTeaButton.setEnabled(!state);
+		drinkFactoryMachine.milkCloud.setEnabled(!state);
+		drinkFactoryMachine.croutons.setEnabled(!state);
+		drinkFactoryMachine.mapleSyrup.setEnabled(!state);
+		drinkFactoryMachine.vanilla.setEnabled(!state);
+		drinkFactoryMachine.cancelButton.setEnabled(!state);
+		drinkFactoryMachine.addCupButton.setEnabled(!state);
 	}
 
 	public int newPrice() {
 		System.out.println("newPrice()");
-		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "<br/><br/>" + this.drink.name + " sélectioné</html>");
+		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
 		if(this.drink!=null) return this.drink.price;
 		return Integer.MAX_VALUE;
 	}
@@ -159,6 +201,7 @@ public class MachineController {
 		this.drink = null;
 		System.out.println("reset()");
 		drinkFactoryMachine.progressBar.setValue(0);
+		this.options.clear();
 		blockUi(false);
 	}
 	
@@ -198,6 +241,29 @@ public class MachineController {
 
 	public void progressBar() {
 		drinkFactoryMachine.progressBar.setValue(drinkFactoryMachine.progressBar.getValue()+1);
+	}
+
+	public boolean isMapleSyrup() {
+		return this.options.contains(Option.MAPLESYRUP);
+	}
+
+	public boolean isVanilla() {
+		return this.options.contains(Option.VANILLA);
+	}
+
+	public boolean isMilkCloud() {
+		return this.options.contains(Option.MILKCLOUD);
+	}
+
+	public void addOption(Option option, JButton button) {
+		if (this.options.contains(option)) {
+			this.options.remove(option);
+			button.setBackground(Color.DARK_GRAY);
+		} else {
+			this.options.add(option);
+			button.setBackground(Color.GRAY);
+		}
+		
 	}
 
 }

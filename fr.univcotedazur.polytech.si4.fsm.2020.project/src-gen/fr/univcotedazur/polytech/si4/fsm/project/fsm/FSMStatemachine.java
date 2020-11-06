@@ -130,6 +130,78 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean milkCloud;
+		
+		
+		public void raiseMilkCloud() {
+			synchronized(FSMStatemachine.this) {
+				inEventQueue.add(
+					new Runnable() {
+						@Override
+						public void run() {
+							milkCloud = true;
+							singleCycle();
+						}
+					}
+				);
+				runCycle();
+			}
+		}
+		
+		private boolean croutons;
+		
+		
+		public void raiseCroutons() {
+			synchronized(FSMStatemachine.this) {
+				inEventQueue.add(
+					new Runnable() {
+						@Override
+						public void run() {
+							croutons = true;
+							singleCycle();
+						}
+					}
+				);
+				runCycle();
+			}
+		}
+		
+		private boolean mapleSyrup;
+		
+		
+		public void raiseMapleSyrup() {
+			synchronized(FSMStatemachine.this) {
+				inEventQueue.add(
+					new Runnable() {
+						@Override
+						public void run() {
+							mapleSyrup = true;
+							singleCycle();
+						}
+					}
+				);
+				runCycle();
+			}
+		}
+		
+		private boolean vanilla;
+		
+		
+		public void raiseVanilla() {
+			synchronized(FSMStatemachine.this) {
+				inEventQueue.add(
+					new Runnable() {
+						@Override
+						public void run() {
+							vanilla = true;
+							singleCycle();
+						}
+					}
+				);
+				runCycle();
+			}
+		}
+		
 		private boolean c_050;
 		
 		
@@ -688,6 +760,132 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean pouringMapleSyrup;
+		
+		
+		public boolean isRaisedPouringMapleSyrup() {
+			synchronized(FSMStatemachine.this) {
+				return pouringMapleSyrup;
+			}
+		}
+		
+		protected void raisePouringMapleSyrup() {
+			synchronized(FSMStatemachine.this) {
+				pouringMapleSyrup = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onPouringMapleSyrupRaised();
+				}
+			}
+		}
+		
+		private boolean endPouringMapleSyrup;
+		
+		
+		public boolean isRaisedEndPouringMapleSyrup() {
+			synchronized(FSMStatemachine.this) {
+				return endPouringMapleSyrup;
+			}
+		}
+		
+		protected void raiseEndPouringMapleSyrup() {
+			synchronized(FSMStatemachine.this) {
+				endPouringMapleSyrup = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onEndPouringMapleSyrupRaised();
+				}
+			}
+		}
+		
+		private boolean pouringVanilla;
+		
+		
+		public boolean isRaisedPouringVanilla() {
+			synchronized(FSMStatemachine.this) {
+				return pouringVanilla;
+			}
+		}
+		
+		protected void raisePouringVanilla() {
+			synchronized(FSMStatemachine.this) {
+				pouringVanilla = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onPouringVanillaRaised();
+				}
+			}
+		}
+		
+		private boolean mixVanilla;
+		
+		
+		public boolean isRaisedMixVanilla() {
+			synchronized(FSMStatemachine.this) {
+				return mixVanilla;
+			}
+		}
+		
+		protected void raiseMixVanilla() {
+			synchronized(FSMStatemachine.this) {
+				mixVanilla = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onMixVanillaRaised();
+				}
+			}
+		}
+		
+		private boolean endVanilla;
+		
+		
+		public boolean isRaisedEndVanilla() {
+			synchronized(FSMStatemachine.this) {
+				return endVanilla;
+			}
+		}
+		
+		protected void raiseEndVanilla() {
+			synchronized(FSMStatemachine.this) {
+				endVanilla = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onEndVanillaRaised();
+				}
+			}
+		}
+		
+		private boolean pouringMilkCloud;
+		
+		
+		public boolean isRaisedPouringMilkCloud() {
+			synchronized(FSMStatemachine.this) {
+				return pouringMilkCloud;
+			}
+		}
+		
+		protected void raisePouringMilkCloud() {
+			synchronized(FSMStatemachine.this) {
+				pouringMilkCloud = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onPouringMilkCloudRaised();
+				}
+			}
+		}
+		
+		private boolean endMilkCloud;
+		
+		
+		public boolean isRaisedEndMilkCloud() {
+			synchronized(FSMStatemachine.this) {
+				return endMilkCloud;
+			}
+		}
+		
+		protected void raiseEndMilkCloud() {
+			synchronized(FSMStatemachine.this) {
+				endMilkCloud = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onEndMilkCloudRaised();
+				}
+			}
+		}
+		
 		private long price;
 		
 		public synchronized long getPrice() {
@@ -793,6 +991,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 			s_Sugar = false;
 			s_Size = false;
 			s_Temp = false;
+			milkCloud = false;
+			croutons = false;
+			mapleSyrup = false;
+			vanilla = false;
 			c_050 = false;
 			c_025 = false;
 			c_010 = false;
@@ -827,6 +1029,13 @@ public class FSMStatemachine implements IFSMStatemachine {
 		cleanning = false;
 		endCleanning = false;
 		progressBar = false;
+		pouringMapleSyrup = false;
+		endPouringMapleSyrup = false;
+		pouringVanilla = false;
+		mixVanilla = false;
+		endVanilla = false;
+		pouringMilkCloud = false;
+		endMilkCloud = false;
 		}
 		
 	}
@@ -857,9 +1066,13 @@ public class FSMStatemachine implements IFSMStatemachine {
 		machine_Serving_Serving_Water_and_Sugar,
 		machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water,
 		machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar,
-		machine_Serving_Serving_Waiting,
+		machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup,
 		machine_Serving_Serving_Infusing,
 		machine_Serving_Serving_Remove_bag,
+		machine_Serving_Serving_Waiting,
+		machine_Serving_Serving_Pouring_Vanilla,
+		machine_Serving_Serving_Mix_Vanilla,
+		machine_Serving_Serving_MilkCloud,
 		machine_cleaning,
 		$NullState$
 	};
@@ -870,7 +1083,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	private ITimer timer;
 	
-	private final boolean[] timeEvents = new boolean[12];
+	private final boolean[] timeEvents = new boolean[16];
 	
 	private Queue<Runnable> internalEventQueue = new LinkedList<Runnable>();
 	private BlockingQueue<Runnable> inEventQueue = new LinkedBlockingQueue<Runnable>();
@@ -998,14 +1211,26 @@ public class FSMStatemachine implements IFSMStatemachine {
 				case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
 					machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar_react(true);
 					break;
-				case machine_Serving_Serving_Waiting:
-					machine_Serving_Serving_Waiting_react(true);
+				case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
+					machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup_react(true);
 					break;
 				case machine_Serving_Serving_Infusing:
 					machine_Serving_Serving_Infusing_react(true);
 					break;
 				case machine_Serving_Serving_Remove_bag:
 					machine_Serving_Serving_Remove_bag_react(true);
+					break;
+				case machine_Serving_Serving_Waiting:
+					machine_Serving_Serving_Waiting_react(true);
+					break;
+				case machine_Serving_Serving_Pouring_Vanilla:
+					machine_Serving_Serving_Pouring_Vanilla_react(true);
+					break;
+				case machine_Serving_Serving_Mix_Vanilla:
+					machine_Serving_Serving_Mix_Vanilla_react(true);
+					break;
+				case machine_Serving_Serving_MilkCloud:
+					machine_Serving_Serving_MilkCloud_react(true);
 					break;
 				case machine_cleaning:
 					machine_cleaning_react(true);
@@ -1101,7 +1326,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[3] == State.machine_Order_Time_Running;
 		case machine_Serving:
 			return stateVector[0].ordinal() >= State.
-					machine_Serving.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_Remove_bag.ordinal();
+					machine_Serving.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_MilkCloud.ordinal();
 		case machine_Serving_Serving_Heating_and_Cup:
 			return stateVector[0].ordinal() >= State.
 					machine_Serving_Serving_Heating_and_Cup.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_Heating_and_Cup_Cup_Exit.ordinal();
@@ -1121,17 +1346,25 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[2] == State.machine_Serving_Serving_Heating_and_Cup_Cup_Exit;
 		case machine_Serving_Serving_Water_and_Sugar:
 			return stateVector[0].ordinal() >= State.
-					machine_Serving_Serving_Water_and_Sugar.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar.ordinal();
+					machine_Serving_Serving_Water_and_Sugar.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup.ordinal();
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water:
 			return stateVector[0] == State.machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water;
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
 			return stateVector[1] == State.machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar;
-		case machine_Serving_Serving_Waiting:
-			return stateVector[0] == State.machine_Serving_Serving_Waiting;
+		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
+			return stateVector[1] == State.machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup;
 		case machine_Serving_Serving_Infusing:
 			return stateVector[0] == State.machine_Serving_Serving_Infusing;
 		case machine_Serving_Serving_Remove_bag:
 			return stateVector[0] == State.machine_Serving_Serving_Remove_bag;
+		case machine_Serving_Serving_Waiting:
+			return stateVector[0] == State.machine_Serving_Serving_Waiting;
+		case machine_Serving_Serving_Pouring_Vanilla:
+			return stateVector[0] == State.machine_Serving_Serving_Pouring_Vanilla;
+		case machine_Serving_Serving_Mix_Vanilla:
+			return stateVector[0] == State.machine_Serving_Serving_Mix_Vanilla;
+		case machine_Serving_Serving_MilkCloud:
+			return stateVector[0] == State.machine_Serving_Serving_MilkCloud;
 		case machine_cleaning:
 			return stateVector[0] == State.machine_cleaning;
 		default:
@@ -1236,6 +1469,22 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	public synchronized void raiseS_Temp() {
 		sCInterface.raiseS_Temp();
+	}
+	
+	public synchronized void raiseMilkCloud() {
+		sCInterface.raiseMilkCloud();
+	}
+	
+	public synchronized void raiseCroutons() {
+		sCInterface.raiseCroutons();
+	}
+	
+	public synchronized void raiseMapleSyrup() {
+		sCInterface.raiseMapleSyrup();
+	}
+	
+	public synchronized void raiseVanilla() {
+		sCInterface.raiseVanilla();
 	}
 	
 	public synchronized void raiseC_050() {
@@ -1362,6 +1611,34 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.isRaisedProgressBar();
 	}
 	
+	public synchronized boolean isRaisedPouringMapleSyrup() {
+		return sCInterface.isRaisedPouringMapleSyrup();
+	}
+	
+	public synchronized boolean isRaisedEndPouringMapleSyrup() {
+		return sCInterface.isRaisedEndPouringMapleSyrup();
+	}
+	
+	public synchronized boolean isRaisedPouringVanilla() {
+		return sCInterface.isRaisedPouringVanilla();
+	}
+	
+	public synchronized boolean isRaisedMixVanilla() {
+		return sCInterface.isRaisedMixVanilla();
+	}
+	
+	public synchronized boolean isRaisedEndVanilla() {
+		return sCInterface.isRaisedEndVanilla();
+	}
+	
+	public synchronized boolean isRaisedPouringMilkCloud() {
+		return sCInterface.isRaisedPouringMilkCloud();
+	}
+	
+	public synchronized boolean isRaisedEndMilkCloud() {
+		return sCInterface.isRaisedEndMilkCloud();
+	}
+	
 	public synchronized long getPrice() {
 		return sCInterface.getPrice();
 	}
@@ -1426,8 +1703,20 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.operationCallback.isTea();
 	}
 	
+	private boolean check_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0_tr1_tr1() {
+		return sCInterface.operationCallback.isMapleSyrup();
+	}
+	
 	private boolean check_Machine_Serving_Serving__choice_0_tr0_tr0() {
 		return sCInterface.operationCallback.isTea();
+	}
+	
+	private boolean check_Machine_Serving_Serving__choice_0_tr2_tr2() {
+		return sCInterface.operationCallback.isVanilla();
+	}
+	
+	private boolean check_Machine_Serving_Serving__choice_1_tr0_tr0() {
+		return sCInterface.operationCallback.isMilkCloud();
 	}
 	
 	private void effect_Machine_Serving_Serving_Heating_and_Cup_Grain_crushing__choice_0_tr0() {
@@ -1450,13 +1739,37 @@ public class FSMStatemachine implements IFSMStatemachine {
 		enterSequence_Machine_Serving_Serving_Heating_and_Cup_Cup_Exit_default();
 	}
 	
+	private void effect_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0_tr1() {
+		enterSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup_default();
+	}
+	
+	private void effect_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0_tr0() {
+		enterSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar_default();
+	}
+	
 	private void effect_Machine_Serving_Serving__choice_0_tr0() {
 		sCInterface.raiseInfusing();
 		
 		enterSequence_Machine_Serving_Serving_Infusing_default();
 	}
 	
+	private void effect_Machine_Serving_Serving__choice_0_tr2() {
+		sCInterface.raisePouringVanilla();
+		
+		enterSequence_Machine_Serving_Serving_Pouring_Vanilla_default();
+	}
+	
 	private void effect_Machine_Serving_Serving__choice_0_tr1() {
+		react_Machine_Serving_Serving__choice_1();
+	}
+	
+	private void effect_Machine_Serving_Serving__choice_1_tr0() {
+		sCInterface.raisePouringMilkCloud();
+		
+		enterSequence_Machine_Serving_Serving_MilkCloud_default();
+	}
+	
+	private void effect_Machine_Serving_Serving__choice_1_tr1() {
 		enterSequence_Machine_Serving_Serving_Waiting_default();
 	}
 	
@@ -1534,6 +1847,25 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.raisePouringSugar();
 	}
 	
+	/* Entry action for state 'MapleSyrup'. */
+	private void entryAction_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup() {
+		timer.setTimer(this, 9, (sCInterface.operationCallback.getPouringSugar() * 1000), false);
+		
+		sCInterface.raisePouringMapleSyrup();
+	}
+	
+	/* Entry action for state 'Infusing'. */
+	private void entryAction_Machine_Serving_Serving_Infusing() {
+		timer.setTimer(this, 10, (sCInterface.operationCallback.getInfusingTime() * 1000), false);
+	}
+	
+	/* Entry action for state 'Remove bag'. */
+	private void entryAction_Machine_Serving_Serving_Remove_bag() {
+		timer.setTimer(this, 11, (3 * 1000), false);
+		
+		sCInterface.raiseRemovingBag();
+	}
+	
 	/* Entry action for state 'Waiting'. */
 	private void entryAction_Machine_Serving_Serving_Waiting() {
 		raiseClean();
@@ -1541,21 +1873,24 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.raiseDrinkReady();
 	}
 	
-	/* Entry action for state 'Infusing'. */
-	private void entryAction_Machine_Serving_Serving_Infusing() {
-		timer.setTimer(this, 9, (sCInterface.operationCallback.getInfusingTime() * 1000), false);
+	/* Entry action for state 'Pouring Vanilla'. */
+	private void entryAction_Machine_Serving_Serving_Pouring_Vanilla() {
+		timer.setTimer(this, 12, (3 * 1000), false);
 	}
 	
-	/* Entry action for state 'Remove bag'. */
-	private void entryAction_Machine_Serving_Serving_Remove_bag() {
-		timer.setTimer(this, 10, (3 * 1000), false);
-		
-		sCInterface.raiseRemovingBag();
+	/* Entry action for state 'Mix Vanilla'. */
+	private void entryAction_Machine_Serving_Serving_Mix_Vanilla() {
+		timer.setTimer(this, 13, (5 * 1000), false);
+	}
+	
+	/* Entry action for state 'MilkCloud'. */
+	private void entryAction_Machine_Serving_Serving_MilkCloud() {
+		timer.setTimer(this, 14, (3 * 1000), false);
 	}
 	
 	/* Entry action for state 'cleaning'. */
 	private void entryAction_Machine_cleaning() {
-		timer.setTimer(this, 11, (5 * 1000), false);
+		timer.setTimer(this, 15, (5 * 1000), false);
 		
 		sCInterface.raiseCleanning();
 	}
@@ -1605,19 +1940,39 @@ public class FSMStatemachine implements IFSMStatemachine {
 		timer.unsetTimer(this, 8);
 	}
 	
+	/* Exit action for state 'MapleSyrup'. */
+	private void exitAction_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup() {
+		timer.unsetTimer(this, 9);
+	}
+	
 	/* Exit action for state 'Infusing'. */
 	private void exitAction_Machine_Serving_Serving_Infusing() {
-		timer.unsetTimer(this, 9);
+		timer.unsetTimer(this, 10);
 	}
 	
 	/* Exit action for state 'Remove bag'. */
 	private void exitAction_Machine_Serving_Serving_Remove_bag() {
-		timer.unsetTimer(this, 10);
+		timer.unsetTimer(this, 11);
+	}
+	
+	/* Exit action for state 'Pouring Vanilla'. */
+	private void exitAction_Machine_Serving_Serving_Pouring_Vanilla() {
+		timer.unsetTimer(this, 12);
+	}
+	
+	/* Exit action for state 'Mix Vanilla'. */
+	private void exitAction_Machine_Serving_Serving_Mix_Vanilla() {
+		timer.unsetTimer(this, 13);
+	}
+	
+	/* Exit action for state 'MilkCloud'. */
+	private void exitAction_Machine_Serving_Serving_MilkCloud() {
+		timer.unsetTimer(this, 14);
 	}
 	
 	/* Exit action for state 'cleaning'. */
 	private void exitAction_Machine_cleaning() {
-		timer.unsetTimer(this, 11);
+		timer.unsetTimer(this, 15);
 	}
 	
 	/* 'default' enter sequence for state Order */
@@ -1753,11 +2108,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		stateVector[1] = State.machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar;
 	}
 	
-	/* 'default' enter sequence for state Waiting */
-	private void enterSequence_Machine_Serving_Serving_Waiting_default() {
-		entryAction_Machine_Serving_Serving_Waiting();
-		nextStateIndex = 0;
-		stateVector[0] = State.machine_Serving_Serving_Waiting;
+	/* 'default' enter sequence for state MapleSyrup */
+	private void enterSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup_default() {
+		entryAction_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup();
+		nextStateIndex = 1;
+		stateVector[1] = State.machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup;
 	}
 	
 	/* 'default' enter sequence for state Infusing */
@@ -1772,6 +2127,34 @@ public class FSMStatemachine implements IFSMStatemachine {
 		entryAction_Machine_Serving_Serving_Remove_bag();
 		nextStateIndex = 0;
 		stateVector[0] = State.machine_Serving_Serving_Remove_bag;
+	}
+	
+	/* 'default' enter sequence for state Waiting */
+	private void enterSequence_Machine_Serving_Serving_Waiting_default() {
+		entryAction_Machine_Serving_Serving_Waiting();
+		nextStateIndex = 0;
+		stateVector[0] = State.machine_Serving_Serving_Waiting;
+	}
+	
+	/* 'default' enter sequence for state Pouring Vanilla */
+	private void enterSequence_Machine_Serving_Serving_Pouring_Vanilla_default() {
+		entryAction_Machine_Serving_Serving_Pouring_Vanilla();
+		nextStateIndex = 0;
+		stateVector[0] = State.machine_Serving_Serving_Pouring_Vanilla;
+	}
+	
+	/* 'default' enter sequence for state Mix Vanilla */
+	private void enterSequence_Machine_Serving_Serving_Mix_Vanilla_default() {
+		entryAction_Machine_Serving_Serving_Mix_Vanilla();
+		nextStateIndex = 0;
+		stateVector[0] = State.machine_Serving_Serving_Mix_Vanilla;
+	}
+	
+	/* 'default' enter sequence for state MilkCloud */
+	private void enterSequence_Machine_Serving_Serving_MilkCloud_default() {
+		entryAction_Machine_Serving_Serving_MilkCloud();
+		nextStateIndex = 0;
+		stateVector[0] = State.machine_Serving_Serving_MilkCloud;
 	}
 	
 	/* 'default' enter sequence for state cleaning */
@@ -1974,10 +2357,12 @@ public class FSMStatemachine implements IFSMStatemachine {
 		exitAction_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar();
 	}
 	
-	/* Default exit sequence for state Waiting */
-	private void exitSequence_Machine_Serving_Serving_Waiting() {
-		nextStateIndex = 0;
-		stateVector[0] = State.$NullState$;
+	/* Default exit sequence for state MapleSyrup */
+	private void exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup() {
+		nextStateIndex = 1;
+		stateVector[1] = State.$NullState$;
+		
+		exitAction_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup();
 	}
 	
 	/* Default exit sequence for state Infusing */
@@ -1994,6 +2379,36 @@ public class FSMStatemachine implements IFSMStatemachine {
 		stateVector[0] = State.$NullState$;
 		
 		exitAction_Machine_Serving_Serving_Remove_bag();
+	}
+	
+	/* Default exit sequence for state Waiting */
+	private void exitSequence_Machine_Serving_Serving_Waiting() {
+		nextStateIndex = 0;
+		stateVector[0] = State.$NullState$;
+	}
+	
+	/* Default exit sequence for state Pouring Vanilla */
+	private void exitSequence_Machine_Serving_Serving_Pouring_Vanilla() {
+		nextStateIndex = 0;
+		stateVector[0] = State.$NullState$;
+		
+		exitAction_Machine_Serving_Serving_Pouring_Vanilla();
+	}
+	
+	/* Default exit sequence for state Mix Vanilla */
+	private void exitSequence_Machine_Serving_Serving_Mix_Vanilla() {
+		nextStateIndex = 0;
+		stateVector[0] = State.$NullState$;
+		
+		exitAction_Machine_Serving_Serving_Mix_Vanilla();
+	}
+	
+	/* Default exit sequence for state MilkCloud */
+	private void exitSequence_Machine_Serving_Serving_MilkCloud() {
+		nextStateIndex = 0;
+		stateVector[0] = State.$NullState$;
+		
+		exitAction_Machine_Serving_Serving_MilkCloud();
 	}
 	
 	/* Default exit sequence for state cleaning */
@@ -2019,16 +2434,28 @@ public class FSMStatemachine implements IFSMStatemachine {
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water:
 			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water();
 			break;
-		case machine_Serving_Serving_Waiting:
-			exitSequence_Machine_Serving_Serving_Waiting();
-			exitAction_Machine_Serving();
-			break;
 		case machine_Serving_Serving_Infusing:
 			exitSequence_Machine_Serving_Serving_Infusing();
 			exitAction_Machine_Serving();
 			break;
 		case machine_Serving_Serving_Remove_bag:
 			exitSequence_Machine_Serving_Serving_Remove_bag();
+			exitAction_Machine_Serving();
+			break;
+		case machine_Serving_Serving_Waiting:
+			exitSequence_Machine_Serving_Serving_Waiting();
+			exitAction_Machine_Serving();
+			break;
+		case machine_Serving_Serving_Pouring_Vanilla:
+			exitSequence_Machine_Serving_Serving_Pouring_Vanilla();
+			exitAction_Machine_Serving();
+			break;
+		case machine_Serving_Serving_Mix_Vanilla:
+			exitSequence_Machine_Serving_Serving_Mix_Vanilla();
+			exitAction_Machine_Serving();
+			break;
+		case machine_Serving_Serving_MilkCloud:
+			exitSequence_Machine_Serving_Serving_MilkCloud();
 			exitAction_Machine_Serving();
 			break;
 		case machine_cleaning:
@@ -2053,6 +2480,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
 			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar();
+			exitAction_Machine_Serving();
+			break;
+		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
+			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup();
 			exitAction_Machine_Serving();
 			break;
 		default:
@@ -2150,14 +2581,23 @@ public class FSMStatemachine implements IFSMStatemachine {
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water:
 			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water();
 			break;
-		case machine_Serving_Serving_Waiting:
-			exitSequence_Machine_Serving_Serving_Waiting();
-			break;
 		case machine_Serving_Serving_Infusing:
 			exitSequence_Machine_Serving_Serving_Infusing();
 			break;
 		case machine_Serving_Serving_Remove_bag:
 			exitSequence_Machine_Serving_Serving_Remove_bag();
+			break;
+		case machine_Serving_Serving_Waiting:
+			exitSequence_Machine_Serving_Serving_Waiting();
+			break;
+		case machine_Serving_Serving_Pouring_Vanilla:
+			exitSequence_Machine_Serving_Serving_Pouring_Vanilla();
+			break;
+		case machine_Serving_Serving_Mix_Vanilla:
+			exitSequence_Machine_Serving_Serving_Mix_Vanilla();
+			break;
+		case machine_Serving_Serving_MilkCloud:
+			exitSequence_Machine_Serving_Serving_MilkCloud();
 			break;
 		default:
 			break;
@@ -2175,6 +2615,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
 			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar();
+			break;
+		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
+			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup();
 			break;
 		default:
 			break;
@@ -2257,6 +2700,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
 			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar();
 			break;
+		case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
+			exitSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup();
+			break;
 		default:
 			break;
 		}
@@ -2281,11 +2727,33 @@ public class FSMStatemachine implements IFSMStatemachine {
 	}
 	
 	/* The reactions of state null. */
+	private void react_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0() {
+		if (check_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0_tr1_tr1()) {
+			effect_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0_tr1();
+		} else {
+			effect_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0_tr0();
+		}
+	}
+	
+	/* The reactions of state null. */
 	private void react_Machine_Serving_Serving__choice_0() {
 		if (check_Machine_Serving_Serving__choice_0_tr0_tr0()) {
 			effect_Machine_Serving_Serving__choice_0_tr0();
 		} else {
-			effect_Machine_Serving_Serving__choice_0_tr1();
+			if (check_Machine_Serving_Serving__choice_0_tr2_tr2()) {
+				effect_Machine_Serving_Serving__choice_0_tr2();
+			} else {
+				effect_Machine_Serving_Serving__choice_0_tr1();
+			}
+		}
+	}
+	
+	/* The reactions of state null. */
+	private void react_Machine_Serving_Serving__choice_1() {
+		if (check_Machine_Serving_Serving__choice_1_tr0_tr0()) {
+			effect_Machine_Serving_Serving__choice_1_tr0();
+		} else {
+			effect_Machine_Serving_Serving__choice_1_tr1();
 		}
 	}
 	
@@ -2346,7 +2814,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* Default react sequence for initial entry  */
 	private void react_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__entry_Default() {
-		enterSequence_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar_default();
+		react_Machine_Serving_Serving_Water_and_Sugar_Pouring_sugar__choice_0();
 	}
 	
 	/* The reactions of state null. */
@@ -2439,7 +2907,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if ((sCInterface.s_Sugar || (sCInterface.s_Size || sCInterface.s_Temp))) {
+			if ((sCInterface.s_Sugar || (sCInterface.s_Size || (sCInterface.s_Temp || (sCInterface.milkCloud || (sCInterface.croutons || (sCInterface.mapleSyrup || sCInterface.vanilla))))))) {
 				exitSequence_Machine_Order_Option_Waiting();
 				raiseStartTimer();
 				
@@ -2732,14 +3200,19 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return did_transition;
 	}
 	
-	private boolean machine_Serving_Serving_Waiting_react(boolean try_transition) {
+	private boolean machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup_react(boolean try_transition) {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
 			did_transition = false;
 		}
 		if (did_transition==false) {
-			did_transition = machine_Serving_react(try_transition);
+			if (timeEvents[9]) {
+				sCInterface.raiseEndPouringMapleSyrup();
+				
+				sCInterface.setSugar(true);
+			}
+			did_transition = machine_Serving_Serving_Water_and_Sugar_react(try_transition);
 		}
 		return did_transition;
 	}
@@ -2748,7 +3221,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[9]) {
+			if (timeEvents[10]) {
 				exitSequence_Machine_Serving_Serving_Infusing();
 				sCInterface.raiseEndInfusing();
 				
@@ -2768,9 +3241,79 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (timeEvents[10]) {
+			if (timeEvents[11]) {
 				exitSequence_Machine_Serving_Serving_Remove_bag();
 				sCInterface.raiseEndRemovingBag();
+				
+				react_Machine_Serving_Serving__choice_1();
+			} else {
+				did_transition = false;
+			}
+		}
+		if (did_transition==false) {
+			did_transition = machine_Serving_react(try_transition);
+		}
+		return did_transition;
+	}
+	
+	private boolean machine_Serving_Serving_Waiting_react(boolean try_transition) {
+		boolean did_transition = try_transition;
+		
+		if (try_transition) {
+			did_transition = false;
+		}
+		if (did_transition==false) {
+			did_transition = machine_Serving_react(try_transition);
+		}
+		return did_transition;
+	}
+	
+	private boolean machine_Serving_Serving_Pouring_Vanilla_react(boolean try_transition) {
+		boolean did_transition = try_transition;
+		
+		if (try_transition) {
+			if (timeEvents[12]) {
+				exitSequence_Machine_Serving_Serving_Pouring_Vanilla();
+				sCInterface.raiseMixVanilla();
+				
+				enterSequence_Machine_Serving_Serving_Mix_Vanilla_default();
+				machine_Serving_react(false);
+			} else {
+				did_transition = false;
+			}
+		}
+		if (did_transition==false) {
+			did_transition = machine_Serving_react(try_transition);
+		}
+		return did_transition;
+	}
+	
+	private boolean machine_Serving_Serving_Mix_Vanilla_react(boolean try_transition) {
+		boolean did_transition = try_transition;
+		
+		if (try_transition) {
+			if (timeEvents[13]) {
+				exitSequence_Machine_Serving_Serving_Mix_Vanilla();
+				sCInterface.raiseEndVanilla();
+				
+				react_Machine_Serving_Serving__choice_1();
+			} else {
+				did_transition = false;
+			}
+		}
+		if (did_transition==false) {
+			did_transition = machine_Serving_react(try_transition);
+		}
+		return did_transition;
+	}
+	
+	private boolean machine_Serving_Serving_MilkCloud_react(boolean try_transition) {
+		boolean did_transition = try_transition;
+		
+		if (try_transition) {
+			if (timeEvents[14]) {
+				exitSequence_Machine_Serving_Serving_MilkCloud();
+				sCInterface.raiseEndMilkCloud();
 				
 				enterSequence_Machine_Serving_Serving_Waiting_default();
 				machine_Serving_react(false);
@@ -2799,7 +3342,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		if (did_transition==false) {
-			if (timeEvents[11]) {
+			if (timeEvents[15]) {
 				sCInterface.setCleanIsDone(true);
 				
 				raiseNewOrder();

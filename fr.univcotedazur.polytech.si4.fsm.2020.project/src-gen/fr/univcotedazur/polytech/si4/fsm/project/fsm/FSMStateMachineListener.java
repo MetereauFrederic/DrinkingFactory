@@ -212,4 +212,62 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 		System.out.println("endCleanning()");
 		machineController.removeLine(machineController.cleanning);
 	}
+
+	@Override
+	public boolean isMapleSyrup() {
+		return machineController.isMapleSyrup();
+	}
+
+	@Override
+	public boolean isVanilla() {
+		return machineController.isVanilla();
+	}
+
+	@Override
+	public boolean isMilkCloud() {
+		return machineController.isMilkCloud();
+	}
+
+	@Override
+	public void onPouringMapleSyrupRaised() {
+		System.out.println("pouringMapleSyrup()");
+		machineController.addLine(machineController.pouringMapleSyrup);
+	}
+
+	@Override
+	public void onEndPouringMapleSyrupRaised() {
+		System.out.println("endPouringMapleSyrup()");
+		machineController.removeLine(machineController.pouringMapleSyrup);
+	}
+
+	@Override
+	public void onPouringVanillaRaised() {
+		System.out.println("pouringVanilla()");
+		machineController.addLine(machineController.pouringVanilla);
+	}
+
+	@Override
+	public void onMixVanillaRaised() {
+		System.out.println("pouringMixVanilla()");
+		machineController.removeLine(machineController.pouringVanilla);
+		machineController.addLine(machineController.mixVanilla);
+	}
+
+	@Override
+	public void onEndVanillaRaised() {
+		System.out.println("endVanilla()");
+		machineController.removeLine(machineController.mixVanilla);
+	}
+
+	@Override
+	public void onPouringMilkCloudRaised() {
+		System.out.println("pouringMilkCloud()");
+		machineController.addLine(machineController.pouringMilkCloud);
+	}
+
+	@Override
+	public void onEndMilkCloudRaised() {
+		System.out.println("endMilkCloud()");
+		machineController.removeLine(machineController.pouringMilkCloud);
+	}
 }
