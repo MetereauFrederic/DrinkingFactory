@@ -13,7 +13,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	}
 
 	@Override
-	public void onOnCancelRaised() {
+	public void onCancelRaised() {
 		machineController.cancel();
 	}
 
@@ -48,8 +48,8 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	}
 
 	@Override
-	public long getPouringShugar() {
-		return machineController.getPouringShugar();
+	public long getPouringSugar() {
+		return machineController.getPouringSugar();
 	}
 
 	@Override
@@ -68,57 +68,141 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	}
 
 	@Override
-	public void onOnResetRaised() {
+	public void onResetRaised() {
 		machineController.reset();
 	}
 
 	@Override
-	public void onOnCrushingRaised() {
-		machineController.crushing();
+	public void onCrushingRaised() {
+		System.out.println("crushing()");
+		machineController.addLine(machineController.crushing);
 	}
 
 	@Override
-	public void onOnTampingRaised() {
-		machineController.tamping();
+	public void onTampingRaised() {
+		System.out.println("tamping()");
+		machineController.addLine(machineController.tamping);
 	}
 
 	@Override
-	public void onOnHeatingRaised() {
-		machineController.heating();
+	public void onHeatingRaised() {
+		System.out.println("heating()");
+		machineController.addLine(machineController.heating);
 	}
 
 	@Override
-	public void onOnPlacingCupRaised() {
-		machineController.placingCup();
+	public void onPlacingCupRaised() {
+		System.out.println("placingCup()");
+		machineController.addLine(machineController.placingCup);
+		machineController.placeCup();
 	}
 
 	@Override
-	public void onOnPouringWaterRaised() {
-		machineController.pourringWater();
+	public void onPouringWaterRaised() {
+		System.out.println("pouringWater()");
+		machineController.addLine(machineController.water);
 	}
 
 	@Override
-	public void onOnPouringShugarRaised() {
-		machineController.pourringSugar();
+	public void onPouringSugarRaised() {
+		System.out.println("pouringSugar()");
+		machineController.addLine(machineController.sugar);
 	}
 
 	@Override
-	public void onOnInfusingRaised() {
-		machineController.infusing();
+	public void onInfusingRaised() {
+		System.out.println("infusing()");
+		machineController.addLine(machineController.infusion);
 	}
 
 	@Override
-	public void onOnRemovingBagRaised() {
-		machineController.removingBag();
+	public void onRemovingBagRaised() {
+		System.out.println("removingBag()");
+		machineController.addLine(machineController.removingBag);
 	}
 
 	@Override
-	public void onOnPuttingTeaRaised() {
-		machineController.puttingTea();
+	public void onPuttingTeaRaised() {
+		System.out.println("puttingTea()");
+		machineController.addLine(machineController.puttingBag);
 	}
 
 	@Override
 	public void onDoNothingRaised() {
-		System.out.println("nothing");
+		//System.out.println("nothing");
+	}
+
+	@Override
+	public void onEndCrushingRaised() {
+		System.out.println("endCrushing()");
+		machineController.removeLine(machineController.crushing);
+		
+	}
+
+	@Override
+	public void onEndTampingRaised() {
+		System.out.println("endTamping()");
+		machineController.removeLine(machineController.tamping);
+		
+	}
+
+	@Override
+	public void onEndHeatingRaised() {
+		System.out.println("endHeating()");
+		machineController.removeLine(machineController.heating);
+		
+	}
+
+	@Override
+	public void onEndPlacingCupRaised() {
+		System.out.println("endPlacingCup()");
+		machineController.removeLine(machineController.placingCup);
+		
+	}
+
+	@Override
+	public void onEndPouringWaterRaised() {
+		System.out.println("endWater()");
+		machineController.removeLine(machineController.water);
+	}
+
+	@Override
+	public void onEndPouringSugarRaised() {
+		System.out.println("endSugar()");
+		machineController.removeLine(machineController.sugar);
+	}
+
+	@Override
+	public void onEndInfusingRaised() {
+		System.out.println("endInfusion()");
+		machineController.removeLine(machineController.infusion);
+	}
+
+	@Override
+	public void onEndRemovingBagRaised() {
+		System.out.println("endRemoveBag()");
+		machineController.removeLine(machineController.removingBag);
+	}
+
+	@Override
+	public void onEndPuttingTeaRaised() {
+		System.out.println("endPutBag()");
+		machineController.removeLine(machineController.puttingBag);
+	}
+
+	@Override
+	public void onDrinkReadyRaised() {
+		System.out.println("drinkReady()");
+		machineController.drinkReady();
+	}
+
+	@Override
+	public long getPercent() {
+		return machineController.getPercent();
+	}
+
+	@Override
+	public void onProgressBarRaised() {
+		machineController.progressBar();
 	}
 }

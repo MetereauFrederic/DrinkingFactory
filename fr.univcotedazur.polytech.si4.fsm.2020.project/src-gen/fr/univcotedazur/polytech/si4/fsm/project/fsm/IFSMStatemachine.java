@@ -36,31 +36,53 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public void raiseCup_Taken();
 		
-		public boolean isRaisedOnCancel();
+		public boolean isRaisedCancel();
 		
-		public boolean isRaisedOnReset();
+		public boolean isRaisedReset();
 		
 		public boolean isRaisedPreparing();
 		
-		public boolean isRaisedOnCrushing();
+		public boolean isRaisedCrushing();
 		
-		public boolean isRaisedOnTamping();
+		public boolean isRaisedEndCrushing();
 		
-		public boolean isRaisedOnHeating();
+		public boolean isRaisedTamping();
 		
-		public boolean isRaisedOnPlacingCup();
+		public boolean isRaisedEndTamping();
 		
-		public boolean isRaisedOnPouringWater();
+		public boolean isRaisedHeating();
 		
-		public boolean isRaisedOnPouringShugar();
+		public boolean isRaisedEndHeating();
 		
-		public boolean isRaisedOnInfusing();
+		public boolean isRaisedPlacingCup();
 		
-		public boolean isRaisedOnRemovingBag();
+		public boolean isRaisedEndPlacingCup();
 		
-		public boolean isRaisedOnPuttingTea();
+		public boolean isRaisedPouringWater();
+		
+		public boolean isRaisedEndPouringWater();
+		
+		public boolean isRaisedPouringSugar();
+		
+		public boolean isRaisedEndPouringSugar();
+		
+		public boolean isRaisedInfusing();
+		
+		public boolean isRaisedEndInfusing();
+		
+		public boolean isRaisedRemovingBag();
+		
+		public boolean isRaisedEndRemovingBag();
+		
+		public boolean isRaisedPuttingTea();
+		
+		public boolean isRaisedEndPuttingTea();
 		
 		public boolean isRaisedDoNothing();
+		
+		public boolean isRaisedDrinkReady();
+		
+		public boolean isRaisedProgressBar();
 		
 		public long getPrice();
 		
@@ -70,25 +92,17 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public void setMoney(long value);
 		
-		public long getHeatingTime();
+		public boolean getWater();
 		
-		public void setHeatingTime(long value);
+		public void setWater(boolean value);
 		
-		public long getPouringWater();
+		public boolean getSugar();
 		
-		public void setPouringWater(long value);
+		public void setSugar(boolean value);
 		
-		public long getPouringShugar();
+		public long getAPercent();
 		
-		public void setPouringShugar(long value);
-		
-		public long getCrushingTime();
-		
-		public void setCrushingTime(long value);
-		
-		public long getInfusingTime();
-		
-		public void setInfusingTime(long value);
+		public void setAPercent(long value);
 		
 	public List<SCInterfaceListener> getListeners();
 		public void setSCInterfaceOperationCallback(SCInterfaceOperationCallback operationCallback);
@@ -97,19 +111,30 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 	
 	public interface SCInterfaceListener {
 	
-		public void onOnCancelRaised();
-		public void onOnResetRaised();
+		public void onCancelRaised();
+		public void onResetRaised();
 		public void onPreparingRaised();
-		public void onOnCrushingRaised();
-		public void onOnTampingRaised();
-		public void onOnHeatingRaised();
-		public void onOnPlacingCupRaised();
-		public void onOnPouringWaterRaised();
-		public void onOnPouringShugarRaised();
-		public void onOnInfusingRaised();
-		public void onOnRemovingBagRaised();
-		public void onOnPuttingTeaRaised();
+		public void onCrushingRaised();
+		public void onEndCrushingRaised();
+		public void onTampingRaised();
+		public void onEndTampingRaised();
+		public void onHeatingRaised();
+		public void onEndHeatingRaised();
+		public void onPlacingCupRaised();
+		public void onEndPlacingCupRaised();
+		public void onPouringWaterRaised();
+		public void onEndPouringWaterRaised();
+		public void onPouringSugarRaised();
+		public void onEndPouringSugarRaised();
+		public void onInfusingRaised();
+		public void onEndInfusingRaised();
+		public void onRemovingBagRaised();
+		public void onEndRemovingBagRaised();
+		public void onPuttingTeaRaised();
+		public void onEndPuttingTeaRaised();
 		public void onDoNothingRaised();
+		public void onDrinkReadyRaised();
+		public void onProgressBarRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {
@@ -124,13 +149,15 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public long getPouringWater();
 		
-		public long getPouringShugar();
+		public long getPouringSugar();
 		
 		public long getInfusingTime();
 		
 		public boolean isExpresso();
 		
 		public boolean isTea();
+		
+		public long getPercent();
 		
 	}
 	

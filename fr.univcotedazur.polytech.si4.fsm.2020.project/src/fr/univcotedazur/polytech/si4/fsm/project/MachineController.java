@@ -21,6 +21,16 @@ public class MachineController {
 	private boolean nfc;
 	private int money;
 	private Drink drink;
+
+	public String heating = "Chauffage de l'eau";
+	public String placingCup = "Placement du gobelet";
+	public String crushing = "Broyage des grains";
+	public String tamping = "Tassage des grains";
+	public String infusion = "Infusion du thé";
+	public String puttingBag = "Placement du sachet de thé";
+	public String removingBag = "Retrait du sachet de thé";
+	public String sugar = "Versement du sucre";
+	public String water = "Versement de l'eau";
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
@@ -93,23 +103,33 @@ public class MachineController {
 	}
 
 	public long getHeatingTime() {
-		return (drinkFactoryMachine.temperatureSlider.getValue() * 5) + 10;
+		int time = (drinkFactoryMachine.temperatureSlider.getValue() * 5) + 10;
+		System.out.println("heating time : " + time);
+		return time;
 	}
 
 	public long getCrushingTime() {
-		return drinkFactoryMachine.sizeSlider.getValue() + 3;
+		int time = drinkFactoryMachine.sizeSlider.getValue() + 3;
+		System.out.println("crushing time : " + time);
+		return time;
 	}
 	
 	public long getPouringWater() {
-		return (drinkFactoryMachine.temperatureSlider.getValue() * 4) + 5;
+		int time = (drinkFactoryMachine.temperatureSlider.getValue() * 4) + 5;
+		System.out.println("water time : " + time);
+		return time;
 	}
 
-	public long getPouringShugar() {
-		return drinkFactoryMachine.sugarSlider.getValue() + 3;
+	public long getPouringSugar() {
+		int time = drinkFactoryMachine.sugarSlider.getValue() + 3;
+		System.out.println("sugar time : " + time);
+		return time;
 	}
 
 	public long getInfusingTime() {
-		return (drinkFactoryMachine.temperatureSlider.getValue() * 3) + 5;
+		int time = (drinkFactoryMachine.temperatureSlider.getValue() * 3) + 5;
+		System.out.println("infusion time : " + time);
+		return time;
 	}
 
 	public boolean isExpresso() {
@@ -123,41 +143,37 @@ public class MachineController {
 	public void reset() {
 		System.out.println("reset()");
 	}
-
-	public void crushing() {
-		System.out.println("crushing()");
+	
+	public void removeLine(String line) {
+		drinkFactoryMachine.messagesToUser.setText(drinkFactoryMachine.messagesToUser.getText().replaceAll("<br/><br/>"+line, ""));
+	}
+	
+	public void addLine(String line) {
+		String s = drinkFactoryMachine.messagesToUser.getText().replaceAll("</html>", "");
+		s += "<br/><br/>" + line + "</html>";
+		drinkFactoryMachine.messagesToUser.setText(s);
 	}
 
-	public void tamping() {
-		System.out.println("tamping()");
+	public void drinkReady() {
+		drinkFactoryMachine.messagesToUser.setText("<html>Votre boisson est prête !</html>");
 	}
 
-	public void heating() {
-		System.out.println("heating()");
+	public void placeCup() {
+		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
 	}
 
-	public void placingCup() {
-		System.out.println("placingCup()");
+	public long getPercent() {
+		long expressoTime = isExpresso()?((long)(getCrushingTime()*1.25)):0;
+		long heatingTime = getHeatingTime();
+		long cupTime = 3 + (isTea()?3:0);
+		long totalTime = Math.max(Math.max(expressoTime, heatingTime), cupTime);
+		totalTime += Math.max(getPouringWater(), getPouringSugar());
+		totalTime += isTea()?(getInfusingTime()+3):0;
+		return totalTime*10;
 	}
 
-	public void pourringWater() {
-		System.out.println("pourringWater()");
-	}
-
-	public void pourringSugar() {
-		System.out.println("purringSugar()");
-	}
-
-	public void infusing() {
-		System.out.println("infusing()");
-	}
-
-	public void removingBag() {
-		System.out.println("removingBag()");
-	}
-
-	public void puttingTea() {
-		System.out.println("puttingTea()");
+	public void progressBar() {
+		drinkFactoryMachine.progressBar.setValue(drinkFactoryMachine.progressBar.getValue()+1);
 	}
 
 }

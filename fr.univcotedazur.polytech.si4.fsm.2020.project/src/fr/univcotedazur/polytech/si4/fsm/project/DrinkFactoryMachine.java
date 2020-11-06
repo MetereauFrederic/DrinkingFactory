@@ -46,6 +46,7 @@ public class DrinkFactoryMachine extends JFrame {
 	//private final ImageIcon imageIcon = new ImageIcon();
 	
 	JLabel messagesToUser, labelForPictures;
+	JProgressBar progressBar;
 	JButton coffeeButton, expressoButton, teaButton, soupButton, icedTeaButton;
 	JButton money50centsButton, money25centsButton, money10centsButton, nfcBiiiipButton;
 	JButton cancelButton;
@@ -126,9 +127,9 @@ public class DrinkFactoryMachine extends JFrame {
 		soupButton.setBounds(12, 145, 96, 25);
 		contentPane.add(soupButton);
 
-		JProgressBar progressBar = new JProgressBar();
+		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
-		progressBar.setValue(10);
+		progressBar.setValue(0);
 		progressBar.setForeground(Color.LIGHT_GRAY);
 		progressBar.setBackground(Color.DARK_GRAY);
 		progressBar.setBounds(12, 254, 622, 26);
