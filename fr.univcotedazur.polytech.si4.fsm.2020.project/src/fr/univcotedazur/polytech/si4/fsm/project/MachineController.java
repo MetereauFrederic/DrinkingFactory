@@ -289,8 +289,9 @@ public class MachineController {
 		long heatingTime = getHeatingTime();
 		long cupTime = 3 + (isTea()?3:0);
 		long totalTime = Math.max(Math.max(expressoTime, heatingTime), cupTime);
-		totalTime += Math.max(getPouringWater(), getPouringSugar());
-		totalTime += isTea()?(getInfusingTime()+3):0;
+		totalTime += Math.max(getPouringWater(), getPouringSugar()); // getPurringSugar() pour sucre et sirop d'érable
+		totalTime += isTea()?(getInfusingTime()+3):isVanilla()?8:0; //8 pour la vanille versement + mixage
+		totalTime += isMilkCloud()?3:0; //Nuage de lait
 		return totalTime*10;
 	}
 
