@@ -217,24 +217,28 @@ public class DrinkFactoryMachine extends JFrame {
 		milkCloud.setForeground(Color.WHITE);
 		milkCloud.setBackground(Color.DARK_GRAY);
 		milkCloud.setBounds(12, lblOptions.getY() + 20, 110, 20);
+		milkCloud.setEnabled(false);
 		contentPane.add(milkCloud);
 		
 		croutons = new JButton("Croutons");
 		croutons.setForeground(Color.WHITE);
 		croutons.setBackground(Color.DARK_GRAY);
 		croutons.setBounds(12, milkCloud.getY() + 30, 110, 20);
+		croutons.setEnabled(false);
 		contentPane.add(croutons);
 		
 		mapleSyrup = new JButton("Maple Syrup");
 		mapleSyrup.setForeground(Color.WHITE);
 		mapleSyrup.setBackground(Color.DARK_GRAY);
 		mapleSyrup.setBounds(12, croutons.getY() + 30, 110, 20);
+		mapleSyrup.setEnabled(false);
 		contentPane.add(mapleSyrup);
 		
 		vanilla = new JButton("Vanilla");
 		vanilla.setForeground(Color.WHITE);
 		vanilla.setBackground(Color.DARK_GRAY);
 		vanilla.setBounds(12, mapleSyrup.getY() + 30, 110, 20);
+		vanilla.setEnabled(false);
 		contentPane.add(vanilla);
 		
 		progressBar = new JProgressBar();
@@ -393,6 +397,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.MILKCLOUD, milkCloud);
+				fsm.getSCInterface().raiseMilkCloud();
 			}
 		});
 		
@@ -401,6 +406,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.CROUTONS, croutons);
+				fsm.getSCInterface().raiseCroutons();
 			}
 		});
 		
@@ -409,6 +415,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.MAPLESYRUP, mapleSyrup);
+				fsm.getSCInterface().raiseMapleSyrup();
 			}
 		});
 		
@@ -417,6 +424,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.VANILLA, vanilla);
+				fsm.getSCInterface().raiseVanilla();
 			}
 		});
 		
@@ -452,7 +460,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.nfcPayed();
-				messagesToUser.setText("<html>" + machineController + "<br/><br/>Paiement en carte bancaire</html>");
+				messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseC_NFC();
 			}
 		});
@@ -469,7 +477,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				messagesToUser.setText("<html>" + machineController + "<br/><br/>Sucre dosé à " + sugarSlider.getValue() + "</html>");
+				messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseS_Sugar();
 			}
 		});
@@ -478,7 +486,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				messagesToUser.setText("<html>" + machineController + "<br/><br/>Taille " + sizeSlider.getValue() + "</html>");
+				messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseS_Size();
 			}
 		});
@@ -487,7 +495,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				messagesToUser.setText("<html>" + machineController + "<br/><br/>Température à " + temperatureSlider.getValue() + "</html>");
+				messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseS_Temp();
 			}
 		});

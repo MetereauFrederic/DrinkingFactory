@@ -2859,7 +2859,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if ((sCInterface.b_Coffe || (sCInterface.b_Expresso || sCInterface.b_Tea))) {
+			if ((sCInterface.b_Coffe || (sCInterface.b_Expresso || (sCInterface.b_Tea || (sCInterface.milkCloud || (sCInterface.croutons || (sCInterface.mapleSyrup || sCInterface.vanilla))))))) {
 				exitSequence_Machine_Order_Select_Drink_select_Selecting_Chosen();
 				enterSequence_Machine_Order_Select_Drink_select_Selecting_Chosen_default();
 				machine_Order_Select_Drink_select_react(false);
@@ -2907,7 +2907,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if ((sCInterface.s_Sugar || (sCInterface.s_Size || (sCInterface.s_Temp || (sCInterface.milkCloud || (sCInterface.croutons || (sCInterface.mapleSyrup || sCInterface.vanilla))))))) {
+			if ((sCInterface.s_Sugar || (sCInterface.s_Size || sCInterface.s_Temp))) {
 				exitSequence_Machine_Order_Option_Waiting();
 				raiseStartTimer();
 				

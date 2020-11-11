@@ -8,20 +8,6 @@ import javax.swing.JButton;
 
 public class MachineController {
 	
-	public enum Drink {
-		COFFEE(300,"café"),
-		TEA(250, "thé"),
-		EXPRESSO(499, "expresso");
-		
-		private int price;
-		private String name;
-		
-		Drink(int price, String name) {
-			this.price = price;
-			this.name = name;
-		}
-	}
-	
 	public enum Option {
 		
 		MILKCLOUD(10, "nuage de lait"), CROUTONS(30, "croutons"), MAPLESYRUP(10, "sirop d'érable"), VANILLA(40, "glace vanille mixée");
@@ -35,9 +21,29 @@ public class MachineController {
 		}
 	}
 	
+	public enum Drink {
+		COFFEE(300,"café", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
+		TEA(250, "thé", Option.MILKCLOUD, Option.MAPLESYRUP),
+		EXPRESSO(499, "expresso", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA);
+		
+		private int price;
+		private String name;
+		private List<Option> options;
+		
+		Drink(int price, String name, Option ... options) {
+			this.price = price;
+			this.name = name;
+			this.options = new ArrayList<>();
+			for (Option option : options) {
+				this.options.add(option);
+			}
+		}
+	}
+	
 	private DrinkFactoryMachine drinkFactoryMachine;
 	private boolean nfc;
 	private int money;
+	private int price;
 	private Drink drink;
 	private List<Option> options;
 
@@ -60,6 +66,7 @@ public class MachineController {
 		this.drinkFactoryMachine = drinkFactoryMachine;
 		this.nfc = false;
 		this.money = 0;
+		this.price = 0;
 		this.options = new ArrayList<>();
 	}
 
@@ -83,8 +90,38 @@ public class MachineController {
 		drinkFactoryMachine.soupButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.icedTeaButton.setBackground(Color.DARK_GRAY);
 		button.setBackground(Color.GRAY);
+		disableOptions();
+		deleteOptions();
+		for (Option option : drink.options) {
+			switch (option) {
+				case MILKCLOUD:
+					drinkFactoryMachine.milkCloud.setEnabled(true);
+					break;
+				case CROUTONS:
+					drinkFactoryMachine.croutons.setEnabled(true);
+					break;
+				case MAPLESYRUP:
+					drinkFactoryMachine.mapleSyrup.setEnabled(true);
+					break;
+				case VANILLA:
+					drinkFactoryMachine.vanilla.setEnabled(true);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	
+	private void deleteOptions() {
+		List<Option> delete = new ArrayList<>();
+		for (Option option : options) {
+			if (!drink.options.contains(option)) {
+				delete.add(option);
+			}
+		}
+		options.removeAll(delete);
+	}
+
 	public void addCoin(int payed) {
 		this.money += payed;
 	}
@@ -114,19 +151,26 @@ public class MachineController {
 		drinkFactoryMachine.teaButton.setEnabled(!state);
 		drinkFactoryMachine.soupButton.setEnabled(!state);
 		drinkFactoryMachine.icedTeaButton.setEnabled(!state);
-		drinkFactoryMachine.milkCloud.setEnabled(!state);
-		drinkFactoryMachine.croutons.setEnabled(!state);
-		drinkFactoryMachine.mapleSyrup.setEnabled(!state);
-		drinkFactoryMachine.vanilla.setEnabled(!state);
 		drinkFactoryMachine.cancelButton.setEnabled(!state);
 		drinkFactoryMachine.addCupButton.setEnabled(!state);
+		disableOptions();
+	}
+
+	private void disableOptions() {
+		drinkFactoryMachine.milkCloud.setEnabled(false);
+		drinkFactoryMachine.croutons.setEnabled(false);
+		drinkFactoryMachine.mapleSyrup.setEnabled(false);
+		drinkFactoryMachine.vanilla.setEnabled(false);
 	}
 
 	public int newPrice() {
 		System.out.println("newPrice()");
+		if(this.drink!=null) {
+			price = this.drink.price;
+			for (Option option : options) price += option.price;
+		}
 		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
-		if(this.drink!=null) return this.drink.price;
-		return Integer.MAX_VALUE;
+		return (price == 0) ? Integer.MAX_VALUE : price;
 	}
 
 	public int currentMoney() {
@@ -141,7 +185,7 @@ public class MachineController {
 		String s = "";
 		if(this.nfc) s += "carte acceptée" ;
 		else s += "\t" + (((double)this.money)/100.0) + "€ / "
-				+ ((this.drink==null)?"___":(((double)this.drink.price)/100.0)) + "€";
+				+ ((this.drink==null)?"___":(((double)this.price)/100.0)) + "€";
 		return s;
 	}
 	
@@ -154,6 +198,7 @@ public class MachineController {
 		drinkFactoryMachine.messagesToUser.setText(s);
 		this.nfc = false;
 		this.money = 0;
+		this.price = 0;
 	}
 
 	public long getHeatingTime() {
