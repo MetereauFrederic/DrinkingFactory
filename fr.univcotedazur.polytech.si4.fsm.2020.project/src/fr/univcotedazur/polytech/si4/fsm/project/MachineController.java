@@ -113,13 +113,14 @@ public class MachineController {
 	}
 	
 	private void deleteOptions() {
-		List<Option> delete = new ArrayList<>();
-		for (Option option : options) {
-			if (!drink.options.contains(option)) {
-				delete.add(option);
-			}
-		}
-		options.removeAll(delete);
+//		List<Option> delete = new ArrayList<>();
+//		for (Option option : options) {
+//			if (!drink.options.contains(option)) {
+//				delete.add(option);
+//			}
+//		}
+//		options.removeAll(delete);
+		options.clear();
 	}
 
 	public void addCoin(int payed) {
@@ -147,10 +148,15 @@ public class MachineController {
 		drinkFactoryMachine.temperatureSlider.setEnabled(!state);
 		drinkFactoryMachine.nfcBiiiipButton.setEnabled(!state);
 		drinkFactoryMachine.coffeeButton.setEnabled(!state);
+		drinkFactoryMachine.coffeeButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.expressoButton.setEnabled(!state);
+		drinkFactoryMachine.expressoButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.teaButton.setEnabled(!state);
+		drinkFactoryMachine.teaButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.soupButton.setEnabled(!state);
+		drinkFactoryMachine.soupButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.icedTeaButton.setEnabled(!state);
+		drinkFactoryMachine.icedTeaButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.cancelButton.setEnabled(!state);
 		drinkFactoryMachine.addCupButton.setEnabled(!state);
 		disableOptions();
@@ -158,9 +164,13 @@ public class MachineController {
 
 	private void disableOptions() {
 		drinkFactoryMachine.milkCloud.setEnabled(false);
+		drinkFactoryMachine.milkCloud.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.croutons.setEnabled(false);
+		drinkFactoryMachine.croutons.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.mapleSyrup.setEnabled(false);
+		drinkFactoryMachine.mapleSyrup.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.vanilla.setEnabled(false);
+		drinkFactoryMachine.vanilla.setBackground(Color.DARK_GRAY);
 	}
 
 	public int newPrice() {
