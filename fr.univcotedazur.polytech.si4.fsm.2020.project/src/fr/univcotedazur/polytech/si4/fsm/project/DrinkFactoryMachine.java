@@ -325,8 +325,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			 public void mouseClicked(MouseEvent e)  
 			    {  
-			      	fsm.getSCInterface().raiseCup_Taken();
 			      	changePicture("./picts/vide2.jpg");
+			      	fsm.getSCInterface().raiseCup_Taken();
 			    }  
 			
 		});

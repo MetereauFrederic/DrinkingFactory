@@ -1106,8 +1106,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 		machine_Order_Payment_Waiting,
 		machine_Order_Time_Waiting,
 		machine_Order_Time_Running,
-		machine_Order_Cup_No_cup,
 		machine_Order_Cup_Cup,
+		machine_Order_Cup_Waiting,
 		machine_Serving,
 		machine_Serving_Serving_Heating_and_Cup,
 		machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp,
@@ -1240,11 +1240,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 			case machine_Order_Time_Running:
 				machine_Order_Time_Running_react(true);
 				break;
-			case machine_Order_Cup_No_cup:
-				machine_Order_Cup_No_cup_react(true);
-				break;
 			case machine_Order_Cup_Cup:
 				machine_Order_Cup_Cup_react(true);
+				break;
+			case machine_Order_Cup_Waiting:
+				machine_Order_Cup_Waiting_react(true);
 				break;
 			case machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp:
 				machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp_react(true);
@@ -1370,7 +1370,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		switch (state) {
 		case machine_Order:
 			return stateVector[0].ordinal() >= State.
-					machine_Order.ordinal()&& stateVector[0].ordinal() <= State.machine_Order_Cup_Cup.ordinal();
+					machine_Order.ordinal()&& stateVector[0].ordinal() <= State.machine_Order_Cup_Waiting.ordinal();
 		case machine_Order_Select_Drink_select:
 			return stateVector[0].ordinal() >= State.
 					machine_Order_Select_Drink_select.ordinal()&& stateVector[0].ordinal() <= State.machine_Order_Select_Drink_select_Selecting_Waiting.ordinal();
@@ -1386,10 +1386,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[3] == State.machine_Order_Time_Waiting;
 		case machine_Order_Time_Running:
 			return stateVector[3] == State.machine_Order_Time_Running;
-		case machine_Order_Cup_No_cup:
-			return stateVector[4] == State.machine_Order_Cup_No_cup;
 		case machine_Order_Cup_Cup:
 			return stateVector[4] == State.machine_Order_Cup_Cup;
+		case machine_Order_Cup_Waiting:
+			return stateVector[4] == State.machine_Order_Cup_Waiting;
 		case machine_Serving:
 			return stateVector[0].ordinal() >= State.
 					machine_Serving.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_MilkCloud.ordinal();
@@ -1826,8 +1826,6 @@ public class FSMStatemachine implements IFSMStatemachine {
 	}
 	
 	private void effect_Machine_Serving_Serving_Heating_and_Cup_Cup__choice_1_tr0() {
-		sCInterface.setCup(false);
-		
 		react_Machine_Serving_Serving_Heating_and_Cup_Cup__choice_0();
 	}
 	
@@ -1893,18 +1891,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 		timer.setTimer(this, 0, (10 * 1000), false);
 	}
 	
-	/* Entry action for state 'No cup'. */
-	private void entryAction_Machine_Order_Cup_No_cup() {
-		sCInterface.setCup(false);
-		
-		sCInterface.raiseACup();
-		
-		sCInterface.setPrice(sCInterface.operationCallback.newPrice());
-	}
-	
 	/* Entry action for state 'Cup'. */
 	private void entryAction_Machine_Order_Cup_Cup() {
-		sCInterface.setCup(true);
+		sCInterface.setCup(!sCInterface.cup);
 		
 		sCInterface.raiseACup();
 		
@@ -2143,18 +2132,17 @@ public class FSMStatemachine implements IFSMStatemachine {
 		stateVector[3] = State.machine_Order_Time_Running;
 	}
 	
-	/* 'default' enter sequence for state No cup */
-	private void enterSequence_Machine_Order_Cup_No_cup_default() {
-		entryAction_Machine_Order_Cup_No_cup();
-		nextStateIndex = 4;
-		stateVector[4] = State.machine_Order_Cup_No_cup;
-	}
-	
 	/* 'default' enter sequence for state Cup */
 	private void enterSequence_Machine_Order_Cup_Cup_default() {
 		entryAction_Machine_Order_Cup_Cup();
 		nextStateIndex = 4;
 		stateVector[4] = State.machine_Order_Cup_Cup;
+	}
+	
+	/* 'default' enter sequence for state Waiting */
+	private void enterSequence_Machine_Order_Cup_Waiting_default() {
+		nextStateIndex = 4;
+		stateVector[4] = State.machine_Order_Cup_Waiting;
 	}
 	
 	/* 'default' enter sequence for state Serving */
@@ -2325,7 +2313,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	/* 'default' enter sequence for region Cup */
 	private void enterSequence_Machine_Order_Cup_default() {
-		react_Machine_Order_Cup__entry_Default();
+		react_Machine_Order_Cup_default();
 	}
 	
 	/* 'default' enter sequence for region Serving */
@@ -2405,14 +2393,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		exitAction_Machine_Order_Time_Running();
 	}
 	
-	/* Default exit sequence for state No cup */
-	private void exitSequence_Machine_Order_Cup_No_cup() {
+	/* Default exit sequence for state Cup */
+	private void exitSequence_Machine_Order_Cup_Cup() {
 		nextStateIndex = 4;
 		stateVector[4] = State.$NullState$;
 	}
 	
-	/* Default exit sequence for state Cup */
-	private void exitSequence_Machine_Order_Cup_Cup() {
+	/* Default exit sequence for state Waiting */
+	private void exitSequence_Machine_Order_Cup_Waiting() {
 		nextStateIndex = 4;
 		stateVector[4] = State.$NullState$;
 	}
@@ -2669,11 +2657,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		}
 		
 		switch (stateVector[4]) {
-		case machine_Order_Cup_No_cup:
-			exitSequence_Machine_Order_Cup_No_cup();
-			break;
 		case machine_Order_Cup_Cup:
 			exitSequence_Machine_Order_Cup_Cup();
+			break;
+		case machine_Order_Cup_Waiting:
+			exitSequence_Machine_Order_Cup_Waiting();
 			break;
 		default:
 			break;
@@ -2733,11 +2721,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 	/* Default exit sequence for region Cup */
 	private void exitSequence_Machine_Order_Cup() {
 		switch (stateVector[4]) {
-		case machine_Order_Cup_No_cup:
-			exitSequence_Machine_Order_Cup_No_cup();
-			break;
 		case machine_Order_Cup_Cup:
 			exitSequence_Machine_Order_Cup_Cup();
+			break;
+		case machine_Order_Cup_Waiting:
+			exitSequence_Machine_Order_Cup_Waiting();
 			break;
 		default:
 			break;
@@ -2968,9 +2956,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 		enterSequence_Machine_Order_Time_Waiting_default();
 	}
 	
-	/* Default react sequence for initial entry  */
-	private void react_Machine_Order_Cup__entry_Default() {
-		enterSequence_Machine_Order_Cup_No_cup_default();
+	/* Default react sequence for initial entry default */
+	private void react_Machine_Order_Cup_default() {
+		enterSequence_Machine_Order_Cup_Waiting_default();
 	}
 	
 	/* Default react sequence for initial entry  */
@@ -3159,12 +3147,12 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return did_transition;
 	}
 	
-	private boolean machine_Order_Cup_No_cup_react(boolean try_transition) {
+	private boolean machine_Order_Cup_Cup_react(boolean try_transition) {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (sCInterface.b_Cup) {
-				exitSequence_Machine_Order_Cup_No_cup();
+			if ((sCInterface.b_Cup || sCInterface.cup_Taken)) {
+				exitSequence_Machine_Order_Cup_Cup();
 				enterSequence_Machine_Order_Cup_Cup_default();
 				machine_Order_react(false);
 			} else {
@@ -3177,13 +3165,13 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return did_transition;
 	}
 	
-	private boolean machine_Order_Cup_Cup_react(boolean try_transition) {
+	private boolean machine_Order_Cup_Waiting_react(boolean try_transition) {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
 			if ((sCInterface.b_Cup || sCInterface.cup_Taken)) {
-				exitSequence_Machine_Order_Cup_Cup();
-				enterSequence_Machine_Order_Cup_No_cup_default();
+				exitSequence_Machine_Order_Cup_Waiting();
+				enterSequence_Machine_Order_Cup_Cup_default();
 				machine_Order_react(false);
 			} else {
 				did_transition = false;
@@ -3202,6 +3190,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 			if (sCInterface.cup_Taken) {
 				exitSequence_Machine_Serving();
 				sCInterface.setCupIsTaken(true);
+				
+				sCInterface.setCup(false);
 				
 				enterSequence_Machine_cleaning_default();
 				react();
@@ -3567,6 +3557,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 				sCInterface.setCupIsTaken(true);
 				
 				raiseNewOrder();
+				
+				sCInterface.setCup(false);
 			}
 			did_transition = react();
 		}
