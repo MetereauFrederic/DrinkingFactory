@@ -342,10 +342,10 @@ public class DrinkFactoryMachine extends JFrame {
 		panel_2.add(cancelButton);
 
 		// listeners
-		addCupButton.addMouseListener(new MouseAdapter() {
+		addCupButton.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				changePicture("./picts/ownCup.jpg");
+			public void actionPerformed(ActionEvent e) {
+				fsm.getSCInterface().raiseB_Cup();
 			}
 		});
 		

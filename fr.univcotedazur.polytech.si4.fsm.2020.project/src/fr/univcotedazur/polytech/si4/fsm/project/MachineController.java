@@ -42,6 +42,7 @@ public class MachineController {
 	
 	private DrinkFactoryMachine drinkFactoryMachine;
 	private boolean nfc;
+	private boolean aCup;
 	private int money;
 	private int price;
 	private Drink drink;
@@ -65,6 +66,7 @@ public class MachineController {
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
 		this.nfc = false;
+		this.aCup = false;
 		this.money = 0;
 		this.price = 0;
 		this.options = new ArrayList<>();
@@ -179,6 +181,7 @@ public class MachineController {
 			price = this.drink.price;
 			for (Option option : options) price += option.price;
 		}
+		price -= (aCup)?10:0;
 		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
 		return (price == 0) ? Integer.MAX_VALUE : price;
 	}
@@ -287,7 +290,7 @@ public class MachineController {
 	public long getPercent() {
 		long expressoTime = isExpresso()?((long)(getCrushingTime()*1.25)):0;
 		long heatingTime = getHeatingTime();
-		long cupTime = 3 + (isTea()?3:0);
+		long cupTime = (aCup)?0:3 + (isTea()?3:0);
 		long totalTime = Math.max(Math.max(expressoTime, heatingTime), cupTime);
 		totalTime += Math.max(getPouringWater(), getPouringSugar()); // getPurringSugar() pour sucre et sirop d'érable
 		totalTime += isTea()?(getInfusingTime()+3):isVanilla()?8:0; //8 pour la vanille versement + mixage
@@ -320,6 +323,15 @@ public class MachineController {
 			button.setBackground(Color.GRAY);
 		}
 		
+	}
+
+	public void aCupAction() {
+		this.aCup = !this.aCup;
+		if(aCup) {
+			drinkFactoryMachine.changePicture("./picts/ownCup.jpg");
+		} else {
+			drinkFactoryMachine.changePicture("./picts/vide2.jpg");
+		}
 	}
 
 }

@@ -44,6 +44,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public void raiseCup_Taken();
 		
+		public void raiseB_Cup();
+		
 		public boolean isRaisedCancel();
 		
 		public boolean isRaisedReset();
@@ -108,6 +110,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedEndMilkCloud();
 		
+		public boolean isRaisedACup();
+		
 		public long getPrice();
 		
 		public void setPrice(long value);
@@ -135,6 +139,10 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public boolean getCleanIsDone();
 		
 		public void setCleanIsDone(boolean value);
+		
+		public boolean getCup();
+		
+		public void setCup(boolean value);
 		
 	public List<SCInterfaceListener> getListeners();
 		public void setSCInterfaceOperationCallback(SCInterfaceOperationCallback operationCallback);
@@ -175,6 +183,7 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onEndVanillaRaised();
 		public void onPouringMilkCloudRaised();
 		public void onEndMilkCloudRaised();
+		public void onACupRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {

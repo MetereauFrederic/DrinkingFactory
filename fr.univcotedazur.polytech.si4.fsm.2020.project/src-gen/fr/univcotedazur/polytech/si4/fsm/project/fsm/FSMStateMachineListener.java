@@ -270,4 +270,9 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 		System.out.println("endMilkCloud()");
 		machineController.removeLine(machineController.pouringMilkCloud);
 	}
+
+	@Override
+	public void onACupRaised() {
+		machineController.aCupAction();
+	}
 }
