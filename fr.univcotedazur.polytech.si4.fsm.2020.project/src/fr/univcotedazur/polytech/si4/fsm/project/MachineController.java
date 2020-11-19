@@ -41,12 +41,13 @@ public class MachineController {
 	}
 	
 	private DrinkFactoryMachine drinkFactoryMachine;
-	private boolean nfc;
+	private Card nfc;
 	private boolean aCup;
 	private int money;
 	private int price;
 	private Drink drink;
 	private List<Option> options;
+	private List<Card> fidelityCards;
 
 	public String heating = "Chauffage de l'eau";
 	public String placingCup = "Placement du gobelet";
@@ -65,15 +66,16 @@ public class MachineController {
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
-		this.nfc = false;
+		this.nfc = null;
 		this.aCup = false;
 		this.money = 0;
 		this.price = 0;
 		this.options = new ArrayList<>();
+		this.fidelityCards = new ArrayList<>();
 	}
 
 	public void cancel() {
-		if(this.nfc) refound("paiement annulé");
+		if(this.nfc != null) refound("paiement annulé");
 		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
 				"Commande annulée<html>");		
@@ -130,18 +132,36 @@ public class MachineController {
 	}
 	
 	public void nfcPayed() {
-		this.nfc = true;
+		Integer ident = Integer.parseInt(drinkFactoryMachine.nfcBiiiipId.getText());
+		for(Card card : fidelityCards) {
+			if(card.is(ident)) this.nfc = card;
+		}
+		if(this.nfc == null) {
+			Card newCard = new Card(ident);
+			fidelityCards.add(newCard);
+			this.nfc = newCard;
+		}
 	}
 	
 	public void preparing() {
+		resetUi();
+		blockUi(true);
 //		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
-		if(!this.nfc) this.money -= this.drink.price;
-		if(this.nfc) refound("paiement accepté");
+		if(this.nfc == null) this.money -= this.drink.price;
+		if(this.nfc != null) {
+			Boolean reduction = this.nfc.hasReduction(this.price);
+			if(reduction) {
+				this.nfc.reductionApplied();
+			} else {
+				this.nfc.addPayment(this.drink.price);
+			}
+			String s = ((reduction)?"0€ payés (reduction de fidélité)":(((double)this.price)/100.0) + "€ payés");
+			System.out.println(s);
+			refound(s);
+		}
 		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
 				"Boisson en<br/>préparation</html>");
-		resetUi();
-		blockUi(true);
 	}
 
 	private void blockUi(boolean state) {
@@ -178,10 +198,9 @@ public class MachineController {
 	public int newPrice() {
 		System.out.println("newPrice()");
 		if(this.drink!=null) {
-			price = this.drink.price;
+			price = this.drink.price - ((aCup)?10:0);
 			for (Option option : options) price += option.price;
 		}
-		price -= (aCup)?10:0;
 		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
 		return (price == 0) ? Integer.MAX_VALUE : price;
 	}
@@ -189,14 +208,14 @@ public class MachineController {
 	public int currentMoney() {
 		System.out.println("currentMoney()");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
-		if(this.nfc) return Integer.MAX_VALUE;
+		if(this.nfc != null) return Integer.MAX_VALUE;
 		return this.money;
 	}
 	
 	@Override
 	public String toString() {
 		String s = "";
-		if(this.nfc) s += "carte acceptée" ;
+		if(this.nfc != null) s += "carte acceptée" + this.nfc.toString();
 		else s += "\t" + (((double)this.money)/100.0) + "€ / "
 				+ ((this.drink==null)?"___":(((double)this.price)/100.0)) + "€";
 		return s;
@@ -204,12 +223,12 @@ public class MachineController {
 	
 	private void refound(String s) {
 		if(this.money>0) {
-			if(this.nfc) s += "<br/>";
+			if(this.nfc != null) s += "<br/>";
 			s += (((double)money)/100.0) + "€ rendus";
 		}
 		if(!s.equals("")) s += "<br/><br/>" ;
 		drinkFactoryMachine.messagesToUser.setText(s);
-		this.nfc = false;
+		this.nfc = null;
 		this.money = 0;
 		this.price = 0;
 	}

@@ -1,7 +1,6 @@
 package fr.univcotedazur.polytech.si4.fsm.project;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -22,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
@@ -54,6 +54,7 @@ public class DrinkFactoryMachine extends JFrame {
 	JButton addCupButton;
 	JSlider sugarSlider, sizeSlider, temperatureSlider;
 	JButton milkCloud, croutons, mapleSyrup, vanilla;
+	JTextField nfcBiiiipId;
 	private MachineController machineController;
 	private FSMStatemachine fsm;
 
@@ -100,7 +101,7 @@ public class DrinkFactoryMachine extends JFrame {
 		messagesToUser.setHorizontalAlignment(SwingConstants.LEFT);
 		messagesToUser.setVerticalAlignment(SwingConstants.TOP);
 		messagesToUser.setToolTipText("message to the user");
-		messagesToUser.setBounds(126, 34, 165, 175);
+		messagesToUser.setBounds(126, 34, 165, 195);
 		contentPane.add(messagesToUser);
 
 		JLabel lblCoins = new JLabel("Coins");
@@ -293,13 +294,18 @@ public class DrinkFactoryMachine extends JFrame {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.DARK_GRAY);
-		panel_1.setBounds(538, 154, 96, 40);
+		panel_1.setBounds(538, 154, 100, 60);
 		contentPane.add(panel_1);
 
 		nfcBiiiipButton = new JButton("biiip");
 		nfcBiiiipButton.setForeground(Color.WHITE);
 		nfcBiiiipButton.setBackground(Color.DARK_GRAY);
 		panel_1.add(nfcBiiiipButton);
+		nfcBiiiipId = new JTextField("0");
+		nfcBiiiipId.setColumns(8);
+		nfcBiiiipId.setForeground(Color.WHITE);
+		nfcBiiiipId.setBackground(Color.DARK_GRAY);
+		panel_1.add(nfcBiiiipId);
 
 		JLabel lblNfc = new JLabel("NFC");
 		lblNfc.setForeground(Color.WHITE);
