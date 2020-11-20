@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Card {
 
-	public static final int PAYMENTS_FOR_REDUCTION = 5;
-	private int ident;
+	public static final int PAYMENTS_FOR_REDUCTION = 2;
+	private String ident;
 	private List<Integer> payments;
 	
-	public Card(int ident) {
+	public Card(String ident) {
 		this.ident = ident;
 		this.payments = new ArrayList<>();
 	}
@@ -32,6 +32,7 @@ public class Card {
 			this.payments.remove(min);
 		}
 		this.payments.add(new Integer(price));
+		System.out.println("moyenne : " + getAveragePrice());
 	}
 	
 	public void reductionApplied() {
@@ -46,8 +47,8 @@ public class Card {
 		return average/this.payments.size();
 	}
 	
-	public boolean is(int ident) {
-		return ident == this.ident;
+	public boolean is(String ident) {
+		return ident.equals(this.ident);
 	}
 	
 	@Override
@@ -55,7 +56,7 @@ public class Card {
 		if(!(obj instanceof Card)) return false;
 		if(obj == this) return false;
 		Card c = (Card) obj;
-		return c.ident == this.ident;
+		return c.ident.equals(this.ident);
 	}
 	
 	@Override

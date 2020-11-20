@@ -9,8 +9,10 @@ import javax.swing.JButton;
 public class MachineController {
 	
 	public enum Option {
-		
-		MILKCLOUD(10, "nuage de lait"), CROUTONS(30, "croutons"), MAPLESYRUP(10, "sirop d'érable"), VANILLA(40, "glace vanille mixée");
+		MILKCLOUD(10, "nuage de lait"),
+		CROUTONS(30, "croutons"),
+		MAPLESYRUP(10, "sirop d'érable"),
+		VANILLA(40, "glace vanille mixée");
 		
 		private int price;
 		private String name;
@@ -132,7 +134,7 @@ public class MachineController {
 	}
 	
 	public void nfcPayed() {
-		Integer ident = Integer.parseInt(drinkFactoryMachine.nfcBiiiipId.getText());
+		String ident = drinkFactoryMachine.nfcBiiiipId.getText();
 		for(Card card : fidelityCards) {
 			if(card.is(ident)) this.nfc = card;
 		}
@@ -153,7 +155,7 @@ public class MachineController {
 			if(reduction) {
 				this.nfc.reductionApplied();
 			} else {
-				this.nfc.addPayment(this.drink.price);
+				this.nfc.addPayment(this.price);
 			}
 			String s = ((reduction)?"0€ payés (reduction de fidélité)":(((double)this.price)/100.0) + "€ payés");
 			System.out.println(s);
