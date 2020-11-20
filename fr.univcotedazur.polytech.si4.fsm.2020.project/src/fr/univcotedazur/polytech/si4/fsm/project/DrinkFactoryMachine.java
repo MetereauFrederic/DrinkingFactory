@@ -515,7 +515,8 @@ public class DrinkFactoryMachine extends JFrame {
 		fsm.init();
 		fsm.enter();
 		fsm.getSCInterface().getListeners().add(fsmListener);
-
+		machineController.lockUi(true);
+		machineController.resetUi();
 	}
 	
 	public void changePicture(String picturePath) {

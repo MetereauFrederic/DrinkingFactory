@@ -6,13 +6,13 @@ import java.util.List;
 
 import javax.swing.JButton;
 
+import fr.univcotedazur.polytech.si4.fsm.project.IngredientList.Ingredient;
+
 public class MachineController {
 	
 	public enum Option {
-		MILKCLOUD(10, "nuage de lait"),
-		CROUTONS(30, "croutons"),
-		MAPLESYRUP(10, "sirop d'érable"),
-		VANILLA(40, "glace vanille mixée");
+		
+		MILKCLOUD(10, "nuage de lait"), CROUTONS(30, "croutons"), MAPLESYRUP(10, "sirop d'érable"), VANILLA(40, "glace vanille mixée");
 		
 		private int price;
 		private String name;
@@ -26,7 +26,9 @@ public class MachineController {
 	public enum Drink {
 		COFFEE(300,"café", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
 		TEA(250, "thé", Option.MILKCLOUD, Option.MAPLESYRUP),
-		EXPRESSO(499, "expresso", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA);
+		EXPRESSO(499, "expresso", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
+		SOUP(75, "thé", Option.CROUTONS),
+		ICEDTEAD(50, "soupe");
 		
 		private int price;
 		private String name;
@@ -50,6 +52,7 @@ public class MachineController {
 	private Drink drink;
 	private List<Option> options;
 	private List<Card> fidelityCards;
+	private IngredientList ingredientList;
 
 	public String heating = "Chauffage de l'eau";
 	public String placingCup = "Placement du gobelet";
@@ -74,6 +77,7 @@ public class MachineController {
 		this.price = 0;
 		this.options = new ArrayList<>();
 		this.fidelityCards = new ArrayList<>();
+		this.ingredientList = new IngredientList();
 	}
 
 	public void cancel() {
@@ -85,7 +89,7 @@ public class MachineController {
 		System.out.println("cancel()");
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
-		blockUi(false);
+		resetUi();
 	}
 
 	public void addSelection(Drink drink, JButton button) {
@@ -101,19 +105,25 @@ public class MachineController {
 		for (Option option : drink.options) {
 			switch (option) {
 				case MILKCLOUD:
-					drinkFactoryMachine.milkCloud.setEnabled(true);
+					if (ingredientList.haveQuantity(Ingredient.MILK, 1)) unlockButton(drinkFactoryMachine.milkCloud);
 					break;
 				case CROUTONS:
-					drinkFactoryMachine.croutons.setEnabled(true);
+					if (ingredientList.haveQuantity(Ingredient.CROUTONS, 1)) unlockButton(drinkFactoryMachine.croutons);
 					break;
 				case MAPLESYRUP:
-					drinkFactoryMachine.mapleSyrup.setEnabled(true);
+					if (ingredientList.haveQuantity(Ingredient.MAPLESYRUP, 4)) unlockButton(drinkFactoryMachine.mapleSyrup);
 					break;
 				case VANILLA:
-					drinkFactoryMachine.vanilla.setEnabled(true);
+					if (ingredientList.haveQuantity(Ingredient.VANILLA, 1)) unlockButton(drinkFactoryMachine.vanilla);
 					break;
 				default:
 					break;
+			}
+		}
+		if (drink.equals(Drink.SOUP)) {
+			if (ingredientList.haveQuantity(Ingredient.SPICE, 4)) {
+				drinkFactoryMachine.sugarSlider.setValue(1);
+				drinkFactoryMachine.sugarSlider.setEnabled(true);
 			}
 		}
 	}
@@ -134,7 +144,7 @@ public class MachineController {
 	}
 	
 	public void nfcPayed() {
-		String ident = drinkFactoryMachine.nfcBiiiipId.getText();
+		Integer ident = Integer.parseInt(drinkFactoryMachine.nfcBiiiipId.getText());
 		for(Card card : fidelityCards) {
 			if(card.is(ident)) this.nfc = card;
 		}
@@ -146,8 +156,7 @@ public class MachineController {
 	}
 	
 	public void preparing() {
-		resetUi();
-		blockUi(true);
+		lockUi(true);
 //		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
 		if(this.nfc == null) this.money -= this.drink.price;
 		if(this.nfc != null) {
@@ -155,7 +164,7 @@ public class MachineController {
 			if(reduction) {
 				this.nfc.reductionApplied();
 			} else {
-				this.nfc.addPayment(this.price);
+				this.nfc.addPayment(this.drink.price);
 			}
 			String s = ((reduction)?"0€ payés (reduction de fidélité)":(((double)this.price)/100.0) + "€ payés");
 			System.out.println(s);
@@ -166,7 +175,7 @@ public class MachineController {
 				"Boisson en<br/>préparation</html>");
 	}
 
-	private void blockUi(boolean state) {
+	public void lockUi(boolean state) {
 		drinkFactoryMachine.sugarSlider.setEnabled(!state);
 		drinkFactoryMachine.sizeSlider.setEnabled(!state);
 		drinkFactoryMachine.temperatureSlider.setEnabled(!state);
@@ -254,7 +263,7 @@ public class MachineController {
 	}
 
 	public long getPouringSugar() {
-		int time = drinkFactoryMachine.sugarSlider.getValue() + 3;
+		int time = drinkFactoryMachine.sugarSlider.getValue();
 		System.out.println("sugar time : " + time);
 		return time;
 	}
@@ -281,13 +290,45 @@ public class MachineController {
 		System.out.println("reset()");
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
-		blockUi(false);
+		resetUi();
 	}
 	
-	private void resetUi() {
-		drinkFactoryMachine.sugarSlider.setValue(1);
+	public void resetUi() {
+		drinkFactoryMachine.sugarSlider.setValue(0);
 		drinkFactoryMachine.sizeSlider.setValue(1);
+		unlockButton(drinkFactoryMachine.nfcBiiiipButton);
+		unlockButton(drinkFactoryMachine.cancelButton);
+		unlockButton(drinkFactoryMachine.addCupButton);
 		drinkFactoryMachine.temperatureSlider.setValue(2);
+		if (ingredientList.haveQuantity(Ingredient.CUP, 1)) {
+			unlockDrink();
+		} else {
+			if (aCup) {
+				unlockDrink();
+			}
+		}
+	}
+	
+	private void unlockDrink() {
+		drinkFactoryMachine.temperatureSlider.setEnabled(true);
+		drinkFactoryMachine.sizeSlider.setEnabled(true);
+		if (ingredientList.haveQuantity(Ingredient.SUGAR, 4)) {
+			drinkFactoryMachine.sugarSlider.setValue(1);
+			drinkFactoryMachine.sugarSlider.setEnabled(true);
+		}
+		if (ingredientList.haveQuantity(Ingredient.COFFEE_POD, 1)) unlockButton(drinkFactoryMachine.coffeeButton);
+		if (ingredientList.haveQuantity(Ingredient.GRAINS, 1)) unlockButton(drinkFactoryMachine.expressoButton);
+		if (ingredientList.haveQuantity(Ingredient.TEA_BAG, 1)) unlockButton(drinkFactoryMachine.teaButton);
+		if (ingredientList.haveQuantity(Ingredient.SOUP_POD, 1)) unlockButton(drinkFactoryMachine.soupButton);
+		if (ingredientList.haveQuantity(Ingredient.ICEDTEA_POD, 1) && ingredientList.haveQuantity(Ingredient.NITROGEN, 4)) unlockButton(drinkFactoryMachine.icedTeaButton);
+	}
+	
+	private void lockButton(JButton button) {
+		button.setEnabled(false);
+	}
+	
+	private void unlockButton(JButton button) {
+		button.setEnabled(true);
 	}
 
 	public void removeLine(String line) {
@@ -343,7 +384,10 @@ public class MachineController {
 			this.options.add(option);
 			button.setBackground(Color.GRAY);
 		}
-		
+		if (option.equals(Option.MAPLESYRUP)) {
+			drinkFactoryMachine.sugarSlider.setValue(1);
+			drinkFactoryMachine.sugarSlider.setEnabled(true);
+		}
 	}
 
 	public void aCupAction() {
@@ -353,6 +397,13 @@ public class MachineController {
 		} else {
 			drinkFactoryMachine.changePicture("./picts/vide2.jpg");
 		}
+		resetUi();
+	}
+	
+	public void removeQuantity(Ingredient ingredient) {
+		if (ingredient.equals(Ingredient.SPICE) || ingredient.equals(Ingredient.SUGAR) || ingredient.equals(Ingredient.MAPLESYRUP)) 
+			ingredientList.removeQuantity(ingredient, drinkFactoryMachine.sugarSlider.getValue());
+		ingredientList.removeQuantity(ingredient, 1);
 	}
 
 }

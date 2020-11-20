@@ -1222,81 +1222,81 @@ public class FSMStatemachine implements IFSMStatemachine {
 	protected synchronized void singleCycle() {
 		for (nextStateIndex = 0; nextStateIndex < stateVector.length; nextStateIndex++) {
 			switch (stateVector[nextStateIndex]) {
-			case machine_Order_Select_Drink_select_Selecting_Chosen:
-				machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
-				break;
-			case machine_Order_Select_Drink_select_Selecting_Waiting:
-				machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
-				break;
-			case machine_Order_Option_Waiting:
-				machine_Order_Option_Waiting_react(true);
-				break;
-			case machine_Order_Payment_Waiting:
-				machine_Order_Payment_Waiting_react(true);
-				break;
-			case machine_Order_Time_Waiting:
-				machine_Order_Time_Waiting_react(true);
-				break;
-			case machine_Order_Time_Running:
-				machine_Order_Time_Running_react(true);
-				break;
-			case machine_Order_Cup_Cup:
-				machine_Order_Cup_Cup_react(true);
-				break;
-			case machine_Order_Cup_Waiting:
-				machine_Order_Cup_Waiting_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp:
-				machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing:
-				machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping:
-				machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit:
-				machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup:
-				machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag:
-				machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag_react(true);
-				break;
-			case machine_Serving_Serving_Heating_and_Cup_Cup_Exit:
-				machine_Serving_Serving_Heating_and_Cup_Cup_Exit_react(true);
-				break;
-			case machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water:
-				machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water_react(true);
-				break;
-			case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
-				machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar_react(true);
-				break;
-			case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
-				machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup_react(true);
-				break;
-			case machine_Serving_Serving_Infusing:
-				machine_Serving_Serving_Infusing_react(true);
-				break;
-			case machine_Serving_Serving_Remove_bag:
-				machine_Serving_Serving_Remove_bag_react(true);
-				break;
-			case machine_Serving_Serving_Waiting:
-				machine_Serving_Serving_Waiting_react(true);
-				break;
-			case machine_Serving_Serving_Pouring_Vanilla:
-				machine_Serving_Serving_Pouring_Vanilla_react(true);
-				break;
-			case machine_Serving_Serving_Mix_Vanilla:
-				machine_Serving_Serving_Mix_Vanilla_react(true);
-				break;
-			case machine_Serving_Serving_MilkCloud:
-				machine_Serving_Serving_MilkCloud_react(true);
-				break;
-			case machine_cleaning:
-				machine_cleaning_react(true);
-				break;
+				case machine_Order_Select_Drink_select_Selecting_Chosen:
+					machine_Order_Select_Drink_select_Selecting_Chosen_react(true);
+					break;
+				case machine_Order_Select_Drink_select_Selecting_Waiting:
+					machine_Order_Select_Drink_select_Selecting_Waiting_react(true);
+					break;
+				case machine_Order_Option_Waiting:
+					machine_Order_Option_Waiting_react(true);
+					break;
+				case machine_Order_Payment_Waiting:
+					machine_Order_Payment_Waiting_react(true);
+					break;
+				case machine_Order_Time_Waiting:
+					machine_Order_Time_Waiting_react(true);
+					break;
+				case machine_Order_Time_Running:
+					machine_Order_Time_Running_react(true);
+					break;
+				case machine_Order_Cup_Cup:
+					machine_Order_Cup_Cup_react(true);
+					break;
+				case machine_Order_Cup_Waiting:
+					machine_Order_Cup_Waiting_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp:
+					machine_Serving_Serving_Heating_and_Cup_Heating_Waiting_Temp_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing:
+					machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_crushing_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping:
+					machine_Serving_Serving_Heating_and_Cup_Grain_crushing_Grain_tamping_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit:
+					machine_Serving_Serving_Heating_and_Cup_Grain_crushing_exit_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup:
+					machine_Serving_Serving_Heating_and_Cup_Cup_Placing_cup_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag:
+					machine_Serving_Serving_Heating_and_Cup_Cup_Putting_Bag_react(true);
+					break;
+				case machine_Serving_Serving_Heating_and_Cup_Cup_Exit:
+					machine_Serving_Serving_Heating_and_Cup_Cup_Exit_react(true);
+					break;
+				case machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water:
+					machine_Serving_Serving_Water_and_Sugar_Pouring_water_Water_react(true);
+					break;
+				case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar:
+					machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_Sugar_react(true);
+					break;
+				case machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup:
+					machine_Serving_Serving_Water_and_Sugar_Pouring_sugar_MapleSyrup_react(true);
+					break;
+				case machine_Serving_Serving_Infusing:
+					machine_Serving_Serving_Infusing_react(true);
+					break;
+				case machine_Serving_Serving_Remove_bag:
+					machine_Serving_Serving_Remove_bag_react(true);
+					break;
+				case machine_Serving_Serving_Waiting:
+					machine_Serving_Serving_Waiting_react(true);
+					break;
+				case machine_Serving_Serving_Pouring_Vanilla:
+					machine_Serving_Serving_Pouring_Vanilla_react(true);
+					break;
+				case machine_Serving_Serving_Mix_Vanilla:
+					machine_Serving_Serving_Mix_Vanilla_react(true);
+					break;
+				case machine_Serving_Serving_MilkCloud:
+					machine_Serving_Serving_MilkCloud_react(true);
+					break;
+				case machine_cleaning:
+					machine_cleaning_react(true);
+					break;
 			default:
 				// $NullState$
 			}

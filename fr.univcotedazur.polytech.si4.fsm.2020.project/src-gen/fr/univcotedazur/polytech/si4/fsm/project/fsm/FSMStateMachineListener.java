@@ -1,5 +1,6 @@
 package fr.univcotedazur.polytech.si4.fsm.project.fsm;
 
+import fr.univcotedazur.polytech.si4.fsm.project.IngredientList.Ingredient;
 import fr.univcotedazur.polytech.si4.fsm.project.MachineController;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceOperationCallback;
@@ -76,6 +77,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onCrushingRaised() {
 		System.out.println("crushing()");
 		machineController.addLine(machineController.crushing);
+		machineController.removeQuantity(Ingredient.GRAINS);
 	}
 
 	@Override
@@ -95,6 +97,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 		System.out.println("placingCup()");
 		machineController.addLine(machineController.placingCup);
 		machineController.placeCup();
+		machineController.removeQuantity(Ingredient.CUP);
 	}
 
 	@Override
@@ -107,6 +110,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onPouringSugarRaised() {
 		System.out.println("pouringSugar()");
 		machineController.addLine(machineController.sugar);
+		machineController.removeQuantity(Ingredient.SUGAR);
 	}
 
 	@Override
@@ -125,6 +129,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onPuttingTeaRaised() {
 		System.out.println("puttingTea()");
 		machineController.addLine(machineController.puttingBag);
+		machineController.removeQuantity(Ingredient.TEA_BAG);
 	}
 
 	@Override
@@ -232,6 +237,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onPouringMapleSyrupRaised() {
 		System.out.println("pouringMapleSyrup()");
 		machineController.addLine(machineController.pouringMapleSyrup);
+		machineController.removeQuantity(Ingredient.MAPLESYRUP);
 	}
 
 	@Override
@@ -244,6 +250,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onPouringVanillaRaised() {
 		System.out.println("pouringVanilla()");
 		machineController.addLine(machineController.pouringVanilla);
+		machineController.removeQuantity(Ingredient.VANILLA);
 	}
 
 	@Override
@@ -263,6 +270,7 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onPouringMilkCloudRaised() {
 		System.out.println("pouringMilkCloud()");
 		machineController.addLine(machineController.pouringMilkCloud);
+		machineController.removeQuantity(Ingredient.MILK);
 	}
 
 	@Override
