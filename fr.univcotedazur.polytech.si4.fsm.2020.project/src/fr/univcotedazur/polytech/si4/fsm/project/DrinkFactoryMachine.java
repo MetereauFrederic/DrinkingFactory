@@ -320,7 +320,7 @@ public class DrinkFactoryMachine extends JFrame {
 		addCupButton = new JButton("Add cup");
 		addCupButton.setForeground(Color.WHITE);
 		addCupButton.setBackground(Color.DARK_GRAY);
-		addCupButton.setBounds(45, separator.getY() + 44, 96, 25);
+		addCupButton.setBounds(45, separator.getY() + 44, 106, 25);
 		contentPane.add(addCupButton);
 
 		labelForPictures = new JLabel();
@@ -332,6 +332,7 @@ public class DrinkFactoryMachine extends JFrame {
 			 public void mouseClicked(MouseEvent e)  
 			    {  
 			      	changePicture("./picts/vide2.jpg");
+			      	addCupButton.setText("Add cup");
 			      	fsm.getSCInterface().raiseCup_Taken();
 			    }  
 			
@@ -483,7 +484,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				messagesToUser.setText("<html>" + machineController + "</html>");
+				//messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseS_Sugar();
 			}
 		});
@@ -492,7 +493,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				messagesToUser.setText("<html>" + machineController + "</html>");
+				//messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseS_Size();
 			}
 		});
@@ -501,7 +502,7 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				messagesToUser.setText("<html>" + machineController + "</html>");
+				//messagesToUser.setText("<html>" + machineController + "</html>");
 				fsm.getSCInterface().raiseS_Temp();
 			}
 		});
@@ -515,7 +516,6 @@ public class DrinkFactoryMachine extends JFrame {
 		fsm.init();
 		fsm.enter();
 		fsm.getSCInterface().getListeners().add(fsmListener);
-		machineController.lockUi(true);
 		machineController.resetUi();
 	}
 	

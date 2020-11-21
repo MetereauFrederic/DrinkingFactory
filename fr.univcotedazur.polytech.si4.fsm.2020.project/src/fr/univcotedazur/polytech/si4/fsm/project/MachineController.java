@@ -84,11 +84,12 @@ public class MachineController {
 		if(this.nfc != null) refound("paiement annulé");
 		else refound("");
 		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
-				"Commande annulée<html>");		
+				"Commande annulée <br><br>");		
 		this.drink = null;
 		System.out.println("cancel()");
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
+		lockUi(true);
 		resetUi();
 	}
 
@@ -101,7 +102,7 @@ public class MachineController {
 		drinkFactoryMachine.icedTeaButton.setBackground(Color.DARK_GRAY);
 		button.setBackground(Color.GRAY);
 		disableOptions();
-		deleteOptions();
+		this.options.clear();
 		for (Option option : drink.options) {
 			switch (option) {
 				case MILKCLOUD:
@@ -126,17 +127,6 @@ public class MachineController {
 				drinkFactoryMachine.sugarSlider.setEnabled(true);
 			}
 		}
-	}
-	
-	private void deleteOptions() {
-//		List<Option> delete = new ArrayList<>();
-//		for (Option option : options) {
-//			if (!drink.options.contains(option)) {
-//				delete.add(option);
-//			}
-//		}
-//		options.removeAll(delete);
-		options.clear();
 	}
 
 	public void addCoin(int payed) {
@@ -212,7 +202,7 @@ public class MachineController {
 			price = this.drink.price - ((aCup)?10:0);
 			for (Option option : options) price += option.price;
 		}
-		drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
+		if (price != 0 || money != 0) drinkFactoryMachine.messagesToUser.setText("<html>" + this + "</html>");
 		return (price == 0) ? Integer.MAX_VALUE : price;
 	}
 
@@ -225,10 +215,12 @@ public class MachineController {
 	
 	@Override
 	public String toString() {
-		String s = "";
-		if(this.nfc != null) s += "carte acceptée" + this.nfc.toString();
-		else s += "\t" + (((double)this.money)/100.0) + "€ / "
-				+ ((this.drink==null)?"___":(((double)this.price)/100.0)) + "€";
+		String s = "Veuillez sélectionner votre boisson !";
+		if(this.nfc != null) 
+			s = "carte acceptée" + this.nfc.toString();
+		else if(this.price != 0 || this.money !=0) s = "\t" + (((double)this.money)/100.0) + "€ / " 
+			+ ((this.drink==null)?"___":(((double)this.price)/100.0)) + "€";
+		System.out.println(s);
 		return s;
 	}
 	
@@ -284,8 +276,8 @@ public class MachineController {
 
 	public void reset() {
 		refound("");
-		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
-				"Veuillez sélectionner votre boisson !<html>");		
+		//drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
+		//		"Veuillez sélectionner votre boisson !<html>");		
 		this.drink = null;
 		System.out.println("reset()");
 		drinkFactoryMachine.progressBar.setValue(0);
@@ -296,20 +288,25 @@ public class MachineController {
 	public void resetUi() {
 		drinkFactoryMachine.sugarSlider.setValue(0);
 		drinkFactoryMachine.sizeSlider.setValue(1);
-		unlockButton(drinkFactoryMachine.nfcBiiiipButton);
-		unlockButton(drinkFactoryMachine.cancelButton);
-		unlockButton(drinkFactoryMachine.addCupButton);
 		drinkFactoryMachine.temperatureSlider.setValue(2);
 		if (ingredientList.haveQuantity(Ingredient.CUP, 1)) {
 			unlockDrink();
 		} else {
 			if (aCup) {
 				unlockDrink();
+			} else {
+				lockUi(true);
 			}
 		}
+		unlockButton(drinkFactoryMachine.addCupButton);
+		if (drinkFactoryMachine.messagesToUser.getText().equals(""))
+			drinkFactoryMachine.messagesToUser.setText("<html>");
+		drinkFactoryMachine.messagesToUser.setText(drinkFactoryMachine.messagesToUser.getText() + "" + this + "</html>");
 	}
 	
 	private void unlockDrink() {
+		unlockButton(drinkFactoryMachine.nfcBiiiipButton);
+		unlockButton(drinkFactoryMachine.cancelButton);
 		drinkFactoryMachine.temperatureSlider.setEnabled(true);
 		drinkFactoryMachine.sizeSlider.setEnabled(true);
 		if (ingredientList.haveQuantity(Ingredient.SUGAR, 4)) {
@@ -394,8 +391,10 @@ public class MachineController {
 		this.aCup = !this.aCup;
 		if(aCup) {
 			drinkFactoryMachine.changePicture("./picts/ownCup.jpg");
+			drinkFactoryMachine.addCupButton.setText("Remove cup");
 		} else {
 			drinkFactoryMachine.changePicture("./picts/vide2.jpg");
+			drinkFactoryMachine.addCupButton.setText("Add cup");
 		}
 		resetUi();
 	}

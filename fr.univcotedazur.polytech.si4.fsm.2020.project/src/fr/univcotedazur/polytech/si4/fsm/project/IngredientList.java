@@ -10,8 +10,9 @@ public class IngredientList extends ArrayList<Stock> {
 	}
 	
 	public IngredientList() {
-		this.add(new Stock(Ingredient.TEA_BAG, 1));
+		this.add(new Stock(Ingredient.COFFEE_POD, 2));
 		this.add(new Stock(Ingredient.CUP, 0));
+		this.add(new Stock(Ingredient.SUGAR, 10));
 	}
 	
 	public void removeQuantity(Ingredient ingredient, int quantity) {
