@@ -86,6 +86,16 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedEndPouringMapleSyrup();
 		
+		public boolean isRaisedPouringSoup();
+		
+		public boolean isRaisedPouringSpice();
+		
+		public boolean isRaisedEndPouringSpice();
+		
+		public boolean isRaisedPouringCroutons();
+		
+		public boolean isRaisedEndPouringCroutons();
+		
 		public boolean isRaisedPouringVanilla();
 		
 		public boolean isRaisedMixVanilla();
@@ -166,6 +176,11 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onProgressBarRaised();
 		public void onPouringMapleSyrupRaised();
 		public void onEndPouringMapleSyrupRaised();
+		public void onPouringSoupRaised();
+		public void onPouringSpiceRaised();
+		public void onEndPouringSpiceRaised();
+		public void onPouringCroutonsRaised();
+		public void onEndPouringCroutonsRaised();
 		public void onPouringVanillaRaised();
 		public void onMixVanillaRaised();
 		public void onEndVanillaRaised();
@@ -188,6 +203,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public long getPouringSugar();
 		
+		public long getPouringSpices();
+		
 		public long getInfusingTime();
 		
 		public boolean isCoffee();
@@ -196,7 +213,13 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isTea();
 		
+		public boolean isSoup();
+		
+		public boolean isSugar();
+		
 		public boolean isMapleSyrup();
+		
+		public boolean isCroutons();
 		
 		public boolean isVanilla();
 		

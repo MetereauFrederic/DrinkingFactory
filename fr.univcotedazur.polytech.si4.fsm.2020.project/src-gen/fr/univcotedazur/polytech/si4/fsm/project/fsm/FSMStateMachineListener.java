@@ -304,4 +304,58 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 		System.out.println("endCoffeePod()");
 		machineController.removeLine(machineController.coffeePod);
 	}
+
+	@Override
+	public boolean isSoup() {
+		return machineController.isDrink(Drink.SOUP);
+	}
+
+	@Override
+	public boolean isSugar() {
+		return !(machineController.isOption(Option.MAPLESYRUP) || machineController.isDrink(Drink.SOUP));
+	}
+
+	@Override
+	public void onPouringSoupRaised() {
+		System.out.println("pouringSoup()");
+		machineController.addLine(machineController.soup);
+		machineController.removeQuantity(Ingredient.SOUP_POD);
+	}
+
+	@Override
+	public void onPouringSpiceRaised() {
+		System.out.println("pouringSpice()");
+		machineController.removeLine(machineController.soup);
+		machineController.addLine(machineController.spices);
+		machineController.removeQuantity(Ingredient.SPICE);
+	}
+
+	@Override
+	public void onEndPouringSpiceRaised() {
+		System.out.println("endPouringSpice()");
+		machineController.removeLine(machineController.spices);
+	}
+
+	@Override
+	public long getPouringSpices() {
+		return machineController.getPouringSpices();
+	}
+
+	@Override
+	public boolean isCroutons() {
+		return machineController.isOption(Option.CROUTONS);
+	}
+
+	@Override
+	public void onPouringCroutonsRaised() {
+		System.out.println("pouringCroutons()");
+		machineController.addLine(machineController.pouringCroutons);
+		machineController.removeQuantity(Ingredient.CROUTONS);
+	}
+
+	@Override
+	public void onEndPouringCroutonsRaised() {
+		System.out.println("endPouringCroutons()");
+		machineController.removeLine(machineController.pouringCroutons);
+	}
 }

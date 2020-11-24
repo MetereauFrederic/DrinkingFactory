@@ -387,7 +387,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				machineController.addSelection(Drink.SOUP, soupButton);
+				fsm.getSCInterface().raiseB_drink();
 			}
 		});
 		

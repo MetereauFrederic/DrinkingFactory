@@ -27,8 +27,8 @@ public class MachineController {
 		COFFEE(35,"café", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
 		TEA(40, "thé", Option.MILKCLOUD, Option.MAPLESYRUP),
 		EXPRESSO(50, "expresso", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
-		SOUP(75, "thé", Option.CROUTONS),
-		ICEDTEAD(50, "soupe");
+		SOUP(75, "soup", Option.CROUTONS),
+		ICEDTEAD(50, "thé glacé", Option.MAPLESYRUP);
 		
 		private int price;
 		private String name;
@@ -64,11 +64,25 @@ public class MachineController {
 	public String removingBag = "Retrait du sachet de thé";
 	public String sugar = "Versement du sucre";
 	public String water = "Versement de l'eau";
+	public String soup = "Versement d'une dose de soupe";
+	public String spices = "Versement des épices";
 	public String cleanning = "Nettoyage de la machine";
-	public String pouringMapleSyrup ="Versement du sirop d'érable";
-	public String pouringVanilla ="Versement de la glace vanille";
-	public String mixVanilla ="Mixage de la préparation";
-	public String pouringMilkCloud ="Versement du nuage de lait";
+	public String pouringMapleSyrup = "Versement du sirop d'érable";
+	public String pouringVanilla = "Versement de la glace vanille";
+	public String mixVanilla = "Mixage de la préparation";
+	public String pouringMilkCloud = "Versement du nuage de lait";
+	public String pouringCroutons = "Versement des croutons";
+	
+	private String paymentCanceled = "paiement annulé";
+	private String orderCanceled = "Commande annulée";
+	private String devise = "€";
+	private String payed = "payés";
+	private String refounded = "rendus";
+	private String hello = "Veuillez sélectionner votre boisson !";
+	private String fidelity = "reduction de fidélité";
+	private String preparing = "Boisson en préparation";
+	private String nfcAccepted = "carte acceptée";
+	private String drinkReady = "Votre boisson est prête !";
 	
 	public MachineController(DrinkFactoryMachine drinkFactoryMachine) {
 		this.drinkFactoryMachine = drinkFactoryMachine;
@@ -82,10 +96,9 @@ public class MachineController {
 	}
 
 	public void cancel() {
-		if(this.nfc != null) refound("paiement annulé");
+		if(this.nfc != null) refound(paymentCanceled);
 		else refound("");
-		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
-				"Commande annulée <br><br>");		
+		addLine(orderCanceled);	
 		this.drink = null;
 		System.out.println("cancel()");
 		drinkFactoryMachine.progressBar.setValue(0);
@@ -123,11 +136,16 @@ public class MachineController {
 			}
 		}
 		if (drink.equals(Drink.SOUP)) {
+			drinkFactoryMachine.changeSugar("Spices");
 			if (ingredientList.haveQuantity(Ingredient.SPICE, 4)) {
-				drinkFactoryMachine.changeSugar("Spice");
 				drinkFactoryMachine.sugarSlider.setValue(1);
 				drinkFactoryMachine.sugarSlider.setEnabled(true);
+			} else {
+				drinkFactoryMachine.sugarSlider.setValue(0);
+				drinkFactoryMachine.sugarSlider.setEnabled(false);
 			}
+		} else {
+			resetUi();
 		}
 	}
 
@@ -150,7 +168,7 @@ public class MachineController {
 	public void preparing() {
 		lockUi(true);
 //		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
-		if(this.nfc == null) this.money -= this.drink.price;
+		if(this.nfc == null) this.money -= this.price;
 		if(this.nfc != null) {
 			Boolean reduction = this.nfc.hasReduction(this.price);
 			if(reduction) {
@@ -158,13 +176,14 @@ public class MachineController {
 			} else {
 				this.nfc.addPayment(this.drink.price);
 			}
-			String s = ((reduction)?"0€ payés (reduction de fidélité)":(((double)this.price)/100.0) + "€ payés");
+			String s = ((reduction)?
+					"0" + devise + " " + payed + " (" + fidelity + ")"
+					:(((double)this.price)/100.0) + devise + " " + payed);
 			System.out.println(s);
 			refound(s);
 		}
 		else refound("");
-		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
-				"Boisson en<br/>préparation</html>");
+		addLine(preparing);
 	}
 
 	public void lockUi(boolean state) {
@@ -217,22 +236,22 @@ public class MachineController {
 	
 	@Override
 	public String toString() {
-		String s = "Veuillez sélectionner votre boisson !";
+		String s = hello;
 		if(this.nfc != null) 
-			s = "carte acceptée" + this.nfc.toString();
-		else if(this.price != 0 || this.money !=0) s = "\t" + (((double)this.money)/100.0) + "€ / " 
-			+ ((this.drink==null)?"___":(((double)this.price)/100.0)) + "€";
+			s = nfcAccepted + this.nfc.toString();
+		else if(this.price != 0 || this.money !=0) s = "\t" + (((double)this.money)/100.0) + devise + " / " 
+			+ ((this.drink==null)?"___":(((double)this.price)/100.0)) + devise;
 		System.out.println(s);
 		return s;
 	}
 	
 	private void refound(String s) {
+		String refound = "<html>" + s;
 		if(this.money>0) {
-			if(this.nfc != null) s += "<br/>";
-			s += (((double)money)/100.0) + "€ rendus";
+			if(this.nfc != null) refound += "<br/>";
+			refound += (((double)money)/100.0) + devise + " " + refounded;
 		}
-		if(!s.equals("")) s += "<br/><br/>" ;
-		drinkFactoryMachine.messagesToUser.setText(s);
+		drinkFactoryMachine.messagesToUser.setText((refound.equals("<html>"))?"":refound + "</html>");
 		this.nfc = null;
 		this.money = 0;
 		this.price = 0;
@@ -261,6 +280,12 @@ public class MachineController {
 		System.out.println("sugar time : " + time);
 		return time;
 	}
+	
+	public long getPouringSpices() {
+		int time = drinkFactoryMachine.sugarSlider.getValue();
+		System.out.println("spices time : " + time);
+		return time;
+	}
 
 	public long getInfusingTime() {
 		int time = (drinkFactoryMachine.temperatureSlider.getValue() * 3) + 5;
@@ -277,6 +302,7 @@ public class MachineController {
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
 		resetUi();
+		addLine(this.toString());
 	}
 	
 	public void resetUi() {
@@ -294,9 +320,6 @@ public class MachineController {
 			}
 		}
 		unlockButton(drinkFactoryMachine.addCupButton);
-		if (drinkFactoryMachine.messagesToUser.getText().equals(""))
-			drinkFactoryMachine.messagesToUser.setText("<html>");
-		drinkFactoryMachine.messagesToUser.setText(drinkFactoryMachine.messagesToUser.getText() + "" + this + "</html>");
 	}
 	
 	private void unlockDrink() {
@@ -315,10 +338,6 @@ public class MachineController {
 		if (ingredientList.haveQuantity(Ingredient.ICEDTEA_POD, 1) && ingredientList.haveQuantity(Ingredient.NITROGEN, 4)) unlockButton(drinkFactoryMachine.icedTeaButton);
 	}
 	
-	private void lockButton(JButton button) {
-		button.setEnabled(false);
-	}
-	
 	private void unlockButton(JButton button) {
 		button.setEnabled(true);
 	}
@@ -329,12 +348,12 @@ public class MachineController {
 	
 	public void addLine(String line) {
 		String s = drinkFactoryMachine.messagesToUser.getText().replaceAll("</html>", "");
-		s += "<br/><br/>" + line + "</html>";
+		s += ((s.equals(""))?"<html>":"<br/><br/>") + line + "</html>";
 		drinkFactoryMachine.messagesToUser.setText(s);
 	}
 
 	public void drinkReady() {
-		drinkFactoryMachine.messagesToUser.setText("<html>Votre boisson est prête !</html>");
+		drinkFactoryMachine.messagesToUser.setText("<html>" + drinkReady + "</html>");
 	}
 
 	public void placeCup() {
