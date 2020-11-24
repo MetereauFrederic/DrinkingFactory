@@ -46,7 +46,7 @@ public class DrinkFactoryMachine extends JFrame {
 	
 	//private final ImageIcon imageIcon = new ImageIcon();
 	
-	JLabel messagesToUser, labelForPictures;
+	JLabel messagesToUser, labelForPictures, lblSugar;
 	JProgressBar progressBar;
 	JButton coffeeButton, expressoButton, teaButton, soupButton, icedTeaButton;
 	JButton money50centsButton, money25centsButton, money10centsButton, nfcBiiiipButton;
@@ -250,11 +250,11 @@ public class DrinkFactoryMachine extends JFrame {
 		progressBar.setBounds(12, vanilla.getY() + 40, 622, 26);
 		contentPane.add(progressBar);
 
-		JLabel lblSugar = new JLabel("Sugar");
+		lblSugar = new JLabel("Sugar");
 		lblSugar.setForeground(Color.WHITE);
 		lblSugar.setBackground(Color.DARK_GRAY);
 		lblSugar.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSugar.setBounds(380, sugarSlider.getY() - 25, 44, 15);
+		lblSugar.setBounds(350, sugarSlider.getY() - 25, 100, 15);
 		contentPane.add(lblSugar);
 
 		JLabel lblSize = new JLabel("Size");
@@ -361,7 +361,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addSelection(Drink.COFFEE, coffeeButton);
-				fsm.getSCInterface().raiseB_Coffe();
+				fsm.getSCInterface().raiseB_drink();
 			}
 		});
 		
@@ -370,7 +370,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addSelection(Drink.EXPRESSO, expressoButton);
-				fsm.getSCInterface().raiseB_Expresso();
+				fsm.getSCInterface().raiseB_drink();
 			}
 		});
 		
@@ -379,7 +379,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addSelection(Drink.TEA, teaButton);
-				fsm.getSCInterface().raiseB_Tea();
+				fsm.getSCInterface().raiseB_drink();
 			}
 		});
 		
@@ -404,7 +404,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.MILKCLOUD, milkCloud);
-				fsm.getSCInterface().raiseMilkCloud();
+				fsm.getSCInterface().raiseB_option();
 			}
 		});
 		
@@ -413,7 +413,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.CROUTONS, croutons);
-				fsm.getSCInterface().raiseCroutons();
+				fsm.getSCInterface().raiseB_option();
 			}
 		});
 		
@@ -422,7 +422,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.MAPLESYRUP, mapleSyrup);
-				fsm.getSCInterface().raiseMapleSyrup();
+				fsm.getSCInterface().raiseB_option();
 			}
 		});
 		
@@ -431,7 +431,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addOption(Option.VANILLA, vanilla);
-				fsm.getSCInterface().raiseVanilla();
+				fsm.getSCInterface().raiseB_option();
 			}
 		});
 		
@@ -440,7 +440,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addCoin(50);
-				fsm.getSCInterface().raiseC_050();
+				fsm.getSCInterface().raiseC_coin();
 			}
 		});
 		
@@ -449,7 +449,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addCoin(25);
-				fsm.getSCInterface().raiseC_025();
+				fsm.getSCInterface().raiseC_coin();
 			}
 		});
 		
@@ -458,7 +458,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				machineController.addCoin(10);
-				fsm.getSCInterface().raiseC_010();
+				fsm.getSCInterface().raiseC_coin();
 			}
 		});
 		
@@ -485,7 +485,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				//messagesToUser.setText("<html>" + machineController + "</html>");
-				fsm.getSCInterface().raiseS_Sugar();
+				fsm.getSCInterface().raiseS_Slide();
 			}
 		});
 		
@@ -494,7 +494,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				//messagesToUser.setText("<html>" + machineController + "</html>");
-				fsm.getSCInterface().raiseS_Size();
+				fsm.getSCInterface().raiseS_Slide();
 			}
 		});
 		
@@ -503,7 +503,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				//messagesToUser.setText("<html>" + machineController + "</html>");
-				fsm.getSCInterface().raiseS_Temp();
+				fsm.getSCInterface().raiseS_Slide();
 			}
 		});
 		
@@ -527,5 +527,9 @@ public class DrinkFactoryMachine extends JFrame {
 			ee.printStackTrace();
 		}
 		labelForPictures.setIcon(new ImageIcon(myPicture));
+	}
+	
+	public void changeSugar(String s) {
+		this.lblSugar.setText(s);
 	}
 }

@@ -12,7 +12,7 @@ public class MachineController {
 	
 	public enum Option {
 		
-		MILKCLOUD(10, "nuage de lait"), CROUTONS(30, "croutons"), MAPLESYRUP(10, "sirop d'érable"), VANILLA(40, "glace vanille mixée");
+		MILKCLOUD(10, "nuage de lait"), CROUTONS(30, "croutons"), MAPLESYRUP(10, "sirop d'érable"), VANILLA(60, "glace vanille mixée");
 		
 		private int price;
 		private String name;
@@ -24,9 +24,9 @@ public class MachineController {
 	}
 	
 	public enum Drink {
-		COFFEE(300,"café", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
-		TEA(250, "thé", Option.MILKCLOUD, Option.MAPLESYRUP),
-		EXPRESSO(499, "expresso", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
+		COFFEE(35,"café", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
+		TEA(40, "thé", Option.MILKCLOUD, Option.MAPLESYRUP),
+		EXPRESSO(50, "expresso", Option.MILKCLOUD, Option.MAPLESYRUP, Option.VANILLA),
 		SOUP(75, "thé", Option.CROUTONS),
 		ICEDTEAD(50, "soupe");
 		
@@ -59,6 +59,7 @@ public class MachineController {
 	public String crushing = "Broyage des grains";
 	public String tamping = "Tassage des grains";
 	public String infusion = "Infusion du thé";
+	public String coffeePod = "Placement de la dosette";
 	public String puttingBag = "Placement du sachet de thé";
 	public String removingBag = "Retrait du sachet de thé";
 	public String sugar = "Versement du sucre";
@@ -123,6 +124,7 @@ public class MachineController {
 		}
 		if (drink.equals(Drink.SOUP)) {
 			if (ingredientList.haveQuantity(Ingredient.SPICE, 4)) {
+				drinkFactoryMachine.changeSugar("Spice");
 				drinkFactoryMachine.sugarSlider.setValue(1);
 				drinkFactoryMachine.sugarSlider.setEnabled(true);
 			}
@@ -266,20 +268,12 @@ public class MachineController {
 		return time;
 	}
 
-	public boolean isExpresso() {
-		return this.drink.equals(Drink.EXPRESSO);
-	}
-
-	public boolean isTea() {
-		return this.drink.equals(Drink.TEA);
-	}
-
 	public void reset() {
 		refound("");
 		//drinkFactoryMachine.messagesToUser.setText("<html>" + drinkFactoryMachine.messagesToUser.getText() +
 		//		"Veuillez sélectionner votre boisson !<html>");		
 		this.drink = null;
-		System.out.println("reset()");
+		this.aCup = false;
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
 		resetUi();
@@ -287,6 +281,7 @@ public class MachineController {
 	
 	public void resetUi() {
 		drinkFactoryMachine.sugarSlider.setValue(0);
+		drinkFactoryMachine.changeSugar("Sugar");
 		drinkFactoryMachine.sizeSlider.setValue(1);
 		drinkFactoryMachine.temperatureSlider.setValue(2);
 		if (ingredientList.haveQuantity(Ingredient.CUP, 1)) {
@@ -347,30 +342,18 @@ public class MachineController {
 	}
 
 	public long getPercent() {
-		long expressoTime = isExpresso()?((long)(getCrushingTime()*1.25)):0;
+		long expressoTime = isDrink(Drink.EXPRESSO)?((long)(getCrushingTime()*1.25)):0;
 		long heatingTime = getHeatingTime();
-		long cupTime = (aCup)?0:3 + (isTea()?3:0);
+		long cupTime = (aCup)?0:3 + (isDrink(Drink.TEA)?3:0);
 		long totalTime = Math.max(Math.max(expressoTime, heatingTime), cupTime);
 		totalTime += Math.max(getPouringWater(), getPouringSugar()); // getPurringSugar() pour sucre et sirop d'érable
-		totalTime += isTea()?(getInfusingTime()+3):isVanilla()?8:0; //8 pour la vanille versement + mixage
-		totalTime += isMilkCloud()?3:0; //Nuage de lait
+		totalTime += isDrink(Drink.TEA)?(getInfusingTime()+3):isOption(Option.VANILLA)?8:0; //8 pour la vanille versement + mixage
+		totalTime += isOption(Option.MILKCLOUD)?3:0; //Nuage de lait
 		return totalTime*10;
 	}
 
 	public void progressBar() {
 		drinkFactoryMachine.progressBar.setValue(drinkFactoryMachine.progressBar.getValue()+1);
-	}
-
-	public boolean isMapleSyrup() {
-		return this.options.contains(Option.MAPLESYRUP);
-	}
-
-	public boolean isVanilla() {
-		return this.options.contains(Option.VANILLA);
-	}
-
-	public boolean isMilkCloud() {
-		return this.options.contains(Option.MILKCLOUD);
 	}
 
 	public void addOption(Option option, JButton button) {
@@ -382,6 +365,7 @@ public class MachineController {
 			button.setBackground(Color.GRAY);
 		}
 		if (option.equals(Option.MAPLESYRUP)) {
+			drinkFactoryMachine.changeSugar("Maple syrup");
 			drinkFactoryMachine.sugarSlider.setValue(1);
 			drinkFactoryMachine.sugarSlider.setEnabled(true);
 		}
@@ -396,6 +380,7 @@ public class MachineController {
 			drinkFactoryMachine.changePicture("./picts/vide2.jpg");
 			drinkFactoryMachine.addCupButton.setText("Add cup");
 		}
+		lockUi(true);
 		resetUi();
 	}
 	
@@ -403,6 +388,14 @@ public class MachineController {
 		if (ingredient.equals(Ingredient.SPICE) || ingredient.equals(Ingredient.SUGAR) || ingredient.equals(Ingredient.MAPLESYRUP)) 
 			ingredientList.removeQuantity(ingredient, drinkFactoryMachine.sugarSlider.getValue());
 		ingredientList.removeQuantity(ingredient, 1);
+	}
+	
+	public boolean isDrink(Drink drink) {
+		return this.drink.equals(drink);
+	}
+	
+	public boolean isOption(Option option) {
+		return this.options.contains(option);
 	}
 
 }

@@ -12,31 +12,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 	public interface SCInterface {
 	
-		public void raiseB_Coffe();
+		public void raiseB_drink();
 		
-		public void raiseB_Expresso();
+		public void raiseS_Slide();
 		
-		public void raiseB_Tea();
+		public void raiseB_option();
 		
-		public void raiseS_Sugar();
-		
-		public void raiseS_Size();
-		
-		public void raiseS_Temp();
-		
-		public void raiseMilkCloud();
-		
-		public void raiseCroutons();
-		
-		public void raiseMapleSyrup();
-		
-		public void raiseVanilla();
-		
-		public void raiseC_050();
-		
-		public void raiseC_025();
-		
-		public void raiseC_010();
+		public void raiseC_coin();
 		
 		public void raiseC_NFC();
 		
@@ -51,6 +33,10 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public boolean isRaisedReset();
 		
 		public boolean isRaisedPreparing();
+		
+		public boolean isRaisedCoffeePod();
+		
+		public boolean isRaisedEndCoffeePod();
 		
 		public boolean isRaisedCrushing();
 		
@@ -154,6 +140,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onCancelRaised();
 		public void onResetRaised();
 		public void onPreparingRaised();
+		public void onCoffeePodRaised();
+		public void onEndCoffeePodRaised();
 		public void onCrushingRaised();
 		public void onEndCrushingRaised();
 		public void onTampingRaised();
@@ -201,6 +189,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public long getPouringSugar();
 		
 		public long getInfusingTime();
+		
+		public boolean isCoffee();
 		
 		public boolean isExpresso();
 		

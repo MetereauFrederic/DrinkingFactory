@@ -2,6 +2,8 @@ package fr.univcotedazur.polytech.si4.fsm.project.fsm;
 
 import fr.univcotedazur.polytech.si4.fsm.project.IngredientList.Ingredient;
 import fr.univcotedazur.polytech.si4.fsm.project.MachineController;
+import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Drink;
+import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Option;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceOperationCallback;
 
@@ -60,16 +62,17 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 
 	@Override
 	public boolean isExpresso() {
-		return machineController.isExpresso();
+		return machineController.isDrink(Drink.EXPRESSO);
 	}
 
 	@Override
 	public boolean isTea() {
-		return machineController.isTea();
+		return machineController.isDrink(Drink.TEA);
 	}
 
 	@Override
 	public void onResetRaised() {
+		System.out.println("reset()");
 		machineController.reset();
 	}
 
@@ -220,17 +223,17 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 
 	@Override
 	public boolean isMapleSyrup() {
-		return machineController.isMapleSyrup();
+		return machineController.isOption(Option.MAPLESYRUP);
 	}
 
 	@Override
 	public boolean isVanilla() {
-		return machineController.isVanilla();
+		return machineController.isOption(Option.VANILLA);
 	}
 
 	@Override
 	public boolean isMilkCloud() {
-		return machineController.isMilkCloud();
+		return machineController.isOption(Option.MILKCLOUD);
 	}
 
 	@Override
@@ -282,5 +285,23 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	@Override
 	public void onACupRaised() {
 		machineController.aCupAction();
+	}
+
+	@Override
+	public boolean isCoffee() {
+		return machineController.isDrink(Drink.COFFEE);
+	}
+
+	@Override
+	public void onCoffeePodRaised() {
+		System.out.println("coffeePod()");
+		machineController.addLine(machineController.coffeePod);
+		machineController.removeQuantity(Ingredient.COFFEE_POD);
+	}
+
+	@Override
+	public void onEndCoffeePodRaised() {
+		System.out.println("endCoffeePod()");
+		machineController.removeLine(machineController.coffeePod);
 	}
 }
