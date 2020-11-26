@@ -106,6 +106,10 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedEndMilkCloud();
 		
+		public boolean isRaisedNitrogen();
+		
+		public boolean isRaisedEndNitrogen();
+		
 		public boolean isRaisedACup();
 		
 		public long getPrice();
@@ -186,6 +190,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onEndVanillaRaised();
 		public void onPouringMilkCloudRaised();
 		public void onEndMilkCloudRaised();
+		public void onNitrogenRaised();
+		public void onEndNitrogenRaised();
 		public void onACupRaised();
 		}
 	
@@ -207,11 +213,15 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public long getInfusingTime();
 		
+		public long getNitrogenTime();
+		
 		public boolean isCoffee();
 		
 		public boolean isExpresso();
 		
 		public boolean isTea();
+		
+		public boolean isIceTea();
 		
 		public boolean isSoup();
 		

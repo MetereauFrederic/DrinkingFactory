@@ -28,8 +28,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Drink;
-import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Option;
+import fr.univcotedazur.polytech.si4.fsm.project.Drink;
+import fr.univcotedazur.polytech.si4.fsm.project.Drink.Option;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStateMachineListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.FSMStatemachine;
 
@@ -46,7 +46,7 @@ public class DrinkFactoryMachine extends JFrame {
 	
 	//private final ImageIcon imageIcon = new ImageIcon();
 	
-	JLabel messagesToUser, labelForPictures, lblSugar;
+	JLabel messagesToUser, labelForPictures, lblSugar, lblSize;
 	JProgressBar progressBar;
 	JButton coffeeButton, expressoButton, teaButton, soupButton, icedTeaButton;
 	JButton money50centsButton, money25centsButton, money10centsButton, nfcBiiiipButton;
@@ -257,18 +257,18 @@ public class DrinkFactoryMachine extends JFrame {
 		lblSugar.setBounds(350, sugarSlider.getY() - 25, 100, 15);
 		contentPane.add(lblSugar);
 
-		JLabel lblSize = new JLabel("Size");
+		lblSize = new JLabel("Size");
 		lblSize.setForeground(Color.WHITE);
 		lblSize.setBackground(Color.DARK_GRAY);
 		lblSize.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSize.setBounds(380, sizeSlider.getY() - 25, 44, 15);
+		lblSize.setBounds(350, sizeSlider.getY() - 25, 100, 15);
 		contentPane.add(lblSize);
 
 		JLabel lblTemperature = new JLabel("Temperature");
 		lblTemperature.setForeground(Color.WHITE);
 		lblTemperature.setBackground(Color.DARK_GRAY);
 		lblTemperature.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTemperature.setBounds(363, temperatureSlider.getY() - 25, 96, 15);
+		lblTemperature.setBounds(350, temperatureSlider.getY() - 25, 100, 15);
 		contentPane.add(lblTemperature);
 
 		JPanel panel = new JPanel();
@@ -396,7 +396,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				machineController.addSelection(Drink.ICEDTEAD, icedTeaButton);
+				fsm.getSCInterface().raiseB_drink();
 			}
 		});
 		
@@ -467,8 +468,8 @@ public class DrinkFactoryMachine extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				machineController.nfcPayed();
 				messagesToUser.setText("<html>" + machineController + "</html>");
+				machineController.nfcPayed();
 				fsm.getSCInterface().raiseC_NFC();
 			}
 		});
@@ -495,6 +496,7 @@ public class DrinkFactoryMachine extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				//messagesToUser.setText("<html>" + machineController + "</html>");
+				machineController.newPrice();
 				fsm.getSCInterface().raiseS_Slide();
 			}
 		});
@@ -532,5 +534,13 @@ public class DrinkFactoryMachine extends JFrame {
 	
 	public void changeSugar(String s) {
 		this.lblSugar.setText(s);
+	}
+	
+	public void changeSize(String s) {
+		this.lblSize.setText(s);
+	}
+	
+	public void badNfcInfut() {
+		this.nfcBiiiipId.setText("integer only");
 	}
 }

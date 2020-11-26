@@ -868,6 +868,42 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean nitrogen;
+		
+		
+		public boolean isRaisedNitrogen() {
+			synchronized(FSMStatemachine.this) {
+				return nitrogen;
+			}
+		}
+		
+		protected void raiseNitrogen() {
+			synchronized(FSMStatemachine.this) {
+				nitrogen = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onNitrogenRaised();
+				}
+			}
+		}
+		
+		private boolean endNitrogen;
+		
+		
+		public boolean isRaisedEndNitrogen() {
+			synchronized(FSMStatemachine.this) {
+				return endNitrogen;
+			}
+		}
+		
+		protected void raiseEndNitrogen() {
+			synchronized(FSMStatemachine.this) {
+				endNitrogen = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onEndNitrogenRaised();
+				}
+			}
+		}
+		
 		private boolean aCup;
 		
 		
@@ -1049,6 +1085,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 		endVanilla = false;
 		pouringMilkCloud = false;
 		endMilkCloud = false;
+		nitrogen = false;
+		endNitrogen = false;
 		aCup = false;
 		}
 		
@@ -1096,6 +1134,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		machine_Serving_Serving_Pouring_Vanilla,
 		machine_Serving_Serving_Mix_Vanilla,
 		machine_Serving_Serving_MilkCloud,
+		machine_Serving_Serving_nitrogen_injection,
 		machine_cleaning,
 		$NullState$
 	};
@@ -1106,7 +1145,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	private ITimer timer;
 	
-	private final boolean[] timeEvents = new boolean[21];
+	private final boolean[] timeEvents = new boolean[22];
 	
 	private Queue<Runnable> internalEventQueue = new LinkedList<Runnable>();
 	private BlockingQueue<Runnable> inEventQueue = new LinkedBlockingQueue<Runnable>();
@@ -1284,6 +1323,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 			case machine_Serving_Serving_MilkCloud:
 				machine_Serving_Serving_MilkCloud_react(true);
 				break;
+			case machine_Serving_Serving_nitrogen_injection:
+				machine_Serving_Serving_nitrogen_injection_react(true);
+				break;
 			case machine_cleaning:
 				machine_cleaning_react(true);
 				break;
@@ -1382,7 +1424,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[4] == State.machine_Order_Cup_Waiting;
 		case machine_Serving:
 			return stateVector[0].ordinal() >= State.
-					machine_Serving.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_MilkCloud.ordinal();
+					machine_Serving.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_nitrogen_injection.ordinal();
 		case machine_Serving_Serving_Heating_and_Cup:
 			return stateVector[0].ordinal() >= State.
 					machine_Serving_Serving_Heating_and_Cup.ordinal()&& stateVector[0].ordinal() <= State.machine_Serving_Serving_Heating_and_Cup_cup___tea___soup_Spices.ordinal();
@@ -1435,6 +1477,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 			return stateVector[0] == State.machine_Serving_Serving_Mix_Vanilla;
 		case machine_Serving_Serving_MilkCloud:
 			return stateVector[0] == State.machine_Serving_Serving_MilkCloud;
+		case machine_Serving_Serving_nitrogen_injection:
+			return stateVector[0] == State.machine_Serving_Serving_nitrogen_injection;
 		case machine_cleaning:
 			return stateVector[0] == State.machine_cleaning;
 		default:
@@ -1705,6 +1749,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.isRaisedEndMilkCloud();
 	}
 	
+	public synchronized boolean isRaisedNitrogen() {
+		return sCInterface.isRaisedNitrogen();
+	}
+	
+	public synchronized boolean isRaisedEndNitrogen() {
+		return sCInterface.isRaisedEndNitrogen();
+	}
+	
 	public synchronized boolean isRaisedACup() {
 		return sCInterface.isRaisedACup();
 	}
@@ -1782,7 +1834,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	}
 	
 	private boolean check_Machine_Serving_Serving_Heating_and_Cup_cup___tea___soup__choice_0_tr0_tr0() {
-		return sCInterface.operationCallback.isTea();
+		return (sCInterface.operationCallback.isTea() || sCInterface.operationCallback.isIceTea());
 	}
 	
 	private boolean check_Machine_Serving_Serving_Heating_and_Cup_cup___tea___soup__choice_0_tr2_tr2() {
@@ -1806,7 +1858,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 	}
 	
 	private boolean check_Machine_Serving_Serving__choice_0_tr0_tr0() {
-		return sCInterface.operationCallback.isTea();
+		return (sCInterface.operationCallback.isTea() || sCInterface.operationCallback.isIceTea());
 	}
 	
 	private boolean check_Machine_Serving_Serving__choice_0_tr2_tr2() {
@@ -1815,6 +1867,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	private boolean check_Machine_Serving_Serving__choice_1_tr0_tr0() {
 		return sCInterface.operationCallback.isMilkCloud();
+	}
+	
+	private boolean check_Machine_Serving_Serving__choice_1_tr2_tr2() {
+		return sCInterface.operationCallback.isIceTea();
 	}
 	
 	private void effect_Machine_Serving_Serving_Heating_and_Cup_coffee__choice_0_tr0() {
@@ -1897,6 +1953,12 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.raisePouringMilkCloud();
 		
 		enterSequence_Machine_Serving_Serving_MilkCloud_default();
+	}
+	
+	private void effect_Machine_Serving_Serving__choice_1_tr2() {
+		sCInterface.raiseNitrogen();
+		
+		enterSequence_Machine_Serving_Serving_nitrogen_injection_default();
 	}
 	
 	private void effect_Machine_Serving_Serving__choice_1_tr1() {
@@ -2055,9 +2117,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		timer.setTimer(this, 19, (3 * 1000), false);
 	}
 	
+	/* Entry action for state 'nitrogen injection'. */
+	private void entryAction_Machine_Serving_Serving_nitrogen_injection() {
+		timer.setTimer(this, 20, (sCInterface.operationCallback.getNitrogenTime() * 1000), false);
+	}
+	
 	/* Entry action for state 'cleaning'. */
 	private void entryAction_Machine_cleaning() {
-		timer.setTimer(this, 20, (5 * 1000), false);
+		timer.setTimer(this, 21, (5 * 1000), false);
 		
 		sCInterface.raiseCleanning();
 	}
@@ -2162,9 +2229,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		timer.unsetTimer(this, 19);
 	}
 	
+	/* Exit action for state 'nitrogen injection'. */
+	private void exitAction_Machine_Serving_Serving_nitrogen_injection() {
+		timer.unsetTimer(this, 20);
+	}
+	
 	/* Exit action for state 'cleaning'. */
 	private void exitAction_Machine_cleaning() {
-		timer.unsetTimer(this, 20);
+		timer.unsetTimer(this, 21);
 	}
 	
 	/* 'default' enter sequence for state Order */
@@ -2410,6 +2482,13 @@ public class FSMStatemachine implements IFSMStatemachine {
 		entryAction_Machine_Serving_Serving_MilkCloud();
 		nextStateIndex = 0;
 		stateVector[0] = State.machine_Serving_Serving_MilkCloud;
+	}
+	
+	/* 'default' enter sequence for state nitrogen injection */
+	private void enterSequence_Machine_Serving_Serving_nitrogen_injection_default() {
+		entryAction_Machine_Serving_Serving_nitrogen_injection();
+		nextStateIndex = 0;
+		stateVector[0] = State.machine_Serving_Serving_nitrogen_injection;
 	}
 	
 	/* 'default' enter sequence for state cleaning */
@@ -2742,6 +2821,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 		exitAction_Machine_Serving_Serving_MilkCloud();
 	}
 	
+	/* Default exit sequence for state nitrogen injection */
+	private void exitSequence_Machine_Serving_Serving_nitrogen_injection() {
+		nextStateIndex = 0;
+		stateVector[0] = State.$NullState$;
+		
+		exitAction_Machine_Serving_Serving_nitrogen_injection();
+	}
+	
 	/* Default exit sequence for state cleaning */
 	private void exitSequence_Machine_cleaning() {
 		nextStateIndex = 0;
@@ -2787,6 +2874,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_MilkCloud:
 			exitSequence_Machine_Serving_Serving_MilkCloud();
+			exitAction_Machine_Serving();
+			break;
+		case machine_Serving_Serving_nitrogen_injection:
+			exitSequence_Machine_Serving_Serving_nitrogen_injection();
 			exitAction_Machine_Serving();
 			break;
 		case machine_cleaning:
@@ -2980,6 +3071,9 @@ public class FSMStatemachine implements IFSMStatemachine {
 			break;
 		case machine_Serving_Serving_MilkCloud:
 			exitSequence_Machine_Serving_Serving_MilkCloud();
+			break;
+		case machine_Serving_Serving_nitrogen_injection:
+			exitSequence_Machine_Serving_Serving_nitrogen_injection();
 			break;
 		default:
 			break;
@@ -3220,7 +3314,11 @@ public class FSMStatemachine implements IFSMStatemachine {
 		if (check_Machine_Serving_Serving__choice_1_tr0_tr0()) {
 			effect_Machine_Serving_Serving__choice_1_tr0();
 		} else {
-			effect_Machine_Serving_Serving__choice_1_tr1();
+			if (check_Machine_Serving_Serving__choice_1_tr2_tr2()) {
+				effect_Machine_Serving_Serving__choice_1_tr2();
+			} else {
+				effect_Machine_Serving_Serving__choice_1_tr1();
+			}
 		}
 	}
 	
@@ -3955,6 +4053,26 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return did_transition;
 	}
 	
+	private boolean machine_Serving_Serving_nitrogen_injection_react(boolean try_transition) {
+		boolean did_transition = try_transition;
+		
+		if (try_transition) {
+			if (timeEvents[20]) {
+				exitSequence_Machine_Serving_Serving_nitrogen_injection();
+				sCInterface.raiseEndNitrogen();
+				
+				enterSequence_Machine_Serving_Serving_Waiting_default();
+				machine_Serving_react(false);
+			} else {
+				did_transition = false;
+			}
+		}
+		if (did_transition==false) {
+			did_transition = machine_Serving_react(try_transition);
+		}
+		return did_transition;
+	}
+	
 	private boolean machine_cleaning_react(boolean try_transition) {
 		boolean did_transition = try_transition;
 		
@@ -3970,7 +4088,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		if (did_transition==false) {
-			if (timeEvents[20]) {
+			if (timeEvents[21]) {
 				sCInterface.setCleanIsDone(true);
 				
 				raiseNewOrder();

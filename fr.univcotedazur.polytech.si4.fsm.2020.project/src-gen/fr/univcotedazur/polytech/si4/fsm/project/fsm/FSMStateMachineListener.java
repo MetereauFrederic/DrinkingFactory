@@ -2,8 +2,8 @@ package fr.univcotedazur.polytech.si4.fsm.project.fsm;
 
 import fr.univcotedazur.polytech.si4.fsm.project.IngredientList.Ingredient;
 import fr.univcotedazur.polytech.si4.fsm.project.MachineController;
-import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Drink;
-import fr.univcotedazur.polytech.si4.fsm.project.MachineController.Option;
+import fr.univcotedazur.polytech.si4.fsm.project.Drink;
+import fr.univcotedazur.polytech.si4.fsm.project.Drink.Option;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceListener;
 import fr.univcotedazur.polytech.si4.fsm.project.fsm.IFSMStatemachine.SCInterfaceOperationCallback;
 
@@ -357,5 +357,33 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 	public void onEndPouringCroutonsRaised() {
 		System.out.println("endPouringCroutons()");
 		machineController.removeLine(machineController.pouringCroutons);
+	}
+
+	@Override
+	public long getNitrogenTime() {
+		return machineController.getNitrogenTime();
+	}
+
+	@Override
+	public boolean isIceTea() {
+		return machineController.isDrink(Drink.ICEDTEAD);
+	}
+
+	@Override
+	public void onNitrogenRaised() {
+		System.out.println("nitrogen()");
+		machineController.setPictureClosed(true);
+		machineController.addLine(machineController.doorClosed);
+		machineController.addLine(machineController.nitrogen);
+		machineController.removeQuantity(Ingredient.NITROGEN);
+	}
+
+	@Override
+	public void onEndNitrogenRaised() {
+		System.out.println("endNitrogen()");
+		machineController.setPictureClosed(false);
+		machineController.removeLine(machineController.nitrogen);
+		machineController.removeLine(machineController.doorClosed);
+		machineController.addLine(machineController.doorOpen);
 	}
 }

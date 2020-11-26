@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Card {
 
-	public static final int PAYMENTS_FOR_REDUCTION = 5;
+	public static final int PAYMENTS_FOR_REDUCTION = 10;
 	private int ident;
 	private List<Integer> payments;
 	
