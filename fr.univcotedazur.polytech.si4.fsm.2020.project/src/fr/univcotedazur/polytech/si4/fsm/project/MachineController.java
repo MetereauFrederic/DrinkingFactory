@@ -1,7 +1,6 @@
 package fr.univcotedazur.polytech.si4.fsm.project;
 
 import java.awt.Color;
-import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,6 @@ public class MachineController {
 	
 	private String paymentCanceled = "paiement annulé";
 	private String orderCanceled = "Commande annulée";
-	private String invalidCard = "Carte refusée (identification entière uniquement)";
 	private String currency = "€";
 	private String payed = "payés";
 	private String refounded = "rendus";
@@ -78,6 +76,7 @@ public class MachineController {
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
 		uiController.lockUi(true);
+		uiController.darkAll();
 		uiController.resetUi();
 	}
 
@@ -226,6 +225,7 @@ public class MachineController {
 		this.aCup = false;
 		drinkFactoryMachine.progressBar.setValue(0);
 		this.options.clear();
+		uiController.darkAll();
 		uiController.resetUi();
 		addLine(this.toString());
 	}
@@ -245,7 +245,6 @@ public class MachineController {
 	}
 
 	public void placeCup() {
-		this.aCup = true;
 		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
 	}
 
@@ -343,5 +342,9 @@ public class MachineController {
 	
 	public void resetUi() {
 		uiController.resetUi();
+	}
+	
+	public Drink getDrink() {
+		return drink;
 	}
 }

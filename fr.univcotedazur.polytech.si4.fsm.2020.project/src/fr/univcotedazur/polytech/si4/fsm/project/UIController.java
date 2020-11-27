@@ -33,7 +33,7 @@ public class UIController {
 		drinkFactoryMachine.icedTeaButton.setEnabled(!state);
 		drinkFactoryMachine.cancelButton.setEnabled(!state);
 		drinkFactoryMachine.addCupButton.setEnabled(!state);
-		darkAll();
+		//darkAll();
 		disableOptions();
 	}
 	
@@ -42,7 +42,7 @@ public class UIController {
 		button.setBackground(Color.GRAY);
 	}
 	
-	private void darkAll() {
+	public void darkAll() {
 		drinkFactoryMachine.coffeeButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.expressoButton.setBackground(Color.DARK_GRAY);
 		drinkFactoryMachine.teaButton.setBackground(Color.DARK_GRAY);
@@ -177,12 +177,13 @@ public class UIController {
 	public void unlockDrink() {
 		unlockButton(drinkFactoryMachine.nfcBiiiipButton);
 		unlockButton(drinkFactoryMachine.cancelButton);
-		resetSliders(Drink.COFFEE);
+		Drink drink = machineController.getDrink();
+		resetSliders((drink!=null)?drink:Drink.COFFEE);
 		if (ingredientList.haveQuantity(Ingredient.COFFEE_POD, 1)) unlockButton(drinkFactoryMachine.coffeeButton);
 		if (ingredientList.haveQuantity(Ingredient.GRAINS, 1)) unlockButton(drinkFactoryMachine.expressoButton);
 		if (ingredientList.haveQuantity(Ingredient.TEA_BAG, 1)) unlockButton(drinkFactoryMachine.teaButton);
 		if (ingredientList.haveQuantity(Ingredient.SOUP_POD, 1)) unlockButton(drinkFactoryMachine.soupButton);
-		if (ingredientList.haveQuantity(Ingredient.ICEDTEA_POD, 1) && ingredientList.haveQuantity(Ingredient.NITROGEN, 4)) unlockButton(drinkFactoryMachine.icedTeaButton);
+		if (ingredientList.haveQuantity(Ingredient.TEA_BAG, 1) && ingredientList.haveQuantity(Ingredient.NITROGEN, 4)) unlockButton(drinkFactoryMachine.icedTeaButton);
 	}
 	
 	public void unlockButton(JButton button) {

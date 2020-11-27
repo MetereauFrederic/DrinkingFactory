@@ -17,7 +17,6 @@ public class IngredientList extends ArrayList<Stock> {
 		VANILLA(),
 		SPICE(),
 		SOUP_POD(),
-		ICEDTEA_POD(),
 		NITROGEN();
 	}
 	
@@ -33,7 +32,6 @@ public class IngredientList extends ArrayList<Stock> {
 		this.add(new Stock(Ingredient.VANILLA, 3));
 		this.add(new Stock(Ingredient.SPICE, 10));
 		this.add(new Stock(Ingredient.SOUP_POD, 3));
-		this.add(new Stock(Ingredient.ICEDTEA_POD, 3));
 		this.add(new Stock(Ingredient.NITROGEN, 10));
 	}
 	
