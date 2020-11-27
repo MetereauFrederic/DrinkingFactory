@@ -122,7 +122,7 @@ public class MachineController {
 			}
 			String s = ((reduction)?
 					"0" + currency + " " + payed + " (" + fidelity + ")"
-					:(((double)this.price)/100.0) + currency + " " + payed);
+					:(((double)this.price)/100.0) + currency + " " + payed + nfc.toString());
 			System.out.println(s);
 			refound(s);
 		}
