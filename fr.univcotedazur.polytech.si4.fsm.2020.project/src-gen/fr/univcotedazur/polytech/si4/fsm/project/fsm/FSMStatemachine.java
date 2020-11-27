@@ -922,6 +922,24 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean takeCup;
+		
+		
+		public boolean isRaisedTakeCup() {
+			synchronized(FSMStatemachine.this) {
+				return takeCup;
+			}
+		}
+		
+		protected void raiseTakeCup() {
+			synchronized(FSMStatemachine.this) {
+				takeCup = true;
+				for (SCInterfaceListener listener : listeners) {
+					listener.onTakeCupRaised();
+				}
+			}
+		}
+		
 		private long price;
 		
 		public synchronized long getPrice() {
@@ -1034,6 +1052,20 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 		}
 		
+		private boolean closed;
+		
+		public synchronized boolean getClosed() {
+			synchronized(FSMStatemachine.this) {
+				return closed;
+			}
+		}
+		
+		public void setClosed(boolean value) {
+			synchronized(FSMStatemachine.this) {
+				this.closed = value;
+			}
+		}
+		
 		protected void clearEvents() {
 			b_drink = false;
 			s_Slide = false;
@@ -1088,6 +1120,7 @@ public class FSMStatemachine implements IFSMStatemachine {
 		nitrogen = false;
 		endNitrogen = false;
 		aCup = false;
+		takeCup = false;
 		}
 		
 	}
@@ -1187,6 +1220,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 		sCInterface.setCleanIsDone(false);
 		
 		sCInterface.setCup(false);
+		
+		sCInterface.setClosed(false);
 	}
 	
 	public synchronized void enter() {
@@ -1761,6 +1796,10 @@ public class FSMStatemachine implements IFSMStatemachine {
 		return sCInterface.isRaisedACup();
 	}
 	
+	public synchronized boolean isRaisedTakeCup() {
+		return sCInterface.isRaisedTakeCup();
+	}
+	
 	public synchronized long getPrice() {
 		return sCInterface.getPrice();
 	}
@@ -1823,6 +1862,14 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	public synchronized void setCup(boolean value) {
 		sCInterface.setCup(value);
+	}
+	
+	public synchronized boolean getClosed() {
+		return sCInterface.getClosed();
+	}
+	
+	public synchronized void setClosed(boolean value) {
+		sCInterface.setClosed(value);
 	}
 	
 	private boolean check_Machine_Serving_Serving_Heating_and_Cup_coffee__choice_0_tr0_tr0() {
@@ -1957,6 +2004,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 	
 	private void effect_Machine_Serving_Serving__choice_1_tr2() {
 		sCInterface.raiseNitrogen();
+		
+		sCInterface.setClosed(true);
 		
 		enterSequence_Machine_Serving_Serving_nitrogen_injection_default();
 	}
@@ -3588,11 +3637,13 @@ public class FSMStatemachine implements IFSMStatemachine {
 		boolean did_transition = try_transition;
 		
 		if (try_transition) {
-			if (sCInterface.cup_Taken) {
+			if (((sCInterface.cup_Taken) && (!sCInterface.getClosed()))) {
 				exitSequence_Machine_Serving();
 				sCInterface.setCupIsTaken(true);
 				
 				sCInterface.setCup(false);
+				
+				sCInterface.raiseTakeCup();
 				
 				enterSequence_Machine_cleaning_default();
 				react();
@@ -4061,6 +4112,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 				exitSequence_Machine_Serving_Serving_nitrogen_injection();
 				sCInterface.raiseEndNitrogen();
 				
+				sCInterface.setClosed(false);
+				
 				enterSequence_Machine_Serving_Serving_Waiting_default();
 				machine_Serving_react(false);
 			} else {
@@ -4097,6 +4150,8 @@ public class FSMStatemachine implements IFSMStatemachine {
 			}
 			if (sCInterface.cup_Taken) {
 				sCInterface.setCupIsTaken(true);
+				
+				sCInterface.raiseTakeCup();
 				
 				raiseNewOrder();
 				

@@ -245,6 +245,7 @@ public class MachineController {
 	}
 
 	public void placeCup() {
+		this.aCup = true;
 		drinkFactoryMachine.changePicture("./picts/gobeletPolluant.jpg");
 	}
 
@@ -294,6 +295,11 @@ public class MachineController {
 		}
 		uiController.lockUi(true);
 		uiController.resetUi();
+	}
+	
+	public void takeCup() {
+		drinkFactoryMachine.changePicture("./picts/vide2.jpg");
+		drinkFactoryMachine.addCupButton.setText("Add cup");
 	}
 	
 	public void setPictureClosed(boolean closed) {

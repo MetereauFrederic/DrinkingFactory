@@ -386,4 +386,10 @@ public class FSMStateMachineListener implements SCInterfaceListener, SCInterface
 		machineController.removeLine(machineController.doorClosed);
 		machineController.addLine(machineController.doorOpen);
 	}
+
+	@Override
+	public void onTakeCupRaised() {
+		System.out.println("cupTaken()");
+		machineController.takeCup();
+	}
 }

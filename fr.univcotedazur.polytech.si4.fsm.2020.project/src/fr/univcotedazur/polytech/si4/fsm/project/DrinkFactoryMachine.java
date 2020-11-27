@@ -330,9 +330,7 @@ public class DrinkFactoryMachine extends JFrame {
 		labelForPictures.addMouseListener(new MouseAdapter() {
 			
 			 public void mouseClicked(MouseEvent e)  
-			    {  
-			      	changePicture("./picts/vide2.jpg");
-			      	addCupButton.setText("Add cup");
+			    {
 			      	fsm.getSCInterface().raiseCup_Taken();
 			    }  
 			

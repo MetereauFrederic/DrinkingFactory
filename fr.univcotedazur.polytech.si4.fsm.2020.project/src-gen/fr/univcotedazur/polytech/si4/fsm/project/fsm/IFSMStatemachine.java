@@ -112,6 +112,8 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		
 		public boolean isRaisedACup();
 		
+		public boolean isRaisedTakeCup();
+		
 		public long getPrice();
 		
 		public void setPrice(long value);
@@ -143,6 +145,10 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public boolean getCup();
 		
 		public void setCup(boolean value);
+		
+		public boolean getClosed();
+		
+		public void setClosed(boolean value);
 		
 	public List<SCInterfaceListener> getListeners();
 		public void setSCInterfaceOperationCallback(SCInterfaceOperationCallback operationCallback);
@@ -193,6 +199,7 @@ public interface IFSMStatemachine extends ITimerCallback,IStatemachine {
 		public void onNitrogenRaised();
 		public void onEndNitrogenRaised();
 		public void onACupRaised();
+		public void onTakeCupRaised();
 		}
 	
 	public interface SCInterfaceOperationCallback {
