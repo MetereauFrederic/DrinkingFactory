@@ -292,7 +292,7 @@ public class MachineController {
 			drinkFactoryMachine.changePicture("./picts/vide2.jpg");
 			drinkFactoryMachine.addCupButton.setText("Add cup");
 		}
-		uiController.lockUi(true);
+		//uiController.lockUi(true);
 		uiController.resetUi();
 	}
 	
