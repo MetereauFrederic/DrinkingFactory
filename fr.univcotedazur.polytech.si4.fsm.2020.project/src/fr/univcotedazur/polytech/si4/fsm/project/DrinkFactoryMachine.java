@@ -101,7 +101,7 @@ public class DrinkFactoryMachine extends JFrame {
 		messagesToUser.setHorizontalAlignment(SwingConstants.LEFT);
 		messagesToUser.setVerticalAlignment(SwingConstants.TOP);
 		messagesToUser.setToolTipText("message to the user");
-		messagesToUser.setBounds(126, 34, 165, 195);
+		messagesToUser.setBounds(126, 34, 165, 300);
 		contentPane.add(messagesToUser);
 
 		JLabel lblCoins = new JLabel("Coins");

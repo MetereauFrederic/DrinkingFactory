@@ -40,8 +40,8 @@ public class MachineController {
 	public String mixVanilla = "Mixage de la préparation";
 	public String pouringMilkCloud = "Versement du nuage de lait";
 	public String pouringCroutons = "Versement des croutons";
-	public String doorClosed = "porte vérouillée";
-	public String doorOpen = "déverouillage de la porte";
+	public String doorClosed = "porte verrouillée";
+	public String doorOpen = "déverrouillage de la porte";
 	public String nitrogen = "refroidissement à l'azote";
 	
 	private String paymentCanceled = "paiement annulé";
@@ -122,7 +122,7 @@ public class MachineController {
 			}
 			String s = ((reduction)?
 					"0" + currency + " " + payed + " (" + fidelity + ")"
-					:(((double)this.price)/100.0) + currency + " " + payed);
+					:(((double)this.price)/100.0) + currency + " " + payed + nfc.toString());
 			System.out.println(s);
 			refound(s);
 		}
@@ -292,7 +292,7 @@ public class MachineController {
 			drinkFactoryMachine.changePicture("./picts/vide2.jpg");
 			drinkFactoryMachine.addCupButton.setText("Add cup");
 		}
-		uiController.lockUi(true);
+		//uiController.lockUi(true);
 		uiController.resetUi();
 	}
 	

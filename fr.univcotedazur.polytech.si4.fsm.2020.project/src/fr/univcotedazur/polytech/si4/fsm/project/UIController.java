@@ -83,9 +83,9 @@ public class UIController {
 	}
 	
 	public void resetUi() {
-		drinkFactoryMachine.sugarSlider.setValue(1);
-		drinkFactoryMachine.sizeSlider.setValue(1);
-		drinkFactoryMachine.temperatureSlider.setValue(2);
+		if (!drinkFactoryMachine.sugarSlider.isEnabled()) drinkFactoryMachine.sugarSlider.setValue(1);
+		if (!drinkFactoryMachine.sizeSlider.isEnabled()) drinkFactoryMachine.sizeSlider.setValue(1);
+		if (!drinkFactoryMachine.temperatureSlider.isEnabled()) drinkFactoryMachine.temperatureSlider.setValue(2);
 		if (ingredientList.haveQuantity(Ingredient.CUP, 1)) {
 			unlockDrink();
 		} else {
@@ -127,7 +127,7 @@ public class UIController {
             }
             drinkFactoryMachine.sizeSlider.setMaximum(1);
             drinkFactoryMachine.sizeSlider.setLabelTable(sizeTable);
-    		drinkFactoryMachine.sizeSlider.setValue(0);
+            if (!drinkFactoryMachine.sizeSlider.isEnabled()) drinkFactoryMachine.sizeSlider.setValue(0);
         } else {
         	sizeTable.put(0, new JLabel("S"));
     		sizeTable.put(1, new JLabel("M"));
@@ -135,9 +135,9 @@ public class UIController {
             for (JLabel l : sizeTable.values()) {
                 l.setForeground(Color.WHITE);
             }
-            drinkFactoryMachine.sizeSlider.setMaximum(2);
+            if (!drinkFactoryMachine.sizeSlider.isEnabled())           if (!drinkFactoryMachine.sizeSlider.isEnabled())           drinkFactoryMachine.sizeSlider.setMaximum(2);
             drinkFactoryMachine.sizeSlider.setLabelTable(sizeTable);
-    		drinkFactoryMachine.sizeSlider.setValue(1);
+            if (!drinkFactoryMachine.sizeSlider.isEnabled()) drinkFactoryMachine.sizeSlider.setValue(1);
     		if(drink.equals(Drink.EXPRESSO)) drinkFactoryMachine.changeSize("Hardness");
         }
 		drinkFactoryMachine.sizeSlider.setEnabled(true);
@@ -160,7 +160,7 @@ public class UIController {
             l.setForeground(Color.WHITE);
         }
         drinkFactoryMachine.temperatureSlider.setLabelTable(temperatureTable);
-		drinkFactoryMachine.temperatureSlider.setValue(2);
+        if (!drinkFactoryMachine.temperatureSlider.isEnabled()) drinkFactoryMachine.temperatureSlider.setValue(2);
 		drinkFactoryMachine.temperatureSlider.setEnabled(true);;
 	}
 	
@@ -170,7 +170,7 @@ public class UIController {
 	}
 	
 	private void unlockSugar() {
-		drinkFactoryMachine.sugarSlider.setValue(1);
+		if (!drinkFactoryMachine.sugarSlider.isEnabled()) drinkFactoryMachine.sugarSlider.setValue(1);
 		drinkFactoryMachine.sugarSlider.setEnabled(true);
 	}
 	
