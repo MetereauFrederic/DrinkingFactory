@@ -1,0 +1,37 @@
+WaitingTemp = (afterHeatingTime -> STOP).
+
+ChoiceCoffee = (coffeeTrue -> PlacingPod | coffeeFalse -> STOP),
+PlacingPod = (afterPlacingPod -> STOP).
+
+ChoiceExpresso = (expressoTrue -> GrainCrushing | expressoFalse -> STOP),
+GrainCrushing = (afterCrushingTime -> GrainTamping),
+GrainTamping = (afterTampingTime -> STOP).
+
+ChoiceCup = (cupTrue -> ChoiceTea | cupFalse -> PlacingCup),
+PlacingCup = (afterPlacingCup -> ChoiceTea),
+ChoiceTea = (teaTrue -> PuttingBag | teaFalse -> ChoiceSoup),
+PuttingBag = (afterPuttingBag -> STOP),
+ChoiceSoup = (soupTrue -> PuttingSoup | soupFalse -> STOP),
+PuttingSoup = (afterPuttingSoup -> Spices),
+Spices = (afterPouringSpices -> STOP).
+
+||HeatingAndCup = (WaitingTemp || ChoiceCoffee || ChoiceExpresso || ChoiceCup).
+
+assert PropWaitingTemp = <> (afterHeatingTime)
+
+assert PropCoffee = [] (coffeeTrue -> <> (afterPlacingPod))
+assert PropNoCoffee = [] (coffeeFalse -> ! (afterPlacingPod))
+
+assert PropExpresso = [] (expressoTrue -> (<> afterCrushingTime && <> afterTampingTime))
+assert PropNoExpresso = [] (expressoFalse -> (! afterCrushingTime && ! afterTampingTime))
+
+assert PropCup = [] (cupTrue -> (<> afterPlacingCup && (<> teaTrue || <> teaFalse)))
+assert PropNoCup = [] (cupFalse -> (! afterPlacingCup && (<> teaTrue || <> teaFalse)))
+
+assert PropTea = [] (teaTrue -> (<> afterPuttingBag && (! afterPuttingSoup && ! afterPouringSpices)))
+assert PropNoTea = [] (teaFalse -> (!afterPuttingBag && (<> soupTrue || <> soupFalse)))
+
+assert PropSoup = [] (soupTrue -> (<> afterPuttingSoup && <> afterPouringSpices))
+assert PropNoSoup = [] (soupFalse -> (! afterPuttingSoup && ! afterPouringSpices))
+
+

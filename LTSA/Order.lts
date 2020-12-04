@@ -1,0 +1,16 @@
+WaitingDrink = (b_drink -> Chosen  | cancel -> STOP),
+Chosen = (b_drink -> Chosen | b_option -> Chosen  | cancel -> STOP).
+
+WaitingOption = (s_slide -> WaitingOption  | cancel -> STOP).
+
+WaitingPaiement = (c_coin -> WaitingPaiement | c_nfc -> WaitingPaiement  | cancel -> STOP).
+
+WaitingTimer = (startTimer -> Running | cancel -> STOP),
+Running = (startTimer -> Running | cancel -> STOP).
+
+WaitingCup = (b_cup -> Cup | cup_Taken -> Cup  | cancel -> STOP),
+Cup = (b_cup -> Cup | cup_Taken -> Cup  | cancel -> STOP).
+
+||Order = ((WaitingDrink || WaitingOption || WaitingPaiement || WaitingTimer || WaitingCup)).
+
+

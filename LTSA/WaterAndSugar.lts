@@ -1,0 +1,22 @@
+Water = (pouringWater -> STOP).
+
+ChoiceSugar = (sugarTrue -> Sugar | sugarFalse -> ChoiceMapleSyrup),
+ChoiceMapleSyrup = (mapleSyrupTrue -> MapleSyrup | mapleSyrupFalse -> ChoiceCroutons),
+ChoiceCroutons = (croutonsTrue -> Waiting | croutonsFalse -> STOP),
+Waiting = (after3s -> Croutons),
+Sugar = (afterPouringSugar -> STOP),
+MapleSyrup = (afterPouringMapleSyrup -> STOP),
+Croutons = (afterPouringCroutons -> STOP),
+StopOptions = (stopOptions -> STOP).
+
+||WaterAndSugar = (Water || ChoiceSugar).
+
+assert PropSugar = [] (sugarTrue -> (<> afterPouringSugar) && (!afterPouringMapleSyrup && !afterPouringCroutons))
+assert PropMapleSyrup = [] (mapleSyrupTrue -> (<> afterPouringMapleSyrup) && (!afterPouringCroutons))
+assert PropCroutons = [] (croutonsTrue -> (<> afterPouringCroutons))
+
+assert PropNoSugar = [] (sugarFalse -> !(afterPouringSugar) && <> (mapleSyrupTrue || croutonsTrue || mapleSyrupFalse || croutonsFalse))
+assert PropNoMapleSyrup = [] (mapleSyrupFalse -> !(afterPouringMapleSyrup) && <> (croutonsTrue || croutonsFalse))
+assert PropNoCroutons = [] (croutonsFalse -> !(afterPouringCroutons))
+
+assert PropPouringWater = <> (pouringWater)

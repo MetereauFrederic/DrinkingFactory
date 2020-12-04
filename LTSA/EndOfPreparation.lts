@@ -1,0 +1,7 @@
+CupTaken = (takeCup -> STOP).
+Cleaning = (cleaning -> STOP).
+
+||End = (CupTaken ||Cleaning).
+
+assert PropCupTaken = <> (takeCup -> <> cleaning)
+assert PropClean = <> (cleaning -> <> takeCup)

@@ -1,0 +1,22 @@
+ChoiceTea = (teaTrue -> Infusing | teaFalse -> ChoiceVanilla),
+Infusing = (afterInfusingTime -> RemoveBag),
+RemoveBag = (afterRemoveBag -> ChoiceMilkCloud),
+ChoiceVanilla = (vanillaTrue -> PouringVanilla | vanillaFalse -> ChoiceMilkCloud),
+PouringVanilla = (afterPouringVanilla -> MixVanilla),
+MixVanilla = (afterMixingVanilla -> ChoiceMilkCloud),
+ChoiceMilkCloud = (milkCloudTrue -> MilkCloud | milkCloudFalse -> ChoiceIcedTea),
+MilkCloud = (afterPouringMilkCloud -> STOP),
+ChoiceIcedTea = (icedTeaTrue -> NitrojenInjection | icedTeaFalse -> STOP),
+NitrojenInjection = (afterNitrogenTime -> STOP).
+
+assert PropTea = [] (teaTrue -> (<> afterInfusingTime && <> afterRemoveBag) && (!afterPouringVanilla || !afterMixingVanilla))
+assert PropNoTea = [] (teaFalse -> (!afterInfusingTime && !afterRemoveBag) && (<> vanillaTrue || <> vanillaFalse))
+
+assert PropVanilla = [] (vanillaTrue -> (<> afterPouringVanilla && <> afterMixingVanilla))
+assert PropNoVanilla = [] (vanillaFalse -> (!afterPouringVanilla && !afterMixingVanilla))
+
+assert PropMilkCloud = [] (milkCloudTrue -> (<> afterPouringMilkCloud) && (!afterNitrogenTime))
+assert PropNoMilckCloud = [] (milkCloudFalse -> (!afterPouringMilkCloud) && (<> icedTeaTrue || <> icedTeaFalse))
+
+assert PropIcedTea = [] (icedTeaTrue -> (<> afterNitrogenTime))
+assert PropNoIcedTea = [] (icedTeaFalse -> (!afterNitrogenTime))
